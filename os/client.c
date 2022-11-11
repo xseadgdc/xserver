@@ -329,9 +329,10 @@ DetermineClientCmd(pid_t pid, const char **cmdname, const char **cmdargs)
             return;
         argv = kvm_getargv(kd, kp, 0);
         if (cmdname) {
-            if (argv == NULL || argv[0] == NULL)
+            if (argv == NULL || argv[0] == NULL) {
+                *cmdname = strdup("");
                 return;
-            else
+            } else
                 *cmdname = strdup(argv[0]);
         }
         if (cmdargs) {
