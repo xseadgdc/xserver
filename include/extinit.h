@@ -59,9 +59,9 @@ extern _X_EXPORT Bool noCompositeExtension;
 #endif
 
 /* required by: several video drivers (eg. vmware and sis) */
-#ifdef PANORAMIX
+#ifdef XINERAMA
 extern _X_EXPORT Bool noPanoramiXExtension;
-#endif
+#endif /* XINERAMA */
 
 /* required by: intel_drv */
 #if defined(XV)

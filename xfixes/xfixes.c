@@ -255,7 +255,7 @@ XFixesExtensionInit(void)
     }
 }
 
-#ifdef PANORAMIX
+#ifdef XINERAMA
 
 int (*PanoramiXSaveXFixesVector[XFixesNumberRequests]) (ClientPtr);
 
@@ -285,4 +285,4 @@ PanoramiXFixesReset(void)
         ProcXFixesVector[i] = PanoramiXSaveXFixesVector[i];
 }
 
-#endif
+#endif /* XINERAMA */

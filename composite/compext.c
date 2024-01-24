@@ -590,7 +590,7 @@ CompositeExtensionInit(void)
     noCompositeExtension = FALSE;
 }
 
-#ifdef PANORAMIX
+#ifdef XINERAMA
 #include "panoramiXsrv.h"
 
 int (*PanoramiXSaveCompositeVector[CompositeNumberRequests]) (ClientPtr);
@@ -943,4 +943,4 @@ PanoramiXCompositeReset(void)
         ProcCompositeVector[i] = PanoramiXSaveCompositeVector[i];
 }
 
-#endif
+#endif /* XINERAMA */
