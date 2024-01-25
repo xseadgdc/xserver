@@ -1,6 +1,7 @@
 srcs_miext_namespace = [
 	'config.c',
 	'namespace.c',
+	'hook-clientstate.c',
 ]
 
 libxserver_miext_namespace = static_library('libxserver_miext_namespace',
