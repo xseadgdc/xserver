@@ -1,4 +1,5 @@
 srcs_miext_namespace = [
+	'config.c',
 	'namespace.c',
 ]
 
