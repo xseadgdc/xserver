@@ -1,0 +1,6 @@
+* multiple screens support
+* set window properties per NS
+* isolate root window
+* ProcRotateProperties
+* ProcDeleteProperty
+* block grabs

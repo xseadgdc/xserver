@@ -197,6 +197,8 @@ ProcSetSelectionOwner(ClientPtr client)
         return BadAtom;
     }
 
+    printf("ProcSetSelectionOwner selection=%d\n", param.selection);
+
     /*
      * First, see if the selection is already set...
      */

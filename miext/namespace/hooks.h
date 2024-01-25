@@ -23,7 +23,18 @@
     } \
     struct XnamespaceClientPriv *subj = XnsClientPriv(client);
 
+void hookReceive(CallbackListPtr *pcbl, void *unused, void *calldata);
 void hookClientState(CallbackListPtr *pcbl, void *unused, void *calldata);
+void hookSend(CallbackListPtr *pcbl, void *unused, void *calldata);
+void hookDevice(CallbackListPtr *pcbl, void *unused, void *calldata);
+void hookPropertyAccess(CallbackListPtr *pcbl, void *unused, void *calldata);
+void hookClient(CallbackListPtr *pcbl, void *unused, void *calldata);
+void hookExtAccess(CallbackListPtr *pcbl, void *unused, void *calldata);
+void hookExtDispatch(CallbackListPtr *pcbl, void *unused, void *calldata);
+void hookServerAccess(CallbackListPtr *pcbl, void *unused, void *calldata);
+void hookResourceAccess(CallbackListPtr *pcbl, void *unused, void *calldata);
 void hookSelectionFilter(CallbackListPtr *pcbl, void *unused, void *calldata);
+void hookCoreDispatch(CallbackListPtr *pcbl, void *unused, void *calldata);
+void hookWindowProperty(CallbackListPtr *pcbl, void *unused, void *calldata);
 
 #endif /* __XSERVER_NAMESPACE_HOOKS_H */
