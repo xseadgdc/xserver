@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <X11/Xmd.h>
 
+#include "include/dixstruct.h"
+#include "include/privates.h"
 #include "include/window.h"
 
 struct Xnamespace {
@@ -11,6 +13,12 @@ struct Xnamespace {
     Bool builtin;
     Bool superPower;
     size_t refcnt;
+};
+
+struct XnamespaceClientPriv {
+    Bool isServer;
+    XID authId;
+    struct Xnamespace* ns;
 };
 
 #define MAX_NAMESPACE 64
@@ -24,8 +32,17 @@ extern int namespace_cnt;
 #define NS_NAME_ROOT      "root"
 #define NS_NAME_ANONYMOUS "anon"
 
+extern DevPrivateKeyRec namespaceClientPrivKeyRec;
+
 Bool XnsLoadConfig(void);
 struct Xnamespace *XnsFindByName(const char* name);
+void XnamespaceAssignClient(struct XnamespaceClientPriv *priv, struct Xnamespace *ns);
+void XnamespaceAssignClientByName(struct XnamespaceClientPriv *priv, const char *name);
+
+static inline struct XnamespaceClientPriv *XnsClientPriv(ClientPtr client) {
+    if (client == NULL) return NULL;
+    return dixLookupPrivate(&client->devPrivates, &namespaceClientPrivKeyRec);
+}
 
 #define XNS_LOG(...) do { printf("XNS "); printf(__VA_ARGS__); } while (0)
 
