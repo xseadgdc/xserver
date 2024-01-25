@@ -4,6 +4,7 @@
 #include <X11/Xmd.h>
 
 #include "dix/dix_priv.h"
+#include "dix/selection_priv.h"
 #include "include/extinit_priv.h"
 #include "include/os.h"
 
@@ -35,6 +36,7 @@ NamespaceExtensionInit(void)
     XnamespaceAssignClient(srv, &namespaces[NS_ID_ROOT]);
 
     AddCallback(&ClientStateCallback, hookClientState, NULL);
+    AddCallback(&SelectionFilterCallback, hookSelectionFilter, NULL);
 }
 
 void XnamespaceAssignClient(struct XnamespaceClientPriv *priv, struct Xnamespace *newns)
