@@ -111,6 +111,12 @@ typedef struct _Client {
     DeviceIntPtr clientPtr;
     ClientIdPtr clientIds;
     int req_fds;
+
+#ifdef CONFIG_STORE_CLIENT_CREDS
+    /* auth credentials used to connect */
+    char *authProto;
+    char *authToken; // hex printed
+#endif /* CONFIG_STORE_CLIENT_CREDS */
 } ClientRec;
 
 static inline void

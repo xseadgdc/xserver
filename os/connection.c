@@ -576,6 +576,23 @@ ClientAuthorized(ClientPtr client,
     priv->auth_id = auth_id;
     priv->conn_time = 0;
 
+#ifdef CONFIG_STORE_CLIENT_CREDS
+    {
+        /* store auth credentials for later use */
+        client->authProto = calloc(proto_n+1, 1);
+        memcpy(client->authProto, auth_proto, proto_n);
+
+        client->authToken = calloc(string_n*2+1, 1);
+        char *ptr = client->authToken;
+        for (int x=0; x<string_n; x++)
+        {
+            snprintf(ptr, 3, "%02hhx", auth_string[x]);
+            ptr++;
+            ptr++;
+        }
+    }
+#endif /* CONFIG_STORE_CLIENT_CREDS */
+
 #ifdef XDMCP
     /* indicate to Xdmcp protocol that we've opened new client */
     XdmcpOpenDisplay(priv->fd);
