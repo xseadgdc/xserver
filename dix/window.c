@@ -670,11 +670,7 @@ InitRootWindow(WindowPtr pWin)
     pWin->cursorIsNone = FALSE;
     pWin->optional->cursor = RefCursor(rootCursor);
 
-    if (party_like_its_1989) {
-        MakeRootTile(pWin);
-        backFlag |= CWBackPixmap;
-    }
-    else if (pScreen->canDoBGNoneRoot && bgNoneRoot) {
+    if (pScreen->canDoBGNoneRoot && bgNoneRoot) {
         pWin->backgroundState = XaceBackgroundNoneState(pWin);
         pWin->background.pixel = pScreen->whitePixel;
         backFlag |= CWBackPixmap;
@@ -1133,16 +1129,12 @@ SetRootWindowBackground(WindowPtr pWin, ScreenPtr pScreen, Mask *index2)
         pWin->backgroundState = XaceBackgroundNoneState(pWin);
         pWin->background.pixel = pScreen->whitePixel;
     }
-    else if (party_like_its_1989)
-        MakeRootTile(pWin);
-    else {
-        pWin->backgroundState = BackgroundPixel;
-        if (whiteRoot)
-            pWin->background.pixel = pScreen->whitePixel;
-        else
-            pWin->background.pixel = pScreen->blackPixel;
-        *index2 = CWBackPixel;
-    }
+    pWin->backgroundState = BackgroundPixel;
+    if (whiteRoot)
+        pWin->background.pixel = pScreen->whitePixel;
+    else
+        pWin->background.pixel = pScreen->blackPixel;
+    *index2 = CWBackPixel;
 }
 
 /*****

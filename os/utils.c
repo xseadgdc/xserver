@@ -571,7 +571,6 @@ UseMsg(void)
     ErrorF("-r                     turns off auto-repeat\n");
     ErrorF("r                      turns on auto-repeat \n");
     ErrorF("-render [default|mono|gray|color] set render color alloc policy\n");
-    ErrorF("-retro                 start with classic stipple and cursor\n");
     ErrorF("-s #                   screen-saver timeout (minutes)\n");
     ErrorF("-seat string           seat to run on\n");
     ErrorF("-t #                   default pointer threshold (pixels/t)\n");
@@ -923,8 +922,6 @@ ProcessCommandLine(int argc, char *argv[])
             defaultKeyboardControl.autoRepeat = TRUE;
         else if (strcmp(argv[i], "-r") == 0)
             defaultKeyboardControl.autoRepeat = FALSE;
-        else if (strcmp(argv[i], "-retro") == 0)
-            party_like_its_1989 = TRUE;
         else if (strcmp(argv[i], "-s") == 0) {
             if (++i < argc)
                 defaultScreenSaverTime = ((CARD32) atoi(argv[i])) *
