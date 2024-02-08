@@ -57,7 +57,6 @@ endif
 
 if build_dga
     srcs_xorg_common += 'xf86DGA.c'
-    xorg_sdk_headers += 'dgaproc.h'
 endif
 
 if build_xv
