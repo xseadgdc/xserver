@@ -45,6 +45,7 @@
 
 /* Bus-specific headers */
 #include "xf86Bus.h"
+#include "xf86sbusBus_priv.h"
 
 #define XF86_OS_PRIVS
 #include "xf86_OSproc.h"
