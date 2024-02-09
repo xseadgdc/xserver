@@ -455,7 +455,6 @@ if build_xorg
             'dixevents.h',
             'dixfont.h',
             'dixfontstr.h',
-            'dixgrabs.h',
             'dixstruct.h',
             'events.h',
             'exevents.h',
