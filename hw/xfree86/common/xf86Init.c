@@ -54,7 +54,7 @@
 #include "mi.h"
 #include "dbus-core.h"
 #include "systemd-logind.h"
-
+#include "xf86VGAarbiter_priv.h"
 #include "loaderProcs.h"
 
 #define XF86_OS_PRIVS
