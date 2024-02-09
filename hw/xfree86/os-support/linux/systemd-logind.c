@@ -37,7 +37,7 @@
 #include "linux.h"
 #include "xf86.h"
 #include "xf86platformBus_priv.h"
-#include "xf86Xinput.h"
+#include "xf86Xinput_priv.h"
 #include "xf86Priv.h"
 #include "globals.h"
 

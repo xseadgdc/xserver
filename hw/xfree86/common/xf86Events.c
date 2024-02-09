@@ -71,7 +71,7 @@
 #include <X11/extensions/XI.h>
 #include <X11/extensions/XIproto.h>
 #include "inputstr.h"
-#include "xf86Xinput.h"
+#include "xf86Xinput_priv.h"
 
 #include "mi.h"
 #include "mipointer.h"

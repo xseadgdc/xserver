@@ -39,6 +39,9 @@ typedef struct {
 void xf86OSInitVidMem(VidMemInfoPtr);
 
 #ifdef XSERVER_PLATFORM_BUS
+
+struct OdevAttributes;
+
 #include "hotplug.h"
 void
 xf86PlatformDeviceProbe(struct OdevAttributes *attribs);
