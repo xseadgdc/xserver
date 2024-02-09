@@ -87,7 +87,7 @@
 #include "dpmsproc.h"
 #endif
 
-#include "xf86platformBus.h"
+#include "xf86platformBus_priv.h"
 #include "systemd-logind.h"
 
 extern void (*xf86OSPMClose) (void);
