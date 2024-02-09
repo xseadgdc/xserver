@@ -18,6 +18,7 @@
 #include "xf86Bus.h"
 
 #include "hotplug.h"
+#include "xf86OSpriv.h"
 #include "systemd-logind.h"
 
 static Bool

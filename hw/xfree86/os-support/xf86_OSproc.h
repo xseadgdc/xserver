@@ -188,15 +188,6 @@ extern _X_EXPORT void xf86InitVidMem(void);
 
 #endif                          /* XF86_OS_PRIVS */
 
-#ifdef XSERVER_PLATFORM_BUS
-#include "hotplug.h"
-void
-xf86PlatformDeviceProbe(struct OdevAttributes *attribs);
-
-void
-xf86PlatformReprobeDevice(int index, struct OdevAttributes *attribs);
-#endif
-
 _XFUNCPROTOEND
 #endif                          /* NO_OSLIB_PROTOTYPES */
 #endif                          /* _XF86_OSPROC_H */
