@@ -15,7 +15,7 @@
 
 #include "xf86.h"
 #include "xf86_os_support.h"
-#include "xf86platformBus.h"
+#include "xf86platformBus_priv.h"
 #include "xf86Bus.h"
 
 #include "hotplug.h"

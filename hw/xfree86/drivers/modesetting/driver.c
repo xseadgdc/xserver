@@ -67,6 +67,7 @@
 #include <pciaccess.h>
 #endif
 #include "driver.h"
+#include "xf86platformBus_priv.h"
 
 static void AdjustFrame(ScrnInfoPtr pScrn, int x, int y);
 static Bool CloseScreen(ScreenPtr pScreen);
