@@ -40,21 +40,8 @@
 #define SBUS_DEVICE_GT		0x000c
 #define SBUS_DEVICE_MGX		0x000d
 
-typedef struct sbus_prom_node {
-    int node;
-    /* Because of misdesigned openpromio */
-    int cookie[2];
-} sbusPromNode, *sbusPromNodePtr;
-
-typedef struct sbus_device {
-    int devId;
-    int fbNum;
-    int fd;
-    int width, height;
-    sbusPromNode node;
-    const char *descr;
-    const char *device;
-} sbusDevice, *sbusDevicePtr;
+typedef struct sbus_prom_node *sbusPromNodePtr;
+typedef struct sbus_device *sbusDevicePtr;
 
 struct sbus_devtable {
     int devId;
@@ -103,9 +90,5 @@ extern _X_EXPORT void sparcPromAssignNodes(void);
 extern _X_EXPORT char *sparcPromNode2Pathname(sbusPromNodePtr pnode);
 extern _X_EXPORT int sparcPromPathname2Node(const char *pathName);
 extern _X_EXPORT char *sparcDriverName(void);
-
-extern Bool xf86SbusConfigure(void *busData, sbusDevicePtr sBus);
-extern void xf86SbusConfigureNewDev(void *busData, sbusDevicePtr sBus,
-                                    GDevRec * GDev);
 
 #endif                          /* _XF86_SBUSBUS_H */
