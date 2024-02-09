@@ -38,7 +38,7 @@
 
 #include "xf86cmap.h"
 #include "xf86Crtc.h"
-#include "xf86RandR12.h"
+#include "xf86RandR12_priv.h"
 
 typedef struct _xf86RandR12Info {
     int virtualX;
