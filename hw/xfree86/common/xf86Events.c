@@ -90,7 +90,7 @@
 #include "dpmsproc.h"
 #endif
 
-#include "xf86platformBus.h"
+#include "xf86platformBus_priv.h"
 
 #include "../os-support/linux/systemd-logind.h"
 
