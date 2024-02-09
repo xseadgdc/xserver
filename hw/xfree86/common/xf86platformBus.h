@@ -33,12 +33,6 @@ struct xf86_platform_device {
     int flags;
 };
 
-_X_EXPORT char *
-_xf86_get_platform_device_attrib(struct xf86_platform_device *device, int attrib, int (*fake)[0]);
-
-_X_EXPORT int
-_xf86_get_platform_device_int_attrib(struct xf86_platform_device *device, int attrib, int (*fake)[0]);
-
 extern _X_EXPORT Bool
 xf86PlatformDeviceCheckBusID(struct xf86_platform_device *device, const char *busid);
 
