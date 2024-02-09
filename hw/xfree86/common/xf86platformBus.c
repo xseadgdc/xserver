@@ -54,6 +54,7 @@
 #include "xf86platformBus_priv.h"
 #include "xf86Config.h"
 #include "xf86Crtc.h"
+#include "xf86OSpriv.h"
 
 #include "randrstr.h"
 int platformSlotClaimed;
