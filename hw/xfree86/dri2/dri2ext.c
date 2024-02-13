@@ -43,7 +43,7 @@
 #include "pixmapstr.h"
 #include "extnsionst.h"
 #include "xfixes.h"
-#include "dri2.h"
+#include "dri2_priv.h"
 #include "dri2int.h"
 #include "protocol-versions.h"
 
