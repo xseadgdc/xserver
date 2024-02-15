@@ -1,0 +1,364 @@
+List of maintainers
+===================
+
+Descriptions of section entries and preferred order
+---------------------------------------------------
+
+	M: *Mail* patches to: FullName <address@domain>
+	R: Designated *Reviewer*: FullName <address@domain>
+	   These reviewers should be CCed on patches.
+	L: *Mailing list* that is relevant to this area
+	S: *Status*, one of the following:
+	   Supported:	Someone is actually paid to look after this.
+	   Maintained:	Someone actually looks after it.
+	   Odd Fixes:	It has a maintainer but they don't have time to do
+			much other than throw the odd patch in. See below..
+	   Orphan:	No current maintainer [but maybe you could take the
+			role as you write your new code].
+	   Obsolete:	Old code. Something tagged obsolete generally means
+			it has been replaced by a better system and you
+			should be using that.
+	W: *Web-page* with status/info
+	Q: *Patchwork* web based patch tracking system site
+	B: URI for where to file *bugs*. A web-page with detailed bug
+	   filing info, a direct bug tracker link, or a mailto: URI.
+	C: URI for *chat* protocol, server and channel where developers
+	   usually hang out, for example irc://server/channel.
+	P: Subsystem Profile document for more details submitting
+	   patches to the given subsystem. This is either an in-tree file,
+	   or a URI. See Documentation/maintainer/maintainer-entry-profile.rst
+	   for details.
+	T: *SCM* tree type and location.
+	   Type is one of: git, hg, quilt, stgit, topgit
+	F: *Files* and directories wildcard patterns.
+	   A trailing slash includes all files and subdirectory files.
+	   F:	drivers/net/	all files in and below drivers/net
+	   F:	drivers/net/*	all files in drivers/net, but not below
+	   F:	*/net/*		all files in "any top level directory"/net
+	   One pattern per line.  Multiple F: lines acceptable.
+	X: *Excluded* files and directories that are NOT maintained, same
+	   rules as F:. Files exclusions are tested before file matches.
+	   Can be useful for excluding a specific subdirectory, for instance:
+	   F:	net/
+	   X:	net/ipv6/
+	   matches all files in and below net excluding net/ipv6/
+	N: Files and directories *Regex* patterns.
+	   N:	[^a-z]tegra	all files whose path contains tegra
+	                        (not including files like integrator)
+	   One pattern per line.  Multiple N: lines acceptable.
+	   scripts/get_maintainer.pl has different behavior for files that
+	   match F: pattern and matches of N: patterns.  By default,
+	   get_maintainer will not look at git log history when an F: pattern
+	   match occurs.  When an N: match occurs, git log history is used
+	   to also notify the people that have git commit signatures.
+	K: *Content regex* (perl extended) pattern match in a patch or file.
+	   For instance:
+	   K: of_get_profile
+	      matches patches or files that contain "of_get_profile"
+	   K: \b(printk|pr_(info|err))\b
+	      matches patches or files that contain one or more of the words
+	      printk, pr_info or pr_err
+	   One regex pattern per line.  Multiple K: lines acceptable.
+
+Maintainers List
+----------------
+
+.. note:: When reading this list, please look for the most precise areas
+          first. When adding to this list, please keep the entries in
+          alphabetical order.
+
+COMPOSITE EXTENSION
+M:	Keith Packard <keithp@keithp.com>
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	composite/*
+
+CONFIG SUBSYSTEM
+M:	Adam Jackson <ajax@nwnk.net>
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	config/*
+
+DAMAGE EXTENSION
+M:	Keith Packard <keithp@keithp.com>
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	damageext/*
+F:	miext/damage/*
+
+DEVICE INDEPENDENT X
+M:	Keith Packard <keithp@keithp.com>
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	dix/*
+
+DOCUMENTATION
+M:	?
+L:	xorg-devel@lists.x.org
+S:	Unmaintaind
+F:	dix/*
+F:	man/*
+
+DOUBLE BUFFER EXTENSION
+M:	?
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	dbe/*
+
+DRI3 SUBSYSTEM
+M:	Adam Jackson <ajax@nwnk.net>
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	dri3/*
+F:	hw/xfree86/dri*
+
+EXA SUBSYSTEM
+M:	?
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	exa/*
+
+FRAMEBUFFER SUBSYSTEM
+M:	?
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	fb/*
+
+GLAMOR SUBSYSTEM
+M:	?
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	glamor/*
+
+INPUT SUBSYSTEM
+M:	Daniel Stone <daniel@fooishbar.org>
+M:	Peter Hutterer <peter.hutterer@who-t.net>
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	Xi/*
+
+KDRIVE - XSERVER
+M:	Keith Packard <keithp@keithp.com>
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	hw/kdrive/*
+
+MISC X EXTENSIONS
+M:	?
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	Xext/*
+
+OS LAYER
+M:	?
+L:	xorg-devel@lists.x.org
+S:	Maintined
+F:	os/*
+
+PRESENT EXTENSION
+M:	Keith Packard <keithp@keithp.com>
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	present/*
+
+PSEUDORAMIX EXTENSION - MINIMAL XINERAMA FOR ROOTLESS
+M:	?
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	pseudoramiX/*
+
+QUARTZ XSERVER
+M:	?
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	hw/xquartz/*
+
+RANDR EXTENSION
+M:	Keith Packard <keithp@keithp.com>
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	randr/*
+
+RECORD EXTENSION
+M:	?
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	record/*
+
+RENDER EXTENSION
+M:	Keith Packard <keithp@keithp.com>
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	render/*
+
+ROOTLESS EXTENSION
+M:	?
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	miext/rootless/*
+
+SHADOW EXTENSION
+M:	?
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	miext/shadow/*
+
+SYNC EXTENSION
+M:	?
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	miext/sync/*
+
+TESTS
+M:	?
+L:	xorg-devel@lists.x.org
+S:	Unmaintained
+F:	test/*
+
+XACE subsystem (security policy extensions framework)
+M:	Eamon Walsh <ewalsh@tycho.nsa.gov>
+L:	xorg-devel@lists.x.org
+W:	http://people.freedesktop.org/~ewalsh/xace_proposal.html
+S:	Maintained
+
+XFIXES EXTENSION
+M:	Keith Packard <keithp@keithp.com>
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	xfixes
+
+XFREE86 / XORG - XSERVER
+M:	?
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	hw/xfree86/*
+
+XFREE86 LOADER SUBSYSTEM
+M:	Adam Jackson <ajax@nwnk.net>
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	hw/xfree86/loader/*
+
+XKB - KEYBOARD HANDLING
+M:	Daniel Stone <daniel@fooishbar.org>
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	xkb
+
+XNEST - NESTING XSERVER
+M:	?
+L:	xorg-devel@lists.x.org
+S:	Unmaintained
+F:	hw/xnest/*
+
+XVFB - VIRTUAL FRAMEBUFFER XSERVER
+M:	?
+L:	xorg-devel@lists.x.org
+S:	Unmaintained
+F:	hw/vfb/*
+
+XWAYLAND - WAYLAND BASED XSERVER
+M:	Olivier Fourdan <ofourdan@redhat.com>
+L:	xorg-devel@lists.x.org
+L:	wayland-devel@lists.freedesktop.org
+W:	https://wayland.freedesktop.org/xserver.html
+S:	Maintained
+F:	hw/xwayland/*
+
+XWIN - MS-WINDOWS XSERVER
+M:	?
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	hw/xwin/*
+
+THE REST
+M:	?
+S:	Buried alive in reporters
+T:	git https://gitlab.freedesktop.org/xorg/xserver.git
+C:	irc://irc.oftc.net/xorg-devel
+W:	https://wiki.x.org
+F:	*
+F:	*/
+
+X.Org OS ports
+--------------
+FreeBSD
+M:	?
+L:	xorg-devel@lists.x.org
+S:	Unmaintained
+
+Linux/i386
+M:	Egbert Eich <eich@freedesktop.org>
+L:	xorg-devel@lists.x.org
+S:	Maintained
+
+Linux/x86_64
+M:	Egbert Eich <eich@freedesktop.org>
+L:	xorg-devel@lists.x.org
+S:	Maintained
+
+Linux/ia64
+M:	Jesse Barnes <jbarnes@virtuousgeek.org>
+L:	xorg-devel@lists.x.org
+S:	Maintained
+
+Linux/ppc
+M:	Benjamin Herrenschmidt <benh@kernel.crashing.org>
+L:	xorg-devel@lists.x.org
+S:	Maintained
+
+Linux/sparc
+M:	?
+L:	xorg-devel@lists.x.org
+S:	Unmaintained
+
+Mac OS X (Xquartz)
+M:	Jeremy Huddleston Sequoia <jeremyhu@apple.com>
+L:	xquartz-dev@lists.macosforge.org
+W:	https://www.xquartz.org/
+L:	xorg-devel@lists.x.org
+S:	Maintained
+
+NetBSD
+M:	?
+L:	xorg-devel@lists.x.org
+S:	Unmaintained
+
+OpenBSD
+M:	Matthieu Herrb <matthieu.herrb@laas.fr>
+L:	xorg-devel@lists.x.org
+S:	Maintained
+
+SCO (OpenServer 5)
+M:	Kean Johnston <jkj@freedesktop.org>
+L:	xorg-devel@lists.x.org
+S:	Unmaintained
+
+Solaris (x86 & sparc) & illumos
+M:	Alan Coopersmith <alan.coopersmith@oracle.com>
+M:	Niveditha Rau <niveditha.rau@oracle.com>
+L:	xorg-devel@lists.x.org
+W:	https://github.com/oracle/solaris-userland/tree/master/components/x11
+S:	Maintained
+
+USL (UnixWare 7.1.x, OpenServer 6)
+M:	Kean Johnston <jkj@freedesktop.org>
+L:	xorg-devel@lists.x.org
+S:	Unmaintained
+
+Cygwin
+M:	Jon TURNEY <jon.turney@dronecode.org.uk>
+M:	Yaakov Selkowitz <yselkowitz@users.sourceforge.net>
+L:	cygwin-xfree@cygwin.com
+W:	https://x.cygwin.com/
+S:	Maintained
+
+MinGW
+M:	Colin Harrison <colin.harrison@virgin.net>
+W:	http://www.straightrunning.com/XmingNotes/
+S:	Maintained
+
+GNU/Hurd
+M:	Samuel Thibault <samuel.thibault@ens-lyon.org>
+L:	bug-hurd@gnu.org
+S:	Maintained
