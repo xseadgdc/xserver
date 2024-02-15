@@ -246,9 +246,9 @@ S:	Maintained
 F:	xkb
 
 XNEST - NESTING XSERVER
-M:	?
+M:	Enrico Weigelt <info@metux.net>
 L:	xorg-devel@lists.x.org
-S:	Unmaintained
+S:	Maintained
 F:	hw/xnest/*
 
 XVFB - VIRTUAL FRAMEBUFFER XSERVER
