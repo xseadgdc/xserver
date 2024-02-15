@@ -44,6 +44,7 @@ executable(
         libxserver_xi_stubs,
         libxserver_xkb_stubs,
     ],
+    c_args: [ '-DDISABLE_EXT_COMPOSITE', '-DDISABLE_EXT_DPMS', '-DISABLE_EXT_MITSHM' ],
     install: true,
 )
 
