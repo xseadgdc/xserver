@@ -78,9 +78,12 @@ SOFTWARE.
 #include "xf86Extensions.h"
 #endif
 
-#ifdef HAVE_XNEST_CONFIG_H
-#include <xnest-config.h>
+/* some DDXes must explicitly prohibit some extensions */
+#ifdef DISABLE_EXT_COMPOSITE
 #undef COMPOSITE
+#endif
+
+#ifdef DISABLE_EXT_DPMS
 #undef DPMSExtension
 #endif
 
