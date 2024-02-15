@@ -168,8 +168,10 @@ S:	Maintained
 F:	pseudoramiX/*
 
 QUARTZ XSERVER
-M:	?
+M:	Jeremy Huddleston Sequoia <jeremyhu@apple.com>
 L:	xorg-devel@lists.x.org
+L:	xquartz-dev@lists.macosforge.org
+W:	https://www.xquartz.org/
 S:	Maintained
 F:	hw/xquartz/*
 
@@ -192,7 +194,7 @@ S:	Maintained
 F:	render/*
 
 ROOTLESS EXTENSION
-M:	?
+M:	Jeremy Huddleston Sequoia <jeremyhu@apple.com>
 L:	xorg-devel@lists.x.org
 S:	Maintained
 F:	miext/rootless/*
