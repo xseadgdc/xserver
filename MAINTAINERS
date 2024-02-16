@@ -86,13 +86,13 @@ F:	hw/xfree86/dri*
 F:	dri3
 
 EXA subsystem
-M:	?
+# M:	?
 L:	xorg-devel@lists.x.org
 S:	Maintained
 F:	exa
 
 Glamor subsystem
-M:	?
+# M:	?
 L:	xorg-devel@lists.x.org
 S:	Maintained
 F:	glamor
@@ -168,7 +168,7 @@ S:	Maintained
 F:	hw/xquartz
 
 Xorg server
-M:	?
+# M:	?
 L:	xorg-devel@lists.x.org
 S:	Maintained, for now
 F:	hw/xfree86
@@ -182,7 +182,7 @@ S:	Maintained
 F:	hw/xwayland
 
 Xvfb server
-M:	?
+# M:	?
 L:	xorg-devel@lists.x.org
 S:	Unmaintained
 F:	hw/vfb
@@ -197,7 +197,7 @@ X.Org OS ports
 --------------
 
 FreeBSD
-M:	?
+# M:	?
 L:	xorg-devel@lists.x.org
 S:	Unmaintained
 
@@ -222,7 +222,7 @@ L:	xorg-devel@lists.x.org
 S:	Maintained
 
 Linux/sparc
-M:	?
+# M:	?
 L:	xorg-devel@lists.x.org
 S:	Unmaintained
 
@@ -234,7 +234,7 @@ L:	xorg-devel@lists.x.org
 S:	Maintained
 
 NetBSD
-M:	?
+# M:	?
 L:	xorg-devel@lists.x.org
 S:	Unmaintained
 
