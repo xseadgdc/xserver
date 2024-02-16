@@ -32,7 +32,6 @@ is" without express or implied warranty.
 #include "servermd.h"
 #include "mi.h"
 #include "dixfontstr.h"
-#include "Xnest.h"
 
 #include "Display.h"
 #include "Screen.h"
