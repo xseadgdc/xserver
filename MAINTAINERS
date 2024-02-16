@@ -91,6 +91,12 @@ L:	xorg-devel@lists.x.org
 S:	Maintained
 F:	exa
 
+Framebuffer subsystem
+# M:	?
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	fb
+
 Glamor subsystem
 # M:	?
 L:	xorg-devel@lists.x.org
