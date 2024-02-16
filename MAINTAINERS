@@ -162,6 +162,7 @@ F:	hw/xfree86
 Xwayland server
 M:	Olivier Fourdan <ofourdan@redhat.com>
 L:	wayland-devel@lists.freedesktop.org
+L:	xorg-devel@lists.x.org
 W:	https://wayland.freedesktop.org/xserver.html
 S:	Maintained
 F:	hw/xwayland
