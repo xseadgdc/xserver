@@ -70,6 +70,7 @@ M:	Keith Packard <keithp@keithp.com>
 L:	xorg-devel@lists.x.org
 S:	Maintained
 F:	damageext
+F:	miext/damage
 
 Device Independent X (DIX)
 M:	Keith Packard <keithp@keithp.com>
