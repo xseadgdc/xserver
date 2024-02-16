@@ -29,8 +29,6 @@ is" without express or implied warranty.
 #include "inputstr.h"
 #include "inpututils.h"
 
-#include "Xnest.h"
-
 #include "Args.h"
 #include "Color.h"
 #include "Display.h"

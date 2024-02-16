@@ -27,8 +27,6 @@ is" without express or implied warranty.
 #include "servermd.h"
 #include "extinit.h"
 
-#include "Xnest.h"
-
 #include "Display.h"
 #include "Args.h"
 
