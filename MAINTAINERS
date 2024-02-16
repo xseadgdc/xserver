@@ -78,6 +78,13 @@ L:	xorg-devel@lists.x.org
 S:	Maintained
 F:	dix
 
+Documentation
+# M:	?
+L:	xorg-devel@lists.x.org
+S:	Unmaintaind
+F:	doc
+F:	man
+
 Double buffer extension
 # M:	?
 L:	xorg-devel@lists.x.org
