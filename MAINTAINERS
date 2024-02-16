@@ -187,6 +187,12 @@ W:	https://wayland.freedesktop.org/xserver.html
 S:	Maintained
 F:	hw/xwayland
 
+Xwin server
+# M:	?
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	hw/xwin
+
 Xvfb server
 # M:	?
 L:	xorg-devel@lists.x.org
