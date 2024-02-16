@@ -127,6 +127,12 @@ L:	xorg-devel@lists.x.org
 S:	Maintained
 F:	render
 
+Rootless subsystem
+M:	Jeremy Huddleston Sequoia <jeremyhu@apple.com>
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	miext/rootless
+
 XACE subsystem (security policy extensions framework)
 M:	Eamon Walsh <ewalsh@tycho.nsa.gov>
 L:	xorg-devel@lists.x.org
@@ -152,6 +158,14 @@ M:	Peter Hutterer <peter.hutterer@who-t.net>
 L:	xorg-devel@lists.x.org
 S:	Maintained
 F:	Xi
+
+Xquartz server
+M:	Jeremy Huddleston Sequoia <jeremyhu@apple.com>
+L:	xorg-devel@lists.x.org
+L:	xquartz-dev@lists.macosforge.org
+W:	https://www.xquartz.org/
+S:	Maintained
+F:	hw/xquartz
 
 Xorg server
 M:	?
