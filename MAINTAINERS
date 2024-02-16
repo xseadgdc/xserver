@@ -127,6 +127,12 @@ L:	xorg-devel@lists.x.org
 S:	Maintained
 F:	present
 
+Pseudoramix (rootless Xinerama) subsystem
+# M:	?
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	pseudoramiX
+
 Randr extension
 M:	Keith Packard <keithp@keithp.com>
 L:	xorg-devel@lists.x.org
