@@ -121,6 +121,12 @@ L:	xorg-devel@lists.x.org
 S:	Maintained
 F:	hw/xfree86/loader
 
+Present extension
+M:	Keith Packard <keithp@keithp.com>
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	present
+
 Randr extension
 M:	Keith Packard <keithp@keithp.com>
 L:	xorg-devel@lists.x.org
