@@ -518,9 +518,9 @@ S:	Unmaintained
 F:	hw/vfb
 
 Xnest server
-M:	?
+M:	Enrico Weigelt <info@metux.net>
 L:	xorg-devel@lists.x.org
-S:	Unmaintained
+S:	Maintained
 F:	hw/xnest
 
 Xdmx server & DMX subsystem/tools
