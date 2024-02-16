@@ -63,6 +63,7 @@ Configuration subsystem
 M:	Adam Jackson <ajax@nwnk.net>
 L:	xorg-devel@lists.x.org
 S:	Maintained
+F:	config
 
 Damage extension
 M:	Keith Packard <keithp@keithp.com>
