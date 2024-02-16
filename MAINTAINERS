@@ -187,6 +187,12 @@ L:	xorg-devel@lists.x.org
 S:	Maintained
 F:	miext/sync
 
+Tests
+# M:	?
+L:	xorg-devel@lists.x.org
+S:	Unmaintained
+F:	test
+
 XACE subsystem (security policy extensions framework)
 M:	Eamon Walsh <ewalsh@tycho.nsa.gov>
 L:	xorg-devel@lists.x.org
