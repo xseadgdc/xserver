@@ -151,6 +151,12 @@ L:	xorg-devel@lists.x.org
 S:	Maintained
 F:	miext/shadow
 
+Sync extension
+# M:	?
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	miext/sync
+
 XACE subsystem (security policy extensions framework)
 M:	Eamon Walsh <ewalsh@tycho.nsa.gov>
 L:	xorg-devel@lists.x.org
