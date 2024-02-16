@@ -125,11 +125,6 @@ L:	xorg-devel@lists.x.org
 S:	Maintained
 F:	render
 
-XAA subsystem
-M:	Adam Jackson <ajax@nwnk.net>
-L:	xorg-devel@lists.x.org
-S:	Removed in xorg-server 1.13 and later
-
 XACE subsystem (security policy extensions framework)
 M:	Eamon Walsh <ewalsh@tycho.nsa.gov>
 L:	xorg-devel@lists.x.org
@@ -181,17 +176,6 @@ L:	xorg-devel@lists.x.org
 S:	Maintained
 F:	hw/xnest
 
-Xdmx server & DMX subsystem/tools
-S:	Removed from xorg-server 21 & later releases
-F:	hw/dmx
-
-Xprint
-M:	Drew Parsons
-M:	Felix Schulte
-L:	xorg-devel@lists.x.org
-T:	https://gitlab.freedesktop.org/xorg/xserver-xprint
-S:	Obsolete - use other printing APIs instead
-
 X.Org OS ports
 --------------
 
@@ -225,9 +209,6 @@ M:	?
 L:	xorg-devel@lists.x.org
 S:	Unmaintained
 
-LynxOS
-S:	Obsolete / Removed
-
 Mac OS X (Xquartz)
 M:	Jeremy Huddleston Sequoia <jeremyhu@apple.com>
 L:	xquartz-dev@lists.macosforge.org
@@ -249,11 +230,6 @@ SCO (OpenServer 5)
 M:	Kean Johnston <jkj@freedesktop.org>
 L:	xorg-devel@lists.x.org
 S:	Unmaintained
-
-System V (other than Solaris & SCO)
-M:	?
-L:	xorg-devel@lists.x.org
-S:	Unmaintained (libraries/apps) ; Obsolete/Removed (Xorg server)
 
 Solaris (x86 & sparc) & illumos
 M:	Alan Coopersmith <alan.coopersmith@oracle.com>
