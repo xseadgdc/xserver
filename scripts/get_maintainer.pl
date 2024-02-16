@@ -335,7 +335,7 @@ if ($email &&
 
 if ($tree && !top_of_kernel_tree($lk_path)) {
     die "$P: The current directory does not appear to be "
-	. "a linux kernel source tree.\n";
+	. "a xserver source tree.\n";
 }
 
 ## Read MAINTAINERS for type/value pairs
@@ -1112,7 +1112,7 @@ Notes:
           --git-min-signatures, --git-max-maintainers, --git-min-percent, and
           --git-blame
       Use --hg-since not --git-since to control date selection
-  File ".get_maintainer.conf", if it exists in the linux kernel source root
+  File ".get_maintainer.conf", if it exists in the xserver source root
       directory, can change whatever get_maintainer defaults are desired.
       Entries in this file can be any command line argument.
       This file is prepended to any additional command line arguments.
@@ -1130,21 +1130,18 @@ sub top_of_kernel_tree {
 	$lk_path .= "/";
     }
     if (   (-f "${lk_path}COPYING")
-	&& (-f "${lk_path}CREDITS")
-	&& (-f "${lk_path}Kbuild")
-	&& (-e "${lk_path}MAINTAINERS")
-	&& (-f "${lk_path}Makefile")
-	&& (-f "${lk_path}README")
-	&& (-d "${lk_path}Documentation")
-	&& (-d "${lk_path}arch")
-	&& (-d "${lk_path}include")
-	&& (-d "${lk_path}drivers")
-	&& (-d "${lk_path}fs")
-	&& (-d "${lk_path}init")
-	&& (-d "${lk_path}ipc")
-	&& (-d "${lk_path}kernel")
-	&& (-d "${lk_path}lib")
-	&& (-d "${lk_path}scripts")) {
+	&& (-f "${lk_path}MAINTAINERS")
+	&& (-f "${lk_path}meson.build")
+	&& (-f "${lk_path}README.md")
+	&& (-d "${lk_path}dix")
+	&& (-d "${lk_path}exa")
+	&& (-d "${lk_path}glamor")
+	&& (-d "${lk_path}hw")
+	&& (-d "${lk_path}os")
+	&& (-d "${lk_path}present")
+	&& (-d "${lk_path}pseudoramiX")
+	&& (-d "${lk_path}randr")
+	&& (-d "${lk_path}record")) {
 	return 1;
     }
     return 0;
