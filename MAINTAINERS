@@ -78,6 +78,12 @@ L:	xorg-devel@lists.x.org
 S:	Maintained
 F:	dix
 
+Double buffer extension
+# M:	?
+L:	xorg-devel@lists.x.org
+S:	Maintained
+F:	dbe
+
 DRI subsystem
 M:	Adam Jackson <ajax@nwnk.net>
 L:	xorg-devel@lists.x.org
