@@ -26,4 +26,44 @@ typedef int (*AuthRemCFunc) (AuthRemCArgs);
 #define AuthRstCArgs void
 typedef int (*AuthRstCFunc) (AuthRstCArgs);
 
+void CheckUserAuthorization(void);
+
+void InitAuthorization(const char *filename);
+
+int AuthorizationFromID(XID id,
+                        unsigned short *name_lenp,
+                        const char **namep,
+                        unsigned short *data_lenp, char **datap);
+
+XID CheckAuthorization(unsigned int namelength,
+                       const char *name,
+                       unsigned int datalength,
+                       const char *data,
+                       ClientPtr client,
+                       const char **reason);
+
+void ResetAuthorization(void);
+
+int RemoveAuthorization(unsigned short name_length,
+                        const char *name,
+                        unsigned short data_length, const char *data);
+
+int AddAuthorization(unsigned int name_length,
+                     const char *name,
+                     unsigned int data_length,
+                     char *data);
+
+XID GenerateAuthorization(unsigned int name_length,
+                          const char *name,
+                          unsigned int data_length,
+                          const char *data,
+                          unsigned int *data_length_return,
+                          char **data_return);
+
+void RegisterAuthorizations(void);
+
+int ChangeAccessControl(ClientPtr client, int fEnabled);
+
+int GetAccessControl(void);
+
 #endif /* _XSERVER_OS_AUTH_H */

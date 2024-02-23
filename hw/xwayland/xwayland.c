@@ -35,6 +35,7 @@
 #include <X11/Xatom.h>
 
 #include "dix/screenint_priv.h"
+#include "os/auth.h"
 
 #include <selection.h>
 #include <micmap.h>

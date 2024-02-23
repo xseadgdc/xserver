@@ -55,6 +55,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#include "os/auth.h"
+
 #include "client.h"
 #include "os.h"
 #include "dixstruct.h"

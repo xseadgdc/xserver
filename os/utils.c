@@ -103,6 +103,8 @@ __stdcall unsigned long GetTickCount(void);
 #endif
 #endif
 
+#include "os/auth.h"
+
 #include "dixstruct.h"
 #include "dix_priv.h"
 #include "xkbsrv.h"
