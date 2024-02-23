@@ -125,6 +125,7 @@ Equipment Corporation.
 #include "dix/eventconvert.h"
 #include "dix/exevents_priv.h"
 #include "xkb/xkbsrv_priv.h"
+#include "os/osdep.h"
 
 #include "misc.h"
 #include "resource.h"

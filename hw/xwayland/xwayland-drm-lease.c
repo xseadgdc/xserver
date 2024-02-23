@@ -31,6 +31,8 @@
 #include <xf86drmMode.h>
 #endif
 
+#include "os/osdep.h"
+
 #include "randrstr_priv.h"
 #include "xwayland-drm-lease.h"
 #include "xwayland-screen.h"

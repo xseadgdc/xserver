@@ -24,6 +24,7 @@
 #include <unistd.h>
 
 #include "dix/dix_priv.h"
+#include "os/osdep.h"
 
 #include "dri3_priv.h"
 #include <syncsrv.h>
