@@ -33,6 +33,7 @@
 #include <drm_fourcc.h>
 #include "randrstr_priv.h"
 #include "dixstruct_priv.h"
+#include "osdep.h"
 
 static Bool
 dri3_screen_can_one_point_four(ScreenPtr screen)

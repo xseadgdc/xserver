@@ -22,6 +22,7 @@
 #include <dix-config.h>
 
 #include <unistd.h>
+#include "osdep.h"
 
 #include "dix/dix_priv.h"
 #include "randr/randrstr_priv.h"

@@ -46,6 +46,7 @@
 #include "dri2int.h"
 #include "damage.h"
 #include "xf86.h"
+#include "osdep.h"
 
 CARD8 dri2_major;               /* version of DRI2 supported by DDX */
 CARD8 dri2_minor;

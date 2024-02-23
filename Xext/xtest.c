@@ -58,6 +58,7 @@
 #include "xserver-properties.h"
 #include "eventstr.h"
 #include "inpututils.h"
+#include "osdep.h"
 
 Bool noTestExtensions = FALSE;
 

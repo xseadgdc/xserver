@@ -43,6 +43,7 @@
 #include "indirect_table.h"
 #include "indirect_util.h"
 #include "glxvndabi.h"
+#include "osdep.h"
 
 /*
 ** X resources.

@@ -153,6 +153,7 @@ Equipment Corporation.
 #include "eventstr.h"
 #include "enterleave.h"
 #include "mi.h"
+#include "osdep.h"
 
 #define _XkbWantsDetectableAutoRepeat(c) \
         ((c)->xkbClientFlags&XkbPCF_DetectableAutoRepeatMask)

@@ -30,6 +30,7 @@
 #include "damagestr.h"
 #include "protocol-versions.h"
 #include "dixstruct_priv.h"
+#include "osdep.h"
 
 #ifdef XINERAMA
 #include "panoramiX.h"

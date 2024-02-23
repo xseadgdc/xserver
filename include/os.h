@@ -84,34 +84,8 @@ typedef struct _NewClientRec *NewClientPtr;
 #include <stdio.h>
 #include <stdarg.h>
 
-extern _X_EXPORT int ReadRequestFromClient(ClientPtr /*client */ );
-
-extern _X_EXPORT int WriteFdToClient(ClientPtr client, int fd, Bool do_close);
-
-extern _X_EXPORT Bool InsertFakeRequest(ClientPtr /*client */ ,
-                                        char * /*data */ ,
-                                        int /*count */ );
-
-extern _X_EXPORT void ResetCurrentRequest(ClientPtr /*client */ );
-
-extern _X_EXPORT void FlushAllOutput(void);
-
-extern _X_EXPORT void FlushIfCriticalOutputPending(void);
-
-extern _X_EXPORT void SetCriticalOutputPending(void);
-
 extern _X_EXPORT int WriteToClient(ClientPtr /*who */ , int /*count */ ,
                                    const void * /*buf */ );
-
-extern _X_EXPORT void ResetOsBuffers(void);
-
-extern _X_EXPORT void NotifyParentProcess(void);
-
-extern _X_EXPORT void CreateWellKnownSockets(void);
-
-extern _X_EXPORT void ResetWellKnownSockets(void);
-
-extern _X_EXPORT void CloseWellKnownConnections(void);
 
 extern _X_EXPORT XID AuthorizationIDOfClient(ClientPtr /*client */ );
 
@@ -138,10 +112,6 @@ static inline void RemoveNotifyFd(int fd)
 extern _X_EXPORT void IgnoreClient(ClientPtr /*client */ );
 
 extern _X_EXPORT void AttendClient(ClientPtr /*client */ );
-
-extern _X_EXPORT void ListenOnOpenFD(int /* fd */ , int /* noxauth */ );
-
-extern _X_EXPORT Bool AddClientOnOpenFD(int /* fd */ );
 
 extern _X_EXPORT CARD32 GetTimeInMillis(void);
 extern _X_EXPORT CARD64 GetTimeInMicros(void);
@@ -246,12 +216,6 @@ OsRegisterSigWrapper(OsSigWrapperPtr newWrap);
 
 extern _X_EXPORT Bool
 PrivsElevated(void);
-
-extern _X_EXPORT int
-GetClientFd(ClientPtr);
-
-extern _X_EXPORT Bool
-ClientIsLocal(ClientPtr client);
 
 /* stuff for ReplyCallback */
 extern _X_EXPORT CallbackListPtr ReplyCallback;

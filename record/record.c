@@ -49,6 +49,7 @@ and Jim Haggerty of Metheus.
 #include "swaprep.h"
 #include "inputstr.h"
 #include "scrnintstr.h"
+#include "osdep.h"
 
 #ifdef XINERAMA
 #include "globals.h"

@@ -36,6 +36,8 @@
 #include "xwayland-screen.h"
 #include "xwayland-output.h"
 
+#include "osdep.h"
+
 static void
 xwl_randr_lease_cleanup_outputs(RRLeasePtr rrLease)
 {

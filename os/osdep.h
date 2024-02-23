@@ -223,4 +223,30 @@ extern Bool AllowByteSwappedClients;
 
 int Ones(unsigned long mask);
 
+Bool WaitForSomething(Bool clients_are_ready);
+int ReadRequestFromClient(ClientPtr client);
+int ReadFdFromClient(ClientPtr client);
+int WriteFdToClient(ClientPtr client, int fd, Bool do_close);
+Bool InsertFakeRequest(ClientPtr client, char *data, int count);
+void FlushAllOutput(void);
+void FlushIfCriticalOutputPending(void);
+void SetCriticalOutputPending(void);
+void ResetOsBuffers(void);
+void NotifyParentProcess(void);
+void CreateWellKnownSockets(void);
+void ResetWellKnownSockets(void);
+void CloseWellKnownConnections(void);
+void CloseDownConnection(ClientPtr client);
+
+int OnlyListenToOneClient(ClientPtr client);
+void MakeClientGrabImpervious(ClientPtr client);
+void MakeClientGrabPervious(ClientPtr client);
+void ListenOnOpenFD(int fd, int noxauth);
+Bool AddClientOnOpenFD(int fd);
+int GetClientFd(ClientPtr);
+Bool ClientIsLocal(ClientPtr client);
+
+/* not used by external modules, but internal ones, thus need to be dl visible */
+extern _X_EXPORT void ResetCurrentRequest(ClientPtr client);
+
 #endif                          /* _OSDEP_H_ */
