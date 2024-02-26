@@ -35,6 +35,7 @@
 #endif
 
 #include <X11/Xatom.h>
+#include <X11/Xfuncproto.h>
 
 #include "miext/extinit_priv.h"
 #include "os/osdep.h"

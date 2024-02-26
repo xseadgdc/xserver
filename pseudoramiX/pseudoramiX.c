@@ -37,6 +37,10 @@
 #include <dix-config.h>
 #endif
 
+#include <X11/Xfuncproto.h>
+#include <X11/Xmd.h>
+#include <X11/extensions/panoramiXproto.h>
+
 #include "miext/extinit_priv.h"
 
 #include "pseudoramiX.h"
@@ -44,7 +48,6 @@
 #include "nonsdk_extinit.h"
 #include "dixstruct.h"
 #include "window.h"
-#include <X11/extensions/panoramiXproto.h>
 #include "globals.h"
 
 #define TRACE PseudoramiXTrace("TRACE " __FILE__ ":%s",__FUNCTION__)
