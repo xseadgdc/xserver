@@ -39,6 +39,11 @@ and Jim Haggerty of Metheus.
 #include <X11/Xmd.h>
 #include <X11/extensions/recordproto.h>
 
+#include <stdio.h>
+#include <assert.h>
+#include <X11/Xmd.h>
+#include <X11/extensions/recordproto.h>
+
 #include "dix/cursor_priv.h"
 #include "dix/eventconvert.h"
 #include "miext/extinit_priv.h"
