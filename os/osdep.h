@@ -57,6 +57,7 @@ SOFTWARE.
 
 #include <limits.h>
 #include <stddef.h>
+#include <X11/Xdefs.h>
 #include <X11/Xos.h>
 
 /* If EAGAIN and EWOULDBLOCK are distinct errno values, then we check errno
@@ -143,5 +144,7 @@ static inline void uname(struct utsname *uts) {
     gethostname(uts->nodename, sizeof(uts->nodename));
 }
 #endif /* WIN32 */
+
+Bool PrivsElevated(void);
 
 #endif                          /* _OSDEP_H_ */
