@@ -68,12 +68,12 @@
 #include "mipointer.h"
 #include "extinit.h"
 #include "loaderProcs.h"
-#include "systemd-logind.h"
 #include "exevents.h"           /* AddInputDevice */
 #include "exglobals.h"
 #include "eventstr.h"
 #include "inpututils.h"
 #include "optionstr.h"
+#include "../os-support/linux/systemd-logind.h"
 
 #ifdef HAVE_FNMATCH_H
 #include <fnmatch.h>

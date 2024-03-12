@@ -60,7 +60,7 @@
 #include "windowstr.h"
 #include "scrnintstr.h"
 #include "mi.h"
-#include "systemd-logind.h"
+#include "../os-support/linux/systemd-logind.h"
 #include "loaderProcs.h"
 
 #include "xf86.h"

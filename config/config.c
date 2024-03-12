@@ -32,7 +32,7 @@
 #include "inputstr.h"
 #include "hotplug.h"
 #include "config-backends.h"
-#include "systemd-logind.h"
+#include "../hw/xfree86/os-support/linux/systemd-logind.h"
 
 void
 config_pre_init(void)
