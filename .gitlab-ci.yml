@@ -4,7 +4,7 @@
 # Please see the ci-templates documentation for details:
 # https://freedesktop.pages.freedesktop.org/ci-templates/
 
-.templates_sha: &template_sha c5626190ec14b475271288dda7a7dae8dbe0cd76 # see https://docs.gitlab.com/ee/ci/yaml/#includefile
+.templates_sha: &template_sha 76567c66577477e67d293ec56d32e46ea1e48c85 # see https://docs.gitlab.com/ee/ci/yaml/#includefile
 
 # FDO_DISTRIBUTION_TAG is the tag of the docker image used for the build jobs.
 # If the image doesn't exist yet, the docker-image stage generates it.
