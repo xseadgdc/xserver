@@ -4,7 +4,7 @@
 # Please see the ci-templates documentation for details:
 # https://freedesktop.pages.freedesktop.org/ci-templates/
 
-.templates_sha: &template_sha c5626190ec14b475271288dda7a7dae8dbe0cd76 # see https://docs.gitlab.com/ee/ci/yaml/#includefile
+.templates_sha: &template_sha wip/bsd # see https://docs.gitlab.com/ee/ci/yaml/#includefile
 
 # FDO_DISTRIBUTION_TAG is the tag of the docker image used for the build jobs.
 # If the image doesn't exist yet, the docker-image stage generates it.
@@ -27,13 +27,13 @@ variables:
     XORG_FREEBSD_TAG:     '2024-04-25.0'
 
 include:
-  - project: 'freedesktop/ci-templates'
+  - project: 'metux/ci-templates'
     ref: *template_sha
     file: '/templates/debian.yml'
-  - project: 'freedesktop/ci-templates'
+  - project: 'metux/ci-templates'
     ref:     *template_sha
     file:    '/templates/freebsd.yml'
-  - project: 'freedesktop/ci-templates'
+  - project: 'metux/ci-templates'
     ref: *template_sha
     file: '/templates/ci-fairy.yml'
   - template: Security/SAST.gitlab-ci.yml
