@@ -19,12 +19,15 @@ variables:
     FDO_UPSTREAM_REPO:    xorg/xserver
     MESON_BUILDDIR:       "build"
     REPO_URL_XORGPROTO:   'https://gitlab.freedesktop.org/xorg/proto/xorgproto.git'
+    REPO_URL_LIBDRM:      'https://gitlab.freedesktop.org/mesa/drm.git'
     XORG_DEBIAN_VERSION:  'bullseye-slim'
     XORG_DEBIAN_EXEC:     'env FDO_CI_CONCURRENT=${FDO_CI_CONCURRENT} bash .gitlab-ci/debian-install.sh'
     XORG_DEBIAN_TAG:      '2024-03-26-explicit-sync-2'
     XORG_FREEBSD_VERSION: '14.0'
     XORG_FREEBSD_EXEC:    ''
     XORG_FREEBSD_TAG:     '2024-04-25.0'
+    XORG_NETBSD_VERSION:  '10.0'
+    XORG_NETBSD_TAG:      '2024-04-17.27'
 
 include:
   - project: 'metux/ci-templates'
@@ -33,6 +36,9 @@ include:
   - project: 'metux/ci-templates'
     ref:     *template_sha
     file:    '/templates/freebsd.yml'
+  - project: 'metux/ci-templates'
+    ref:     *template_sha
+    file:    '/templates/netbsd.yml'
   - project: 'metux/ci-templates'
     ref: *template_sha
     file: '/templates/ci-fairy.yml'
@@ -123,6 +129,17 @@ freebsd-image:
         FDO_DISTRIBUTION_EXEC:      ''
         FDO_DISTRIBUTION_PACKAGES:  'git gcc pkgconf autoconf automake libtool xorg-macros xorgproto bash meson ninja pixman xtrans libXau libXdmcp libXfont2 libxkbfile libxcvt libpciaccess font-util'
 
+netbsd-image:
+    extends:
+        - .fdo.qemu-build@netbsd@x86_64
+    stage: docker-image
+    variables:
+        GIT_STRATEGY:               none
+        FDO_DISTRIBUTION_TAG:       "$XORG_NETBSD_TAG"
+        FDO_DISTRIBUTION_VERSION:   "$XORG_NETBSD_VERSION"
+        FDO_DISTRIBUTION_EXEC:      ''
+        FDO_DISTRIBUTION_PACKAGES:  'git pkgconf autoconf automake xorg-util-macros'
+
 .xorg-image@debian:
     extends:
         - .fdo.distribution-image@debian
@@ -140,6 +157,16 @@ freebsd-image:
         FDO_DISTRIBUTION_VERSION: "$XORG_FREEBSD_VERSION"
         FDO_DISTRIBUTION_EXEC:    "$XORG_FREEBSD_EXEC"
         FDO_DISTRIBUTION_TAG:     "$XORG_FREEBSD_TAG"
+
+.xorg-image@netbsd:
+    extends:
+        - .fdo.distribution-image@netbsd
+    variables:
+        GIT_DEPTH:                1
+        PKG_CONFIG_PATH:          /usr/X11R7/share/pkgconfig:/usr/X11R7/lib/pkgconfig:/usr/lib/pkgconfig:/usr/pkg/lib/pkgconfig
+        FDO_DISTRIBUTION_VERSION: "$XORG_NETBSD_VERSION"
+        FDO_DISTRIBUTION_EXEC:    "$XORG_NETBSD_EXEC"
+        FDO_DISTRIBUTION_TAG:     "$XORG_NETBSD_TAG"
 
 .common-build-and-test:
     extends:
@@ -198,7 +225,8 @@ freebsd:
     extends:
         - .xorg-image@freebsd
     variables:
-        MESON_ARGS:               -Dglx=false -Dglamor=false -Dudev=false -Dudev_kms=false
+        MESON_ARGS:       -Dglx=false -Dglamor=false -Dudev=false -Dudev_kms=false
+        PKG_CONFIG_PATH:  /usr/share/pkgconfig:/usr/lib/pkgconfig:/usr/pkg/share/pkgconfig:/usr/pkg/lib/pkgconfig
     script:
 # running of of disk space without this
 # needed until https://gitlab.freedesktop.org/freedesktop/ci-templates/-/issues/67 is fixed
@@ -211,6 +239,39 @@ freebsd:
       - /app/vmctl exec "cd $CI_PROJECT_NAME/dep.xorgproto && ./autogen.sh --prefix=/usr && make && make install"
       - /app/vmctl exec "cd $CI_PROJECT_NAME && PKG_CONFIG_PATH=\"$PKG_CONFIG_PATH\" MESON_ARGS=\"$MESON_ARGS\" MESON_BUILDDIR=\"$MESON_BUILDDIR\" .gitlab-ci/meson-build.sh --skip-test" && touch .success
 # test not working yet, so skipped
+#     - scp -r vm:$CI_PROJECT_NAME/test-results.xml .
+      - /app/vmctl stop
+      - set -e
+      - test -e .success || exit 1
+
+netbsd:
+    stage: build-and-test
+    extends:
+        - .xorg-image@netbsd
+    variables:
+# fixme: try glx and glamor
+        MESON_ARGS:   -Dglx=false -Dglamor=false -Dudev=false -Dudev_kms=false
+        X_PATH:       /sbin:/usr/sbin:/bin:/usr/bin:/usr/pkg/sbin:/usr/pkg/bin:/usr/X11R7/bin:/usr/local/sbin:/usr/local/bin
+    script:
+# running of of disk space without this
+# needed until https://gitlab.freedesktop.org/freedesktop/ci-templates/-/issues/67 is fixed
+      - git gc
+      - git clone $REPO_URL_XORGPROTO dep.xorgproto
+      - git clone $REPO_URL_LIBDRM dep.libdrm
+      - /app/vmctl start
+      - set +e
+      - scp -r $PWD "vm:"
+      - /app/vmctl exec "pkgin -4 update"
+# for reasons yet unknown, installing meson in the image breaks autotools, so do it afterwards
+      - /app/vmctl exec "pkgin -V -4 -y install meson"
+# xorgproto on NetBSD is too old - install recent version
+      - /app/vmctl exec "cd $CI_PROJECT_NAME/dep.xorgproto && ./autogen.sh --prefix=/usr/X11R7 && make && make install"
+# libdrm on NetBSD is too old - install recent version
+      - /app/vmctl exec "cd $CI_PROJECT_NAME/dep.libdrm && meson setup --prefix=/usr/X11R7 ../build.libdrm"
+      - /app/vmctl exec "cd $CI_PROJECT_NAME/build.libdrm && meson compile && meson install"
+# 2do: upgrade libdrm to 2.4.116
+      - /app/vmctl exec "export PKG_CONFIG_PATH=\"$PKG_CONFIG_PATH\" PATH=\"$X_PATH\" ; cd $CI_PROJECT_NAME && CI_JOB_ID=\"$CI_JOB_ID\" CI_JOB_NAME=\"$CI_JOB_NAME\" MESON_ARGS=\"$MESON_ARGS\" MESON_BUILDDIR=\"$MESON_BUILDDIR\" .gitlab-ci/meson-build.sh --skip-test" && touch .success
+# tests not working yet, so skipped
 #     - scp -r vm:$CI_PROJECT_NAME/test-results.xml .
       - /app/vmctl stop
       - set -e
