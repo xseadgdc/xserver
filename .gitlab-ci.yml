@@ -24,6 +24,8 @@ variables:
     XORG_FREEBSD_VERSION: '14.0'
     XORG_FREEBSD_EXEC:    ''
     XORG_FREEBSD_TAG:     '2024-03-21.0'
+    XORG_NETBSD_VERSION:  '10.0'
+    XORG_NETBSD_TAG:      '2024-03-26.1'
 
 include:
   - project: 'metux/ci-templates'
@@ -32,6 +34,9 @@ include:
   - project: 'metux/ci-templates'
     ref:     *template_sha
     file:    '/templates/freebsd.yml'
+  - project: 'metux/ci-templates'
+    ref:     *template_sha
+    file:    '/templates/netbsd.yml'
   - project: 'metux/ci-templates'
     ref: *template_sha
     file: '/templates/ci-fairy.yml'
@@ -122,6 +127,17 @@ freebsd-image:
         FDO_DISTRIBUTION_EXEC:      ''
         FDO_DISTRIBUTION_PACKAGES:  'git gcc pkgconf autoconf automake libtool xorg-macros xorgproto bash meson ninja pixman xtrans libXau libXdmcp libXfont2 libxkbfile libxcvt libpciaccess font-util'
 
+netbsd-image:
+    extends:
+        - .fdo.qemu-build@netbsd@x86_64
+    stage: docker-image
+    variables:
+        GIT_STRATEGY:               none
+        FDO_DISTRIBUTION_TAG:       "$XORG_NETBSD_TAG"
+        FDO_DISTRIBUTION_VERSION:   "$XORG_NETBSD_VERSION"
+        FDO_DISTRIBUTION_EXEC:      ''
+        FDO_DISTRIBUTION_PACKAGES:  ''
+
 .xorg-image@debian:
     extends:
         - .fdo.distribution-image@debian
@@ -138,6 +154,15 @@ freebsd-image:
         FDO_DISTRIBUTION_VERSION: "$XORG_FREEBSD_VERSION"
         FDO_DISTRIBUTION_EXEC:    "$XORG_FREEBSD_EXEC"
         FDO_DISTRIBUTION_TAG:     "$XORG_FREEBSD_TAG"
+
+.xorg-image@netbsd:
+    extends:
+        - .fdo.distribution-image@netbsd
+    variables:
+        GIT_DEPTH:                1
+        FDO_DISTRIBUTION_VERSION: "$XORG_NETBSD_VERSION"
+        FDO_DISTRIBUTION_EXEC:    "$XORG_NETBSD_EXEC"
+        FDO_DISTRIBUTION_TAG:     "$XORG_NETBSD_TAG"
 
 .common-build-and-test:
     extends:
@@ -209,6 +234,33 @@ freebsd:
       - /app/vmctl exec "( cd $CI_PROJECT_NAME/dep.xorgproto && ./autogen.sh --prefix=/usr && make && make install )"
       - /app/vmctl exec "cp /usr/share/pkgconfig/*.pc /usr/local/libdata/pkgconfig"
       - /app/vmctl exec "cd $CI_PROJECT_NAME && MESON_ARGS=\"$MESON_ARGS\" MESON_BUILDDIR=\"$MESON_BUILDDIR\" .gitlab-ci/meson-build.sh --skip-test" && touch .success
+# test not working yet, so skipped
+#     - scp -r vm:$CI_PROJECT_NAME/test-results.xml .
+      - /app/vmctl stop
+      - set -e
+      - test -e .success || exit 1
+
+netbsd:
+    stage: build-and-test
+    extends:
+        - .xorg-image@netbsd
+    variables:
+        MESON_ARGS:   -Dglx=false -Dglamor=false -Dudev=false -Dudev_kms=false
+        X_PPATH:      /usr/lib/pkgconfig:/usr/X11R7/lib/pkgconfig:/usr/pkg/lib/pkgconfig
+        X_PATH:       /sbin:/usr/sbin:/bin:/usr/bin:/usr/pkg/sbin:/usr/pkg/bin:/usr/games:/usr/X11R7/bin:/usr/local/sbin:/usr/local/bin
+        X_PACKAGES:   git gcc12 pkgconf autoconf automake libtool xorg-util-macros xorgproto bash meson ninja pixman xtrans libxkbfile libxcvt libpciaccess font-util
+    script:
+# running of of disk space without this
+# needed until https://gitlab.freedesktop.org/freedesktop/ci-templates/-/issues/67 is fixed
+      - git gc
+      - git clone https://gitlab.freedesktop.org/xorg/proto/xorgproto.git dep.xorgproto
+      - /app/vmctl start
+      - set +e
+      - scp -r $PWD "vm:"
+      - /app/vmctl exec "pkgin -4 update ; pkgin -4 -y install $X_PACKAGES"
+# xorgproto on NetBSD is too old - install recent version
+      - /app/vmctl exec "( cd $CI_PROJECT_NAME/dep.xorgproto && ./autogen.sh --prefix=/usr/X11R7 && make && make install )"
+      - /app/vmctl exec "export PKG_CONFIG_PATH=\"$X_PPATH\" PATH=\"$X_PATH\" ; cd $CI_PROJECT_NAME && CI_JOB_ID=\"$CI_JOB_ID\" CI_JOB_NAME=\"$CI_JOB_NAME\" MESON_ARGS=\"$MESON_ARGS\" MESON_BUILDDIR=\"$MESON_BUILDDIR\" .gitlab-ci/meson-build.sh --skip-test" && touch .success
 # test not working yet, so skipped
 #     - scp -r vm:$CI_PROJECT_NAME/test-results.xml .
       - /app/vmctl stop
