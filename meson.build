@@ -19,6 +19,7 @@ add_project_link_arguments('-fvisibility=hidden', language : 'c')
 if cc.get_id() == 'gcc' or cc.get_id() == 'clang'
     test_wflags = [
         '-Wall',
+        '-Wchar-subscripts',
         '-Wpointer-arith',
         '-Wmissing-declarations',
         '-Wformat=2',
