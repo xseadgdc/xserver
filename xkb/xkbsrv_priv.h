@@ -113,6 +113,7 @@ void XkbFakeDeviceButton(DeviceIntPtr dev, int press, int button);
 void XkbUseMsg(void);
 int XkbProcessArguments(int argc, char **argv, int i);
 Bool XkbInitPrivates(void);
+void XkbSetExtension(DeviceIntPtr device, ProcessInputProc proc);
 
 extern DevPrivateKeyRec xkbDevicePrivateKeyRec;
 
