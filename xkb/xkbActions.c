@@ -887,9 +887,9 @@ _XkbFilterRedirectKey(XkbSrvInfoPtr xkbi,
         mask = XkbSARedirectVModsMask(&pAction->redirect);
         mods = XkbSARedirectVMods(&pAction->redirect);
         if (mask)
-            XkbVirtualModsToReal(xkbi->desc, mask, &mask);
+            SrvXkbVirtualModsToReal(xkbi->desc, mask, &mask);
         if (mods)
-            XkbVirtualModsToReal(xkbi->desc, mods, &mods);
+            SrvXkbVirtualModsToReal(xkbi->desc, mods, &mods);
         mask |= pAction->redirect.mods_mask;
         mods |= pAction->redirect.mods;
 
@@ -934,9 +934,9 @@ _XkbFilterRedirectKey(XkbSrvInfoPtr xkbi,
 	mask = XkbSARedirectVModsMask(&filter->upAction.redirect);
 	mods = XkbSARedirectVMods(&filter->upAction.redirect);
 	if (mask)
-	    XkbVirtualModsToReal(xkbi->desc, mask, &mask);
+	    SrvXkbVirtualModsToReal(xkbi->desc, mask, &mask);
 	if (mods)
-	    XkbVirtualModsToReal(xkbi->desc, mods, &mods);
+	    SrvXkbVirtualModsToReal(xkbi->desc, mods, &mods);
 	mask |= filter->upAction.redirect.mods_mask;
 	mods |= filter->upAction.redirect.mods;
 

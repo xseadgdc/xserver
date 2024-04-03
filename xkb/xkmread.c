@@ -591,7 +591,7 @@ ReadXkmCompatMap(FILE * file, XkbDescPtr xkb, XkbChangesPtr changes)
                 if (md.virtualMods != 0) {
                     unsigned mask;
 
-                    if (XkbVirtualModsToReal(xkb, md.virtualMods, &mask))
+                    if (SrvXkbVirtualModsToReal(xkb, md.virtualMods, &mask))
                         xkb->compat->groups[i].mask = md.realMods | mask;
                 }
                 else

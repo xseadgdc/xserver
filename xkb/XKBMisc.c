@@ -353,7 +353,7 @@ _XkbSetActionKeyMods(XkbDescPtr xkb, XkbAction *act, unsigned mods)
         if (act->mods.flags & XkbSA_UseModMapMods)
             act->mods.real_mods = act->mods.mask = mods;
         if ((tmp = XkbModActionVMods(&act->mods)) != 0) {
-            XkbVirtualModsToReal(xkb, tmp, &tmp);
+            SrvXkbVirtualModsToReal(xkb, tmp, &tmp);
             act->mods.mask |= tmp;
         }
         break;
@@ -361,7 +361,7 @@ _XkbSetActionKeyMods(XkbDescPtr xkb, XkbAction *act, unsigned mods)
         if (act->iso.flags & XkbSA_UseModMapMods)
             act->iso.real_mods = act->iso.mask = mods;
         if ((tmp = XkbModActionVMods(&act->iso)) != 0) {
-            XkbVirtualModsToReal(xkb, tmp, &tmp);
+            SrvXkbVirtualModsToReal(xkb, tmp, &tmp);
             act->iso.mask |= tmp;
         }
         break;
@@ -659,7 +659,7 @@ XkbChangeTypesOfKey(XkbDescPtr xkb,
 /***====================================================================***/
 
 Bool
-XkbVirtualModsToReal(XkbDescPtr xkb, unsigned virtual_mask, unsigned *mask_rtrn)
+SrvXkbVirtualModsToReal(XkbDescPtr xkb, unsigned virtual_mask, unsigned *mask_rtrn)
 {
     register int i, bit;
     register unsigned mask;
@@ -692,7 +692,7 @@ XkbUpdateActionVirtualMods(XkbDescPtr xkb, XkbAction *act, unsigned changed)
     case XkbSA_LatchMods:
     case XkbSA_LockMods:
         if (((tmp = XkbModActionVMods(&act->mods)) & changed) != 0) {
-            XkbVirtualModsToReal(xkb, tmp, &tmp);
+            SrvXkbVirtualModsToReal(xkb, tmp, &tmp);
             act->mods.mask = act->mods.real_mods;
             act->mods.mask |= tmp;
             return TRUE;
@@ -700,7 +700,7 @@ XkbUpdateActionVirtualMods(XkbDescPtr xkb, XkbAction *act, unsigned changed)
         break;
     case XkbSA_ISOLock:
         if ((((tmp = XkbModActionVMods(&act->iso)) != 0) & changed) != 0) {
-            XkbVirtualModsToReal(xkb, tmp, &tmp);
+            SrvXkbVirtualModsToReal(xkb, tmp, &tmp);
             act->iso.mask = act->iso.real_mods;
             act->iso.mask |= tmp;
             return TRUE;
@@ -718,14 +718,14 @@ XkbUpdateKeyTypeVirtualMods(XkbDescPtr xkb,
     register unsigned int i;
     unsigned int mask;
 
-    XkbVirtualModsToReal(xkb, type->mods.vmods, &mask);
+    SrvXkbVirtualModsToReal(xkb, type->mods.vmods, &mask);
     type->mods.mask = type->mods.real_mods | mask;
     if ((type->map_count > 0) && (type->mods.vmods != 0)) {
         XkbKTMapEntryPtr entry;
 
         for (i = 0, entry = type->map; i < type->map_count; i++, entry++) {
             if (entry->mods.vmods != 0) {
-                XkbVirtualModsToReal(xkb, entry->mods.vmods, &mask);
+                SrvXkbVirtualModsToReal(xkb, entry->mods.vmods, &mask);
                 entry->mods.mask = entry->mods.real_mods | mask;
                 /* entry is active if vmods are bound */
                 entry->active = (mask != 0);
@@ -779,7 +779,7 @@ XkbApplyVirtualModChanges(XkbDescPtr xkb, unsigned changed,
     if (changed & xkb->ctrls->internal.vmods) {
         unsigned int newMask;
 
-        XkbVirtualModsToReal(xkb, xkb->ctrls->internal.vmods, &newMask);
+        SrvXkbVirtualModsToReal(xkb, xkb->ctrls->internal.vmods, &newMask);
         newMask |= xkb->ctrls->internal.real_mods;
         if (xkb->ctrls->internal.mask != newMask) {
             xkb->ctrls->internal.mask = newMask;
@@ -792,7 +792,7 @@ XkbApplyVirtualModChanges(XkbDescPtr xkb, unsigned changed,
     if (changed & xkb->ctrls->ignore_lock.vmods) {
         unsigned int newMask;
 
-        XkbVirtualModsToReal(xkb, xkb->ctrls->ignore_lock.vmods, &newMask);
+        SrvXkbVirtualModsToReal(xkb, xkb->ctrls->ignore_lock.vmods, &newMask);
         newMask |= xkb->ctrls->ignore_lock.real_mods;
         if (xkb->ctrls->ignore_lock.mask != newMask) {
             xkb->ctrls->ignore_lock.mask = newMask;
@@ -810,7 +810,7 @@ XkbApplyVirtualModChanges(XkbDescPtr xkb, unsigned changed,
             if (map->mods.vmods & changed) {
                 unsigned int newMask;
 
-                XkbVirtualModsToReal(xkb, map->mods.vmods, &newMask);
+                SrvXkbVirtualModsToReal(xkb, map->mods.vmods, &newMask);
                 newMask |= map->mods.real_mods;
                 if (newMask != map->mods.mask) {
                     map->mods.mask = newMask;
@@ -829,7 +829,7 @@ XkbApplyVirtualModChanges(XkbDescPtr xkb, unsigned changed,
         for (i = 0; i < XkbNumKbdGroups; i++) {
             unsigned int newMask;
 
-            XkbVirtualModsToReal(xkb, compat->groups[i].vmods, &newMask);
+            SrvXkbVirtualModsToReal(xkb, compat->groups[i].vmods, &newMask);
             newMask |= compat->groups[i].real_mods;
             if (compat->groups[i].mask != newMask) {
                 compat->groups[i].mask = newMask;

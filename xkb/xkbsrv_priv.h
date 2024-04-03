@@ -128,6 +128,8 @@ Status SrvXkbResizeKeyType(XkbDescPtr xkb, int type_ndx, int map_count,
 void XkbFreeComponentNames(XkbComponentNamesPtr names, Bool freeNames);
 void XkbSetActionKeyMods(XkbDescPtr xkb, XkbAction *act, unsigned int mods);
 unsigned int XkbMaskForVMask(XkbDescPtr xkb, unsigned int vmask);
+Bool SrvXkbVirtualModsToReal(XkbDescPtr xkb, unsigned int virtua_mask,
+                             unsigned int *mask_rtrn);
 
 extern DevPrivateKeyRec xkbDevicePrivateKeyRec;
 
