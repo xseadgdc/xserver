@@ -438,7 +438,7 @@ ReadXkmCompatMap(FILE * file, XkbDescPtr xkb, XkbChangesPtr changes)
     num_si = XkmGetCARD16(file, &nRead);
     groups = XkmGetCARD8(file, &nRead);
     nRead += XkmSkipPadding(file, 1);
-    if (XkbAllocCompatMap(xkb, XkbAllCompatMask, num_si) != Success)
+    if (SrvXkbAllocCompatMap(xkb, XkbAllCompatMask, num_si) != Success)
         return -1;
     compat = xkb->compat;
     compat->num_si = 0;

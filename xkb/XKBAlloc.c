@@ -41,7 +41,7 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 /***===================================================================***/
 
  /*ARGSUSED*/ Status
-XkbAllocCompatMap(XkbDescPtr xkb, unsigned which, unsigned nSI)
+SrvXkbAllocCompatMap(XkbDescPtr xkb, unsigned which, unsigned nSI)
 {
     XkbCompatMapPtr compat;
     XkbSymInterpretRec *prev_interpret;

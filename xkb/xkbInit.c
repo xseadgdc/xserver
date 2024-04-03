@@ -345,7 +345,7 @@ XkbInitCompatStructs(XkbDescPtr xkb)
     if (xkb->defined & XkmCompatMapMask)
         return TRUE;
 
-    if (XkbAllocCompatMap(xkb, XkbAllCompatMask, num_dfltSI) != Success)
+    if (SrvXkbAllocCompatMap(xkb, XkbAllCompatMask, num_dfltSI) != Success)
         return BadAlloc;
     compat = xkb->compat;
     if (compat->sym_interpret) {
