@@ -11,6 +11,7 @@
 
 #include "dix.h"
 #include "input.h"
+#include "privates.h"
 #include "xkbsrv.h"
 #include "xkbstr.h"
 
@@ -109,5 +110,9 @@ int XkbGetEffectiveGroup(XkbSrvInfoPtr xkbi, XkbStatePtr xkbstate, CARD8 keycode
 void XkbMergeLockedPtrBtns(DeviceIntPtr master);
 
 void XkbFakeDeviceButton(DeviceIntPtr dev, int press, int button);
+
+extern DevPrivateKeyRec xkbDevicePrivateKeyRec;
+
+#define XKBDEVICEINFO(dev) ((xkbDeviceInfoPtr)dixLookupPrivate(&(dev)->devPrivates, &xkbDevicePrivateKeyRec))
 
 #endif /* _XSERVER_XKBSRV_PRIV_H_ */
