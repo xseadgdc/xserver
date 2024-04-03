@@ -29,6 +29,9 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #include <stdio.h>
 #include <X11/X.h>
 #include <X11/Xproto.h>
+
+#include "xkb/xkbsrv_priv.h"
+
 #include "misc.h"
 #include "inputstr.h"
 #include <xkbsrv.h>
@@ -319,9 +322,9 @@ XkbFreeKeyboard(XkbDescPtr xkb, unsigned which, Bool freeAll)
     if (freeAll)
         which = XkbAllComponentsMask;
     if (which & XkbClientMapMask)
-        XkbFreeClientMap(xkb, XkbAllClientInfoMask, TRUE);
+        SrvXkbFreeClientMap(xkb, XkbAllClientInfoMask, TRUE);
     if (which & XkbServerMapMask)
-        XkbFreeServerMap(xkb, XkbAllServerInfoMask, TRUE);
+        SrvXkbFreeServerMap(xkb, XkbAllServerInfoMask, TRUE);
     if (which & XkbCompatMapMask)
         XkbFreeCompatMap(xkb, XkbAllCompatMask, TRUE);
     if (which & XkbIndicatorMapMask)

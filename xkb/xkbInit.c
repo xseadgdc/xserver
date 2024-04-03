@@ -319,7 +319,7 @@ XkbInitKeyTypes(XkbDescPtr xkb)
         return TRUE;
 
     initTypeNames(NULL);
-    if (XkbAllocClientMap(xkb, XkbKeyTypesMask, num_dflt_types) != Success)
+    if (SrvXkbAllocClientMap(xkb, XkbKeyTypesMask, num_dflt_types) != Success)
         return FALSE;
     if (XkbCopyKeyTypes(dflt_types, xkb->map->types, num_dflt_types) != Success) {
         return FALSE;
@@ -593,9 +593,9 @@ InitKeyboardDeviceStructInternal(DeviceIntPtr dev, XkbRMLVOSet * rmlvo,
         xkb->max_key_code = 255;
 
     i = XkbNumKeys(xkb) / 3 + 1;
-    if (XkbAllocClientMap(xkb, XkbAllClientInfoMask, 0) != Success)
+    if (SrvXkbAllocClientMap(xkb, XkbAllClientInfoMask, 0) != Success)
         goto unwind_desc;
-    if (XkbAllocServerMap(xkb, XkbAllServerInfoMask, i) != Success)
+    if (SrvXkbAllocServerMap(xkb, XkbAllServerInfoMask, i) != Success)
         goto unwind_desc;
 
     xkbi->dfltPtrDelta = 1;

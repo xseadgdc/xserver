@@ -1162,7 +1162,7 @@ _XkbCopyClientMap(XkbDescPtr src, XkbDescPtr dst)
     }
     else {
         if (dst->map)
-            XkbFreeClientMap(dst, XkbAllClientInfoMask, TRUE);
+            SrvXkbFreeClientMap(dst, XkbAllClientInfoMask, TRUE);
     }
 
     return TRUE;
@@ -1277,7 +1277,7 @@ _XkbCopyServerMap(XkbDescPtr src, XkbDescPtr dst)
     }
     else {
         if (dst->server)
-            XkbFreeServerMap(dst, XkbAllServerInfoMask, TRUE);
+            SrvXkbFreeServerMap(dst, XkbAllServerInfoMask, TRUE);
     }
 
     return TRUE;

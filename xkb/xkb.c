@@ -2022,7 +2022,7 @@ SetKeyTypes(XkbDescPtr xkb,
 
     if ((unsigned) (req->firstType + req->nTypes) > xkb->map->size_types) {
         i = req->firstType + req->nTypes;
-        if (XkbAllocClientMap(xkb, XkbKeyTypesMask, i) != Success) {
+        if (SrvXkbAllocClientMap(xkb, XkbKeyTypesMask, i) != Success) {
             return NULL;
         }
     }

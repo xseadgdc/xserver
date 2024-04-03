@@ -29,15 +29,17 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #include <stdio.h>
 #include <X11/X.h>
 #include <X11/Xproto.h>
+#include <X11/keysym.h>
+
+#include "xkb/xkbsrv_priv.h"
+
 #include "misc.h"
 #include "inputstr.h"
-#include <X11/keysym.h>
-#include <xkbsrv.h>
 
 /***====================================================================***/
 
 Status
-XkbAllocClientMap(XkbDescPtr xkb, unsigned which, unsigned nTotalTypes)
+SrvXkbAllocClientMap(XkbDescPtr xkb, unsigned which, unsigned nTotalTypes)
 {
     XkbClientMapPtr map;
 
@@ -48,7 +50,7 @@ XkbAllocClientMap(XkbDescPtr xkb, unsigned which, unsigned nTotalTypes)
         ((!XkbIsLegalKeycode(xkb->min_key_code)) ||
          (!XkbIsLegalKeycode(xkb->max_key_code)) ||
          (xkb->max_key_code < xkb->min_key_code))) {
-        DebugF("bad keycode (%d,%d) in XkbAllocClientMap\n",
+        DebugF("bad keycode (%d,%d) in SrvXkbAllocClientMap\n",
                xkb->min_key_code, xkb->max_key_code);
         return BadValue;
     }
@@ -120,7 +122,7 @@ XkbAllocClientMap(XkbDescPtr xkb, unsigned which, unsigned nTotalTypes)
 }
 
 Status
-XkbAllocServerMap(XkbDescPtr xkb, unsigned which, unsigned nNewActions)
+SrvXkbAllocServerMap(XkbDescPtr xkb, unsigned which, unsigned nNewActions)
 {
     register int i;
     XkbServerMapPtr map;
@@ -778,7 +780,7 @@ XkbResizeKeyActions(XkbDescPtr xkb, int key, int needed)
 }
 
 void
-XkbFreeClientMap(XkbDescPtr xkb, unsigned what, Bool freeMap)
+SrvXkbFreeClientMap(XkbDescPtr xkb, unsigned what, Bool freeMap)
 {
     XkbClientMapPtr map;
 
@@ -829,7 +831,7 @@ XkbFreeClientMap(XkbDescPtr xkb, unsigned what, Bool freeMap)
 }
 
 void
-XkbFreeServerMap(XkbDescPtr xkb, unsigned what, Bool freeMap)
+SrvXkbFreeServerMap(XkbDescPtr xkb, unsigned what, Bool freeMap)
 {
     XkbServerMapPtr map;
 

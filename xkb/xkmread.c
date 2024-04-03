@@ -165,7 +165,7 @@ ReadXkmVirtualMods(FILE * file, XkbDescPtr xkb, XkbChangesPtr changes)
     unsigned int bound, named, tmp;
     int nRead = 0;
 
-    if (XkbAllocServerMap(xkb, XkbVirtualModsMask, 0) != Success) {
+    if (SrvXkbAllocServerMap(xkb, XkbVirtualModsMask, 0) != Success) {
         _XkbLibError(_XkbErrBadAlloc, "ReadXkmVirtualMods", 0);
         return -1;
     }
@@ -297,7 +297,7 @@ ReadXkmKeyTypes(FILE * file, XkbDescPtr xkb, XkbChangesPtr changes)
     nRead += XkmSkipPadding(file, 2);
     if (num_types < 1)
         return nRead;
-    if (XkbAllocClientMap(xkb, XkbKeyTypesMask, num_types) != Success) {
+    if (SrvXkbAllocClientMap(xkb, XkbKeyTypesMask, num_types) != Success) {
         _XkbLibError(_XkbErrBadAlloc, "ReadXkmKeyTypes", 0);
         return nRead;
     }
@@ -736,11 +736,11 @@ ReadXkmSymbols(FILE * file, XkbDescPtr xkb)
                 xkb->names->groups[i] = None;
         }
     }
-    if (XkbAllocServerMap(xkb, XkbAllServerInfoMask, 0) != Success) {
+    if (SrvXkbAllocServerMap(xkb, XkbAllServerInfoMask, 0) != Success) {
         _XkbLibError(_XkbErrBadAlloc, "server map", 0);
         return -1;
     }
-    if (XkbAllocClientMap(xkb, XkbAllClientInfoMask, 0) != Success) {
+    if (SrvXkbAllocClientMap(xkb, XkbAllClientInfoMask, 0) != Success) {
         _XkbLibError(_XkbErrBadAlloc, "client map", 0);
         return -1;
     }

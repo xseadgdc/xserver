@@ -32,10 +32,10 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #include <X11/keysym.h>
 
 #include "xkb/xkbfmisc_priv.h"
+#include "xkb/xkbsrv_priv.h"
 
 #include "misc.h"
 #include "inputstr.h"
-#include <xkbsrv.h>
 
 /***====================================================================***/
 
@@ -386,7 +386,7 @@ XkbApplyCompatMapToKey(XkbDescPtr xkb, KeyCode key, XkbChangesPtr changes)
         return FALSE;
     }
     if (((!xkb->server) || (!xkb->server->key_acts)) &&
-        (XkbAllocServerMap(xkb, XkbAllServerInfoMask, 0) != Success)) {
+        (SrvXkbAllocServerMap(xkb, XkbAllServerInfoMask, 0) != Success)) {
         return FALSE;
     }
     changed = 0;                /* keeps track of what has changed in _this_ call */

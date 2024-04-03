@@ -196,4 +196,12 @@ XkbDescPtr XkbCompileKeymap(DeviceIntPtr dev, XkbRMLVOSet *rmlvo);
 XkbDescPtr XkbCompileKeymapFromString(DeviceIntPtr dev, const char *keymap,
                                       int keymap_length);
 
+/* client map */
+Status SrvXkbAllocClientMap(XkbDescPtr xkb, unsigned int which, unsigned int nTypes);
+void SrvXkbFreeClientMap(XkbDescPtr xkb, unsigned int what, Bool freeMap);
+
+/* server map */
+Status SrvXkbAllocServerMap(XkbDescPtr xkb, unsigned int which, unsigned int nNewActions);
+void SrvXkbFreeServerMap(XkbDescPtr xkb, unsigned int what, Bool freeMap);
+
 #endif /* _XSERVER_XKBSRV_PRIV_H_ */
