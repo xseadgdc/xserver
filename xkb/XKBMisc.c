@@ -552,7 +552,7 @@ XkbChangeTypesOfKey(XkbDescPtr xkb,
         i = xkb->map->key_sym_map[key].group_info;
         i = XkbSetNumGroups(i, 0);
         xkb->map->key_sym_map[key].group_info = i;
-        XkbResizeKeySyms(xkb, key, 0);
+        SrvXkbResizeKeySyms(xkb, key, 0);
         XkbResizeKeyActions(xkb, key, 0);
         return Success;
     }
@@ -581,7 +581,7 @@ XkbChangeTypesOfKey(XkbDescPtr xkb,
         int nCopy;
 
         if (nOldGroups == 0) {
-            pSyms = XkbResizeKeySyms(xkb, key, width * nGroups);
+            pSyms = SrvXkbResizeKeySyms(xkb, key, width * nGroups);
             if (pSyms != NULL) {
                 i = xkb->map->key_sym_map[key].group_info;
                 i = XkbSetNumGroups(i, nGroups);
@@ -596,7 +596,7 @@ XkbChangeTypesOfKey(XkbDescPtr xkb,
         }
         pSyms = XkbKeySymsPtr(xkb, key);
         memcpy(oldSyms, pSyms, XkbKeyNumSyms(xkb, key) * sizeof(KeySym));
-        pSyms = XkbResizeKeySyms(xkb, key, width * nGroups);
+        pSyms = SrvXkbResizeKeySyms(xkb, key, width * nGroups);
         if (pSyms == NULL)
             return BadAlloc;
         memset(pSyms, 0, width * nGroups * sizeof(KeySym));

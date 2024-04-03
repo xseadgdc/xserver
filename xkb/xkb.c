@@ -2115,7 +2115,7 @@ SetKeySyms(ClientPtr client,
     for (i = 0; i < req->nKeySyms; i++, oldMap++) {
         pSyms = (KeySym *) &wire[1];
         if (wire->nSyms > 0) {
-            newSyms = XkbResizeKeySyms(xkb, i + req->firstKeySym, wire->nSyms);
+            newSyms = SrvXkbResizeKeySyms(xkb, i + req->firstKeySym, wire->nSyms);
             for (s = 0; s < wire->nSyms; s++) {
                 newSyms[s] = pSyms[s];
             }

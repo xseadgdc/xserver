@@ -803,7 +803,7 @@ ReadXkmSymbols(FILE * file, XkbDescPtr xkb)
             if (XkbNumGroups(wireMap.num_groups) > xkb->ctrls->num_groups)
                 xkb->ctrls->num_groups = wireMap.num_groups;
             nSyms = XkbNumGroups(wireMap.num_groups) * wireMap.width;
-            sym = XkbResizeKeySyms(xkb, i, nSyms);
+            sym = SrvXkbResizeKeySyms(xkb, i, nSyms);
             if (!sym)
                 return -1;
             for (s = 0; s < nSyms; s++) {

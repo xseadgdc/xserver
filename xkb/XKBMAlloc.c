@@ -467,7 +467,7 @@ SrvXkbResizeKeyType(XkbDescPtr xkb,
 }
 
 KeySym *
-XkbResizeKeySyms(XkbDescPtr xkb, int key, int needed)
+SrvXkbResizeKeySyms(XkbDescPtr xkb, int key, int needed)
 {
     register int i, nSyms, nKeySyms;
     unsigned nOldSyms;
