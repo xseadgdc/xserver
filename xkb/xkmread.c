@@ -613,7 +613,7 @@ ReadXkmIndicators(FILE * file, XkbDescPtr xkb, XkbChangesPtr changes)
     unsigned tmp;
     int nRead = 0;
 
-    if ((xkb->indicators == NULL) && (XkbAllocIndicatorMaps(xkb) != Success)) {
+    if ((xkb->indicators == NULL) && (SrvXkbAllocIndicatorMaps(xkb) != Success)) {
         _XkbLibError(_XkbErrBadAlloc, "indicator rec", 0);
         return -1;
     }

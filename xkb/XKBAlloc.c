@@ -278,7 +278,7 @@ XkbFreeControls(XkbDescPtr xkb, unsigned which, Bool freeMap)
 /***===================================================================***/
 
 Status
-XkbAllocIndicatorMaps(XkbDescPtr xkb)
+SrvXkbAllocIndicatorMaps(XkbDescPtr xkb)
 {
     if (xkb == NULL)
         return BadMatch;

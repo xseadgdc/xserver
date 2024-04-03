@@ -441,7 +441,7 @@ XkbInitIndicatorMap(XkbSrvInfoPtr xkbi)
     XkbSrvLedInfoPtr sli;
 
     xkb = xkbi->desc;
-    if (XkbAllocIndicatorMaps(xkb) != Success)
+    if (SrvXkbAllocIndicatorMaps(xkb) != Success)
         return BadAlloc;
 
     if (!(xkb->defined & XkmIndicatorsMask)) {
