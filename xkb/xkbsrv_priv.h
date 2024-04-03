@@ -115,4 +115,11 @@ extern DevPrivateKeyRec xkbDevicePrivateKeyRec;
 
 #define XKBDEVICEINFO(dev) ((xkbDeviceInfoPtr)dixLookupPrivate(&(dev)->devPrivates, &xkbDevicePrivateKeyRec))
 
+extern int XkbReqCode;
+extern int XkbEventBase;
+extern int XkbKeyboardErrorCode;
+extern const char *XkbBaseDirectory;
+extern const char *XkbBinDirectory;
+extern CARD32 xkbDebugFlags;
+
 #endif /* _XSERVER_XKBSRV_PRIV_H_ */
