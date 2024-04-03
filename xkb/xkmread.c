@@ -181,7 +181,7 @@ ReadXkmVirtualMods(FILE * file, XkbDescPtr xkb, XkbChangesPtr changes)
     }
     if ((i = XkbPaddedSize(tmp) - tmp) > 0)
         nRead += XkmSkipPadding(file, i);
-    if (XkbAllocNames(xkb, XkbVirtualModNamesMask, 0, 0) != Success) {
+    if (SrvXkbAllocNames(xkb, XkbVirtualModNamesMask, 0, 0) != Success) {
         _XkbLibError(_XkbErrBadAlloc, "ReadXkmVirtualMods", 0);
         return -1;
     }
@@ -230,7 +230,7 @@ ReadXkmKeycodes(FILE * file, XkbDescPtr xkb, XkbChangesPtr changes)
     nRead += XkmSkipPadding(file, 1);
 
 #define WANTED (XkbKeycodesNameMask|XkbKeyNamesMask|XkbKeyAliasesMask)
-    if (XkbAllocNames(xkb, WANTED, 0, nAl) != Success) {
+    if (SrvXkbAllocNames(xkb, WANTED, 0, nAl) != Success) {
         _XkbLibError(_XkbErrBadAlloc, "ReadXkmKeycodes", 0);
         return -1;
     }
@@ -287,7 +287,7 @@ ReadXkmKeyTypes(FILE * file, XkbDescPtr xkb, XkbChangesPtr changes)
     }
     nRead += tmp;
     if (buf[0] != '\0') {
-        if (XkbAllocNames(xkb, XkbTypesNameMask, 0, 0) != Success) {
+        if (SrvXkbAllocNames(xkb, XkbTypesNameMask, 0, 0) != Success) {
             _XkbLibError(_XkbErrBadAlloc, "ReadXkmKeyTypes", 0);
             return -1;
         }
@@ -429,7 +429,7 @@ ReadXkmCompatMap(FILE * file, XkbDescPtr xkb, XkbChangesPtr changes)
     }
     nRead += tmp;
     if (name[0] != '\0') {
-        if (XkbAllocNames(xkb, XkbCompatNameMask, 0, 0) != Success) {
+        if (SrvXkbAllocNames(xkb, XkbCompatNameMask, 0, 0) != Success) {
             _XkbLibError(_XkbErrBadAlloc, "ReadXkmCompatMap", 0);
             return -1;
         }
@@ -617,7 +617,7 @@ ReadXkmIndicators(FILE * file, XkbDescPtr xkb, XkbChangesPtr changes)
         _XkbLibError(_XkbErrBadAlloc, "indicator rec", 0);
         return -1;
     }
-    if (XkbAllocNames(xkb, XkbIndicatorNamesMask, 0, 0) != Success) {
+    if (SrvXkbAllocNames(xkb, XkbIndicatorNamesMask, 0, 0) != Success) {
         _XkbLibError(_XkbErrBadAlloc, "indicator names", 0);
         return -1;
     }
@@ -704,7 +704,7 @@ ReadXkmSymbols(FILE * file, XkbDescPtr xkb)
     maxKC = XkmGetCARD8(file, &nRead);
     groupNames = XkmGetCARD8(file, &nRead);
     totalVModMaps = XkmGetCARD8(file, &nRead);
-    if (XkbAllocNames(xkb,
+    if (SrvXkbAllocNames(xkb,
                       XkbSymbolsNameMask | XkbPhysSymbolsNameMask |
                       XkbGroupNamesMask, 0, 0) != Success) {
         _XkbLibError(_XkbErrBadAlloc, "physical names", 0);

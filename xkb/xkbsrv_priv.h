@@ -119,6 +119,8 @@ void SrvXkbFreeNames(XkbDescPtr xkb, unsigned int which, Bool freeMap);
 XkbDescPtr SrvXkbAllocKeyboard(void);
 Status SrvXkbAllocIndicatorMaps(XkbDescPtr xkb);
 Status SrvXkbAllocCompatMap(XkbDescPtr xkb, unsigned int which, unsigned int nInterpret);
+Status SrvXkbAllocNames(XkbDescPtr xkb, unsigned int which, int nTotalRG,
+                        int nTotalAliases);
 
 extern DevPrivateKeyRec xkbDevicePrivateKeyRec;
 

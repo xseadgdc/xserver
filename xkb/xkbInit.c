@@ -385,7 +385,7 @@ XkbInitNames(XkbSrvInfoPtr xkbi)
     Atom unknown;
 
     xkb = xkbi->desc;
-    if ((rtrn = XkbAllocNames(xkb, XkbAllNamesMask, 0, 0)) != Success)
+    if ((rtrn = SrvXkbAllocNames(xkb, XkbAllNamesMask, 0, 0)) != Success)
         return rtrn;
     unknown = CREATE_ATOM("unknown");
     names = xkb->names;

@@ -4297,7 +4297,7 @@ _XkbSetNames(ClientPtr client, DeviceIntPtr dev, xkbSetNamesReq * stuff)
     xkb = dev->key->xkbInfo->desc;
     names = xkb->names;
 
-    if (XkbAllocNames(xkb, stuff->which, stuff->nRadioGroups,
+    if (SrvXkbAllocNames(xkb, stuff->which, stuff->nRadioGroups,
                       stuff->nKeyAliases) != Success) {
         return BadAlloc;
     }
@@ -4377,7 +4377,7 @@ _XkbSetNames(ClientPtr client, DeviceIntPtr dev, xkbSetNamesReq * stuff)
         if (stuff->nKeyAliases > 0) {
             register int na = stuff->nKeyAliases;
 
-            if (XkbAllocNames(xkb, XkbKeyAliasesMask, 0, na) != Success)
+            if (SrvXkbAllocNames(xkb, XkbKeyAliasesMask, 0, na) != Success)
                 return BadAlloc;
             memcpy((char *) names->key_aliases, (char *) tmp,
                    stuff->nKeyAliases * sizeof(XkbKeyAliasRec));
@@ -4395,7 +4395,7 @@ _XkbSetNames(ClientPtr client, DeviceIntPtr dev, xkbSetNamesReq * stuff)
             register unsigned i, nrg;
 
             nrg = stuff->nRadioGroups;
-            if (XkbAllocNames(xkb, XkbRGNamesMask, nrg, 0) != Success)
+            if (SrvXkbAllocNames(xkb, XkbRGNamesMask, nrg, 0) != Success)
                 return BadAlloc;
 
             for (i = 0; i < stuff->nRadioGroups; i++) {
