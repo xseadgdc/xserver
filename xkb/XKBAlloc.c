@@ -303,7 +303,7 @@ XkbFreeIndicatorMaps(XkbDescPtr xkb)
 /***====================================================================***/
 
 XkbDescRec *
-XkbAllocKeyboard(void)
+SrvXkbAllocKeyboard(void)
 {
     XkbDescRec *xkb;
 

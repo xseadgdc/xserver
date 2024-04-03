@@ -1222,7 +1222,7 @@ XkmReadFile(FILE * file, unsigned need, unsigned want, XkbDescPtr *xkb)
         return which;
     }
     if (*xkb == NULL)
-        *xkb = XkbAllocKeyboard();
+        *xkb = SrvXkbAllocKeyboard();
     for (i = 0; i < fileInfo.num_toc; i++) {
         fseek(file, toc[i].offset, SEEK_SET);
         tmp = fread(&tmpTOC, SIZEOF(xkmSectionInfo), 1, file);

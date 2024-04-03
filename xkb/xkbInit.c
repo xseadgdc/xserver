@@ -572,7 +572,7 @@ InitKeyboardDeviceStructInternal(DeviceIntPtr dev, XkbRMLVOSet * rmlvo,
         }
     }
 
-    xkb = XkbAllocKeyboard();
+    xkb = SrvXkbAllocKeyboard();
     if (!xkb) {
         ErrorF("XKB: Failed to allocate keyboard description\n");
         goto unwind_info;
