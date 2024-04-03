@@ -123,6 +123,8 @@ Status SrvXkbAllocNames(XkbDescPtr xkb, unsigned int which, int nTotalRG,
                         int nTotalAliases);
 Status SrvXkbAllocControls(XkbDescPtr xkb, unsigned int which);
 Status SrvXkbCopyKeyTypes(XkbKeyTypePtr from, XkbKeyTypePtr into, int num_types);
+Status SrvXkbResizeKeyType(XkbDescPtr xkb, int type_ndx, int map_count,
+                           Bool want_preserve, int new_num_lvls);
 
 extern DevPrivateKeyRec xkbDevicePrivateKeyRec;
 

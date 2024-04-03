@@ -264,7 +264,7 @@ SrvXkbCopyKeyTypes(XkbKeyTypePtr from, XkbKeyTypePtr into, int num_types)
 }
 
 Status
-XkbResizeKeyType(XkbDescPtr xkb,
+SrvXkbResizeKeyType(XkbDescPtr xkb,
                  int type_ndx,
                  int map_count, Bool want_preserve, int new_num_lvls)
 {

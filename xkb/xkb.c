@@ -2033,7 +2033,7 @@ SetKeyTypes(XkbDescPtr xkb,
         XkbKeyTypePtr pOld;
         register unsigned n;
 
-        if (XkbResizeKeyType(xkb, i + req->firstType, wire->nMapEntries,
+        if (SrvXkbResizeKeyType(xkb, i + req->firstType, wire->nMapEntries,
                              wire->preserve, wire->numLevels) != Success) {
             return NULL;
         }
