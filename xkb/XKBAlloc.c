@@ -252,7 +252,7 @@ SrvXkbFreeNames(XkbDescPtr xkb, unsigned which, Bool freeMap)
 /***===================================================================***/
 
  /*ARGSUSED*/ Status
-XkbAllocControls(XkbDescPtr xkb, unsigned which)
+SrvXkbAllocControls(XkbDescPtr xkb, unsigned which)
 {
     if (xkb == NULL)
         return BadMatch;

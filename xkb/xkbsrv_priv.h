@@ -121,6 +121,7 @@ Status SrvXkbAllocIndicatorMaps(XkbDescPtr xkb);
 Status SrvXkbAllocCompatMap(XkbDescPtr xkb, unsigned int which, unsigned int nInterpret);
 Status SrvXkbAllocNames(XkbDescPtr xkb, unsigned int which, int nTotalRG,
                         int nTotalAliases);
+Status SrvXkbAllocControls(XkbDescPtr xkb, unsigned int which);
 
 extern DevPrivateKeyRec xkbDevicePrivateKeyRec;
 

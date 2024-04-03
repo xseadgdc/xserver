@@ -479,7 +479,7 @@ XkbInitControls(DeviceIntPtr pXDev, XkbSrvInfoPtr xkbi)
 
     xkb = xkbi->desc;
     /* 12/31/94 (ef) -- XXX! Should check if controls loaded from file */
-    if (XkbAllocControls(xkb, XkbAllControlsMask) != Success)
+    if (SrvXkbAllocControls(xkb, XkbAllControlsMask) != Success)
         FatalError("Couldn't allocate keyboard controls\n");
     ctrls = xkb->ctrls;
     if (!(xkb->defined & XkmSymbolsMask))

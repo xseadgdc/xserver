@@ -744,7 +744,7 @@ ReadXkmSymbols(FILE * file, XkbDescPtr xkb)
         _XkbLibError(_XkbErrBadAlloc, "client map", 0);
         return -1;
     }
-    if (XkbAllocControls(xkb, XkbAllControlsMask) != Success) {
+    if (SrvXkbAllocControls(xkb, XkbAllControlsMask) != Success) {
         _XkbLibError(_XkbErrBadAlloc, "controls", 0);
         return -1;
     }
