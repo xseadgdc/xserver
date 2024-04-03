@@ -204,7 +204,7 @@ XkbAllocNames(XkbDescPtr xkb, unsigned which, int nTotalRG, int nTotalAliases)
 }
 
 void
-XkbFreeNames(XkbDescPtr xkb, unsigned which, Bool freeMap)
+SrvXkbFreeNames(XkbDescPtr xkb, unsigned which, Bool freeMap)
 {
     XkbNamesPtr names;
 
@@ -329,7 +329,7 @@ XkbFreeKeyboard(XkbDescPtr xkb, unsigned which, Bool freeAll)
     if (which & XkbIndicatorMapMask)
         XkbFreeIndicatorMaps(xkb);
     if (which & XkbNamesMask)
-        XkbFreeNames(xkb, XkbAllNamesMask, TRUE);
+        SrvXkbFreeNames(xkb, XkbAllNamesMask, TRUE);
     if ((which & XkbGeometryMask) && (xkb->geom != NULL)) {
         XkbFreeGeometry(xkb->geom, XkbGeomAllMask, TRUE);
         /* PERHAPS BONGHITS etc */

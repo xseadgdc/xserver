@@ -1367,7 +1367,7 @@ _XkbCopyNames(XkbDescPtr src, XkbDescPtr dst)
     }
     else {
         if (dst->names)
-            XkbFreeNames(dst, XkbAllNamesMask, TRUE);
+            SrvXkbFreeNames(dst, XkbAllNamesMask, TRUE);
     }
 
     return TRUE;
