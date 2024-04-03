@@ -29,15 +29,14 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #include <stdio.h>
 #include <X11/X.h>
 #include <X11/Xproto.h>
+#include <string.h>
 
 #include "xkb/xkbsrv_priv.h"
 
 #include "misc.h"
 #include "inputstr.h"
-#include <xkbsrv.h>
 #include "xkbgeom.h"
 #include <os.h>
-#include <string.h>
 
 /***===================================================================***/
 
@@ -90,7 +89,7 @@ XkbAllocCompatMap(XkbDescPtr xkb, unsigned which, unsigned nSI)
 }
 
 void
-XkbFreeCompatMap(XkbDescPtr xkb, unsigned which, Bool freeMap)
+SrvXkbFreeCompatMap(XkbDescPtr xkb, unsigned which, Bool freeMap)
 {
     register XkbCompatMapPtr compat;
 
@@ -326,7 +325,7 @@ XkbFreeKeyboard(XkbDescPtr xkb, unsigned which, Bool freeAll)
     if (which & XkbServerMapMask)
         SrvXkbFreeServerMap(xkb, XkbAllServerInfoMask, TRUE);
     if (which & XkbCompatMapMask)
-        XkbFreeCompatMap(xkb, XkbAllCompatMask, TRUE);
+        SrvXkbFreeCompatMap(xkb, XkbAllCompatMask, TRUE);
     if (which & XkbIndicatorMapMask)
         XkbFreeIndicatorMaps(xkb);
     if (which & XkbNamesMask)

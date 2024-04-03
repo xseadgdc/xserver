@@ -1415,7 +1415,7 @@ _XkbCopyCompat(XkbDescPtr src, XkbDescPtr dst)
     }
     else {
         if (dst->compat)
-            XkbFreeCompatMap(dst, XkbAllCompatMask, TRUE);
+            SrvXkbFreeCompatMap(dst, XkbAllCompatMask, TRUE);
     }
 
     return TRUE;
