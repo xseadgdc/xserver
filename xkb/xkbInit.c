@@ -321,7 +321,7 @@ XkbInitKeyTypes(XkbDescPtr xkb)
     initTypeNames(NULL);
     if (SrvXkbAllocClientMap(xkb, XkbKeyTypesMask, num_dflt_types) != Success)
         return FALSE;
-    if (XkbCopyKeyTypes(dflt_types, xkb->map->types, num_dflt_types) != Success) {
+    if (SrvXkbCopyKeyTypes(dflt_types, xkb->map->types, num_dflt_types) != Success) {
         return FALSE;
     }
     xkb->map->size_types = xkb->map->num_types = num_dflt_types;

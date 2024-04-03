@@ -122,6 +122,7 @@ Status SrvXkbAllocCompatMap(XkbDescPtr xkb, unsigned int which, unsigned int nIn
 Status SrvXkbAllocNames(XkbDescPtr xkb, unsigned int which, int nTotalRG,
                         int nTotalAliases);
 Status SrvXkbAllocControls(XkbDescPtr xkb, unsigned int which);
+Status SrvXkbCopyKeyTypes(XkbKeyTypePtr from, XkbKeyTypePtr into, int num_types);
 
 extern DevPrivateKeyRec xkbDevicePrivateKeyRec;
 

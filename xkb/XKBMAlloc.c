@@ -250,7 +250,7 @@ XkbCopyKeyType(XkbKeyTypePtr from, XkbKeyTypePtr into)
 }
 
 Status
-XkbCopyKeyTypes(XkbKeyTypePtr from, XkbKeyTypePtr into, int num_types)
+SrvXkbCopyKeyTypes(XkbKeyTypePtr from, XkbKeyTypePtr into, int num_types)
 {
     register int i, rtrn;
 
