@@ -812,7 +812,7 @@ ReadXkmSymbols(FILE * file, XkbDescPtr xkb)
             if (wireMap.flags & XkmKeyHasActions) {
                 XkbAction *act;
 
-                act = XkbResizeKeyActions(xkb, i, nSyms);
+                act = SrvXkbResizeKeyActions(xkb, i, nSyms);
                 for (s = 0; s < nSyms; s++, act++) {
                     tmp = fread(act, SIZEOF(xkmActionDesc), 1, file);
                     nRead += tmp * SIZEOF(xkmActionDesc);

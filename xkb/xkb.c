@@ -2126,7 +2126,7 @@ SetKeySyms(ClientPtr client,
             }
         }
         if (XkbKeyHasActions(xkb, i + req->firstKeySym))
-            XkbResizeKeyActions(xkb, i + req->firstKeySym,
+            SrvXkbResizeKeyActions(xkb, i + req->firstKeySym,
                                 XkbNumGroups(wire->groupInfo) * wire->width);
         oldMap->kt_index[0] = wire->ktIndex[0];
         oldMap->kt_index[1] = wire->ktIndex[1];
@@ -2184,7 +2184,7 @@ SetKeyActions(XkbDescPtr xkb,
         if (nActs[i] == 0)
             xkb->server->key_acts[i + req->firstKeyAct] = 0;
         else {
-            newActs = XkbResizeKeyActions(xkb, i + req->firstKeyAct, nActs[i]);
+            newActs = SrvXkbResizeKeyActions(xkb, i + req->firstKeyAct, nActs[i]);
             memcpy((char *) newActs, (char *) wire,
                    nActs[i] * SIZEOF(xkbActionWireDesc));
             wire += nActs[i] * SIZEOF(xkbActionWireDesc);

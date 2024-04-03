@@ -431,7 +431,7 @@ XkbApplyCompatMapToKey(XkbDescPtr xkb, KeyCode key, XkbChangesPtr changes)
         unsigned int new_vmodmask;
 
         changed |= XkbKeyActionsMask;
-        pActs = XkbResizeKeyActions(xkb, key, nSyms);
+        pActs = SrvXkbResizeKeyActions(xkb, key, nSyms);
         if (!pActs) {
             if (nSyms > IBUF_SIZE)
                 free(interps);
@@ -553,7 +553,7 @@ XkbChangeTypesOfKey(XkbDescPtr xkb,
         i = XkbSetNumGroups(i, 0);
         xkb->map->key_sym_map[key].group_info = i;
         SrvXkbResizeKeySyms(xkb, key, 0);
-        XkbResizeKeyActions(xkb, key, 0);
+        SrvXkbResizeKeyActions(xkb, key, 0);
         return Success;
     }
 
@@ -615,7 +615,7 @@ XkbChangeTypesOfKey(XkbDescPtr xkb,
 
             pActs = XkbKeyActionsPtr(xkb, key);
             memcpy(oldActs, pActs, XkbKeyNumSyms(xkb, key) * sizeof(XkbAction));
-            pActs = XkbResizeKeyActions(xkb, key, width * nGroups);
+            pActs = SrvXkbResizeKeyActions(xkb, key, width * nGroups);
             if (pActs == NULL)
                 return BadAlloc;
             memset(pActs, 0, width * nGroups * sizeof(XkbAction));

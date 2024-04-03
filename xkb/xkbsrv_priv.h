@@ -132,6 +132,7 @@ Bool SrvXkbVirtualModsToReal(XkbDescPtr xkb, unsigned int virtua_mask,
                              unsigned int *mask_rtrn);
 unsigned int XkbAdjustGroup(int group, XkbControlsPtr ctrls);
 KeySym *SrvXkbResizeKeySyms(XkbDescPtr xkb, int key, int needed);
+XkbAction *SrvXkbResizeKeyActions(XkbDescPtr xkb, int key, int needed);
 
 extern DevPrivateKeyRec xkbDevicePrivateKeyRec;
 

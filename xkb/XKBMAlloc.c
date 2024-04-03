@@ -728,7 +728,7 @@ XkbChangeKeycodeRange(XkbDescPtr xkb,
 }
 
 XkbAction *
-XkbResizeKeyActions(XkbDescPtr xkb, int key, int needed)
+SrvXkbResizeKeyActions(XkbDescPtr xkb, int key, int needed)
 {
     register int i, nActs;
     XkbAction *newActs;
