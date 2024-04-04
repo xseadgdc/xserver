@@ -130,7 +130,7 @@ XkbApplyLEDChangeToKeyboard(XkbSrvInfoPtr xkbi,
                     break;
             }
             if (map->which_groups & XkbIM_UseLatched)
-                XkbLatchGroup(xkbi->device, 0); /* unlatch group */
+                SrvXkbLatchGroup(xkbi->device, 0); /* unlatch group */
             state->locked_group = i;
             stateChange = TRUE;
         }
@@ -140,7 +140,7 @@ XkbApplyLEDChangeToKeyboard(XkbSrvInfoPtr xkbi,
                     break;
             }
             state->locked_group = 0;
-            XkbLatchGroup(xkbi->device, i);
+            SrvXkbLatchGroup(xkbi->device, i);
             stateChange = TRUE;
         }
     }
@@ -166,7 +166,7 @@ XkbApplyLEDChangeToKeyboard(XkbSrvInfoPtr xkbi,
                 newmods &= ~map->mods.mask;
             if (newmods != state->locked_mods) {
                 newmods &= map->mods.mask;
-                XkbLatchModifiers(xkbi->device, map->mods.mask, newmods);
+                SrvXkbLatchModifiers(xkbi->device, map->mods.mask, newmods);
                 stateChange = TRUE;
             }
         }

@@ -141,4 +141,10 @@ XkbInterestPtr XkbFindClientResource(DevicePtr inDev, ClientPtr client);
 XkbInterestPtr XkbAddClientResource(DevicePtr inDev, ClientPtr client, XID id);
 int XkbRemoveResourceClient(DevicePtr inDev, XID id);
 
+/* key latching */
+int SrvXkbLatchModifiers(DeviceIntPtr pXDev, CARD8 mask, CARD8 latches);
+int SrvXkbLatchGroup(DeviceIntPtr pXDev, int group);
+void XkbClearAllLatchesAndLocks(DeviceIntPtr dev, XkbSrvInfoPtr xkbi,
+                                Bool genEv, XkbEventCausePtr cause);
+
 #endif /* _XSERVER_XKBSRV_PRIV_H_ */

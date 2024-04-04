@@ -658,10 +658,10 @@ ProcXkbLatchLockState(ClientPtr client)
             if (status == Success && stuff->lockGroup)
                 newState->locked_group = stuff->groupLock;
             if (status == Success && stuff->affectModLatches)
-                status = XkbLatchModifiers(tmpd, stuff->affectModLatches,
+                status = SrvXkbLatchModifiers(tmpd, stuff->affectModLatches,
                                            stuff->modLatches);
             if (status == Success && stuff->latchGroup)
-                status = XkbLatchGroup(tmpd, stuff->groupLatch);
+                status = SrvXkbLatchGroup(tmpd, stuff->groupLatch);
 
             if (status != Success)
                 return status;

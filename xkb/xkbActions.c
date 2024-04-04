@@ -1440,7 +1440,7 @@ XkbHandleActions(DeviceIntPtr dev, DeviceIntPtr kbd, DeviceEvent *event)
 }
 
 int
-XkbLatchModifiers(DeviceIntPtr pXDev, CARD8 mask, CARD8 latches)
+SrvXkbLatchModifiers(DeviceIntPtr pXDev, CARD8 mask, CARD8 latches)
 {
     XkbSrvInfoPtr xkbi;
     XkbFilterPtr filter;
@@ -1468,7 +1468,7 @@ XkbLatchModifiers(DeviceIntPtr pXDev, CARD8 mask, CARD8 latches)
 }
 
 int
-XkbLatchGroup(DeviceIntPtr pXDev, int group)
+SrvXkbLatchGroup(DeviceIntPtr pXDev, int group)
 {
     XkbSrvInfoPtr xkbi;
     XkbFilterPtr filter;
@@ -1501,11 +1501,11 @@ XkbClearAllLatchesAndLocks(DeviceIntPtr dev,
     sn.changed = 0;
     os = xkbi->state;
     if (os.latched_mods) {      /* clear all latches */
-        XkbLatchModifiers(dev, ~0, 0);
+        SrvXkbLatchModifiers(dev, ~0, 0);
         sn.changed |= XkbModifierLatchMask;
     }
     if (os.latched_group) {
-        XkbLatchGroup(dev, 0);
+        SrvXkbLatchGroup(dev, 0);
         sn.changed |= XkbGroupLatchMask;
     }
     if (os.locked_mods) {

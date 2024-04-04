@@ -776,7 +776,7 @@ ProcessPointerEvent(InternalEvent *ev, DeviceIntPtr mouse)
 
         sli = XkbFindSrvLedInfo(dev, XkbDfltXIClass, XkbDfltXIId, 0);
         oldState = xkbi->state;
-        XkbLatchModifiers(dev, 0xFF, 0x00);
+        SrvXkbLatchModifiers(dev, 0xFF, 0x00);
 
         XkbComputeDerivedState(xkbi);
         changed |= XkbStateChangedFlags(&oldState, &xkbi->state);
