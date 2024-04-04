@@ -182,4 +182,13 @@ int _XkbLookupLedDevice(DeviceIntPtr *pDev, int id, ClientPtr client,
 int _XkbLookupButtonDevice(DeviceIntPtr *pDev, int id, ClientPtr client,
                            Mask access_mode, int *xkb_err);
 
+/* XkbSrvLedInfo functions */
+XkbSrvLedInfoPtr XkbAllocSrvLedInfo(DeviceIntPtr dev, KbdFeedbackPtr kf,
+                                    LedFeedbackPtr lf, unsigned int needed_parts);
+XkbSrvLedInfoPtr XkbCopySrvLedInfo(DeviceIntPtr dev, XkbSrvLedInfoPtr src,
+                                   KbdFeedbackPtr kf, LedFeedbackPtr lf);
+XkbSrvLedInfoPtr XkbFindSrvLedInfo(DeviceIntPtr dev, unsigned int class,
+                                   unsigned int id, unsigned int needed_parts);
+void XkbFreeSrvLedInfo(XkbSrvLedInfoPtr sli);
+
 #endif /* _XSERVER_XKBSRV_PRIV_H_ */
