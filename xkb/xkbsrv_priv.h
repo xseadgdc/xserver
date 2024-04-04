@@ -158,6 +158,7 @@ void XkbProcessKeyboardEvent(DeviceEvent *event, DeviceIntPtr keybd);
 Bool XkbEnableDisableControls(XkbSrvInfoPtr xkbi, unsigned long change,
                               unsigned long newValues, XkbChangesPtr changes,
                               XkbEventCausePtr cause);
+void XkbDisableComputedAutoRepeats(DeviceIntPtr pXDev, unsigned int key);
 
 extern DevPrivateKeyRec xkbDevicePrivateKeyRec;
 
