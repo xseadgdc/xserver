@@ -763,7 +763,7 @@ XkbUpdateKeyTypeVirtualMods(XkbDescPtr xkb,
 }
 
 Bool
-XkbApplyVirtualModChanges(XkbDescPtr xkb, unsigned changed,
+SrvXkbApplyVirtualModChanges(XkbDescPtr xkb, unsigned changed,
                           XkbChangesPtr changes)
 {
     register int i;

@@ -299,7 +299,7 @@ XkbUpdateDescActions(XkbDescPtr xkb,
         }
     }
     if (changes->map.changed & XkbVirtualModsMask)
-        XkbApplyVirtualModChanges(xkb, changes->map.vmods, changes);
+        SrvXkbApplyVirtualModChanges(xkb, changes->map.vmods, changes);
 
     if (changes->map.changed & XkbKeyActionsMask) {
         CARD8 oldLast, newLast;
