@@ -2618,7 +2618,7 @@ _XkbSetMap(ClientPtr client, DeviceIntPtr dev, xkbSetMapReq * req, char *values)
         nkn.deviceID = nkn.oldDeviceID = dev->id;
         nkn.oldMinKeyCode = xkb->min_key_code;
         nkn.oldMaxKeyCode = xkb->max_key_code;
-        status = XkbChangeKeycodeRange(xkb, req->minKeyCode,
+        status = SrvXkbChangeKeycodeRange(xkb, req->minKeyCode,
                                        req->maxKeyCode, &change);
         if (status != Success)
             return status;      /* oh-oh. what about the other keyboards? */
