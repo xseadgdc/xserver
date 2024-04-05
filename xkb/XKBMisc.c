@@ -531,7 +531,7 @@ XkbApplyCompatMapToKey(XkbDescPtr xkb, KeyCode key, XkbChangesPtr changes)
 }
 
 Status
-XkbChangeTypesOfKey(XkbDescPtr xkb,
+SrvXkbChangeTypesOfKey(XkbDescPtr xkb,
                     int key,
                     int nGroups,
                     unsigned groups, int *newTypesIn, XkbMapChangesPtr changes)
