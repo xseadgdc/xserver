@@ -270,7 +270,7 @@ XkbUpdateDescActions(XkbDescPtr xkb,
     register unsigned key;
 
     for (key = first; key < (first + num); key++) {
-        XkbApplyCompatMapToKey(xkb, key, changes);
+        SrvXkbApplyCompatMapToKey(xkb, key, changes);
     }
 
     if (changes->map.changed & (XkbVirtualModMapMask | XkbModifierMapMask)) {

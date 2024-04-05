@@ -372,7 +372,7 @@ _XkbSetActionKeyMods(XkbDescPtr xkb, XkbAction *act, unsigned mods)
 #define	IBUF_SIZE	8
 
 Bool
-XkbApplyCompatMapToKey(XkbDescPtr xkb, KeyCode key, XkbChangesPtr changes)
+SrvXkbApplyCompatMapToKey(XkbDescPtr xkb, KeyCode key, XkbChangesPtr changes)
 {
     KeySym *syms;
     unsigned char explicit, mods;
