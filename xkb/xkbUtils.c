@@ -237,7 +237,7 @@ XkbUpdateKeyTypesFromCore(DeviceIntPtr pXDev,
         types[XkbGroup2Index] = XkbKeyKeyTypeIndex(xkb, key, XkbGroup2Index);
         types[XkbGroup3Index] = XkbKeyKeyTypeIndex(xkb, key, XkbGroup3Index);
         types[XkbGroup4Index] = XkbKeyKeyTypeIndex(xkb, key, XkbGroup4Index);
-        nG = XkbKeyTypesForCoreSymbols(xkb, pCore->mapWidth, syms, explicit,
+        nG = SrvXkbKeyTypesForCoreSymbols(xkb, pCore->mapWidth, syms, explicit,
                                        types, tsyms);
         SrvXkbChangeTypesOfKey(xkb, key, nG, XkbAllGroupsMask, types, mc);
         memcpy((char *) XkbKeySymsPtr(xkb, key), (char *) tsyms,

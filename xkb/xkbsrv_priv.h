@@ -165,6 +165,9 @@ Status SrvXkbChangeKeycodeRange(XkbDescPtr xkb, int minKC, int maxKC, XkbChanges
 void XkbFreeInfo(XkbSrvInfoPtr xkbi);
 Status SrvXkbChangeTypesOfKey(XkbDescPtr xkb, int key, int nGroups, unsigned int groups,
                               int *newTypesIn, XkbMapChangesPtr changes);
+int SrvXkbKeyTypesForCoreSymbols(XkbDescPtr xkb, int map_width, KeySym *core_syms,
+                                 unsigned int protected, int *types_inout,
+                                 KeySym *xkb_syms_rtrn);
 
 extern DevPrivateKeyRec xkbDevicePrivateKeyRec;
 

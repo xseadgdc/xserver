@@ -43,7 +43,7 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #define	XKB_OFFSET(g,l)	(((g)*groupsWidth)+(l))
 
 int
-XkbKeyTypesForCoreSymbols(XkbDescPtr xkb,
+SrvXkbKeyTypesForCoreSymbols(XkbDescPtr xkb,
                           int map_width,
                           KeySym * core_syms,
                           unsigned int protected,
