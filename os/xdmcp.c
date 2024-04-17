@@ -1408,7 +1408,7 @@ get_addr_by_name(const char *argtype,
 #ifdef XTHREADS_NEEDS_BYNAMEPARAMS
     _Xgethostbynameparams hparams;
 #endif
-#if defined(WIN32) && defined(TCPCONN)
+#if defined(WIN32)
     _XSERVTransWSAStartup();
 #endif
     if (!(hep = _XGethostbyname(namestr, hparams))) {

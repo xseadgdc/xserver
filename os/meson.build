@@ -94,6 +94,6 @@ libxserver_os = static_library('libxserver_os',
         os_dep,
         dependency('xau')
     ],
-    c_args: os_c_args,
+    c_args: [os_c_args, '-DTCPCONN'],
     link_with: libxlibc,
 )
