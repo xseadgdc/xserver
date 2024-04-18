@@ -120,9 +120,7 @@ __stdcall unsigned long GetTickCount(void);
 
 Bool noTestExtensions;
 
-#ifdef COMPOSITE
 Bool noCompositeExtension = FALSE;
-#endif
 
 #ifdef DAMAGE
 Bool noDamageExtension = FALSE;

@@ -125,9 +125,7 @@ static const ExtensionModule staticExtensions[] = {
 #ifdef RANDR
     {RRExtensionInit, "RANDR", &noRRExtension},
 #endif
-#ifdef COMPOSITE
     {CompositeExtensionInit, "COMPOSITE", &noCompositeExtension},
-#endif
 #ifdef DAMAGE
     {DamageExtensionInit, "DAMAGE", &noDamageExtension},
 #endif

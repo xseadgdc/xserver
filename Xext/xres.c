@@ -31,10 +31,7 @@
 #include <string.h>
 #include "hashtable.h"
 #include "picturestr.h"
-
-#ifdef COMPOSITE
 #include "compint.h"
-#endif
 
 /** @brief Holds fragments of responses for ConstructClientIds.
  *

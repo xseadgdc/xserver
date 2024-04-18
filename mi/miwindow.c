@@ -317,7 +317,6 @@ miRecomputeExposures(WindowPtr pWin, void *value)
     RegionPtr pValid = (RegionPtr) value;
 
     if (pWin->valdata) {
-#ifdef COMPOSITE
         /*
          * Redirected windows are not affected by parent window
          * gravity manipulations, so don't recompute their
@@ -325,7 +324,6 @@ miRecomputeExposures(WindowPtr pWin, void *value)
          */
         if (pWin->redirectDraw != RedirectDrawNone)
             return WT_DONTWALKCHILDREN;
-#endif
         /*
          * compute exposed regions of this window
          */
@@ -570,9 +568,7 @@ miResizeWindow(WindowPtr pWin, int x, int y, unsigned int w, unsigned int h,
             /* and move those bits */
 
             if (oldpt.x != x || oldpt.y != y
-#ifdef COMPOSITE
                 || pWin->redirectDraw
-#endif
                 ) {
                 (*pWin->drawable.pScreen->CopyWindow) (pWin, oldpt,
                                                        gravitate[g]);
