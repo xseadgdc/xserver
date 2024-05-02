@@ -154,10 +154,6 @@ Bool noXFree86DRIExtension = FALSE;
 Bool noXFree86VidModeExtension = FALSE;
 #endif
 Bool noXFixesExtension = FALSE;
-#ifdef PANORAMIX
-/* Xinerama is disabled by default unless enabled via +xinerama */
-Bool noPanoramiXExtension = TRUE;
-#endif
 #ifdef XV
 Bool noXvExtension = FALSE;
 #endif
