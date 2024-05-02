@@ -66,6 +66,7 @@ SOFTWARE.
 #include "os/busfault.h"
 #include "os/screensaver.h"
 
+#include "globals.h"
 #include "misc.h"
 #include "osdep.h"
 #include "dixstruct_priv.h"
