@@ -87,9 +87,9 @@ typedef struct _NewClientRec *NewClientPtr;
 extern _X_EXPORT int WriteToClient(ClientPtr /*who */ , int /*count */ ,
                                    const void * /*buf */ );
 
-extern _X_EXPORT XID AuthorizationIDOfClient(ClientPtr /*client */ );
+XID AuthorizationIDOfClient(ClientPtr /*client */ );
 
-extern _X_EXPORT const char *ClientAuthorized(ClientPtr /*client */ ,
+const char *ClientAuthorized(ClientPtr /*client */ ,
                                               unsigned int /*proto_n */ ,
                                               char * /*auth_proto */ ,
                                               unsigned int /*string_n */ ,
@@ -133,7 +133,7 @@ extern _X_EXPORT OsTimerPtr TimerSet(OsTimerPtr timer,
                                      OsTimerCallback func,
                                      void *arg);
 
-extern _X_EXPORT void TimerCheck(void);
+void TimerCheck(void);
 extern _X_EXPORT void TimerCancel(OsTimerPtr /* pTimer */ );
 extern _X_EXPORT void TimerFree(OsTimerPtr /* pTimer */ );
 
