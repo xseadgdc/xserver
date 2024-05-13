@@ -4,7 +4,7 @@ srcs_config = [
 
 config_dep = [common_dep]
 
-if build_dbus
+if build_systemd_logind
     srcs_config += 'dbus-core.c'
     config_dep += dbus_dep
 endif
