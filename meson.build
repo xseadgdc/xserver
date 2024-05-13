@@ -299,8 +299,6 @@ if int10 == 'auto'
     endif
 endif
 
-build_dbus = build_systemd_logind
-
 udev_dep = dependency('', required:false)
 if build_udev or build_udev_kms
     udev_dep = dependency('libudev', version: '>= 143')

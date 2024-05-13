@@ -26,7 +26,7 @@
 #ifndef DBUS_CORE_H
 #define DBUS_CORE_H
 
-#ifdef NEED_DBUS
+#ifdef SYSTEMD_LOGIND
 #include <dbus/dbus.h>
 
 typedef void (*dbus_core_connect_hook) (DBusConnection * connection,
