@@ -54,10 +54,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #include "extnsionst.h"
 
 extern _X_EXPORT Bool noCompositeExtension;
-
-#ifdef DAMAGE
 extern _X_EXPORT Bool noDamageExtension;
-#endif
 
 #if defined(DBE)
 extern _X_EXPORT Bool noDbeExtension;

@@ -48,11 +48,7 @@
 #include "micmap.h"
 
 #include "rootlessCommon.h"
-
-#ifdef DAMAGE
 #include "damage.h"
-#endif
-
 #include "nonsdk_extinit.h"
 #include "extinit_priv.h"
 
@@ -439,12 +435,10 @@ have_depth:
 static Bool
 xprSetupScreen(int index, ScreenPtr pScreen)
 {
-#ifdef DAMAGE
     // The Damage extension needs to wrap underneath the
     // generic rootless layer, so do it now.
     if (!DamageSetup(pScreen))
         return FALSE;
-#endif
 
     // Initialize generic rootless code
     if (!xprInit(pScreen))

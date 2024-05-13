@@ -199,7 +199,6 @@ endif
 conf_data.set('UNIXCONN', host_machine.system() != 'windows' ? '1' : false)
 conf_data.set('IPv6', build_ipv6 ? '1' : false)
 
-conf_data.set('DAMAGE', '1')
 conf_data.set('DBE', '1')
 conf_data.set('DGA', build_dga ? '1' : false)
 conf_data.set('DPMSExtension', build_dpms ? '1' : false)

@@ -119,12 +119,9 @@ __stdcall unsigned long GetTickCount(void);
 #include "dixstruct_priv.h"
 
 Bool noTestExtensions;
-
 Bool noCompositeExtension = FALSE;
-
-#ifdef DAMAGE
 Bool noDamageExtension = FALSE;
-#endif
+
 #ifdef DBE
 Bool noDbeExtension = FALSE;
 #endif
