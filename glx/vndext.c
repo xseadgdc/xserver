@@ -30,9 +30,6 @@
 #include "vndserver_priv.h"
 
 #include <string.h>
-
-#include "dix/dix_priv.h"
-
 #include <scrnintstr.h>
 #include <windowstr.h>
 #include <dixstruct.h>
