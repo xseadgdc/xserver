@@ -299,26 +299,7 @@ if int10 == 'auto'
     endif
 endif
 
-hal_dep = []
-if hal_option == 'auto'
-    if not build_udev
-        hal_dep = dependency('hal', required: false)
-        build_hal = hal_dep.found()
-    else
-        build_hal = false
-    endif
-else
-    build_hal = hal_option == 'true'
-    if build_hal
-        hal_dep = dependency('hal')
-    endif
-endif
-
-if build_udev and build_hal
-    error('Hotplugging through both libudev and hal not allowed')
-endif
-
-build_dbus = build_hal or build_systemd_logind
+build_dbus = build_systemd_logind
 
 udev_dep = dependency('', required:false)
 if build_udev or build_udev_kms
