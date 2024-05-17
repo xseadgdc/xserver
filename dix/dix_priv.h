@@ -20,6 +20,7 @@
 #include "include/callback.h"
 #include "include/cursor.h"
 #include "include/dix.h"
+#include "include/dixgrabs.h"
 #include "include/events.h"
 #include "include/gc.h"
 #include "include/input.h"
@@ -252,5 +253,17 @@ extern Bool explicit_display;
 
 extern Bool disableBackingStore;
 extern Bool enableBackingStore;
+
+GrabPtr CreateGrab(ClientPtr client,
+                   DeviceIntPtr device,
+                   DeviceIntPtr modDevice,
+                   WindowPtr window,
+                   enum InputLevel grabtype,
+                   GrabMask *mask,
+                   struct _GrabParameters *param,
+                   int type,
+                   KeyCode keybut,
+                   WindowPtr confineTo,
+                   CursorPtr cursor);
 
 #endif /* _XSERVER_DIX_PRIV_H */

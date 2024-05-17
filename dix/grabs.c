@@ -215,7 +215,7 @@ AllocGrab(const GrabPtr src)
 }
 
 GrabPtr
-CreateGrab(int client, DeviceIntPtr device, DeviceIntPtr modDevice,
+CreateGrab(ClientPtr client, DeviceIntPtr device, DeviceIntPtr modDevice,
            WindowPtr window, enum InputLevel grabtype, GrabMask *mask,
            GrabParameters *param, int type,
            KeyCode keybut,        /* key or button */
@@ -226,7 +226,7 @@ CreateGrab(int client, DeviceIntPtr device, DeviceIntPtr modDevice,
     grab = AllocGrab(NULL);
     if (!grab)
         return (GrabPtr) NULL;
-    grab->resource = FakeClientID(client);
+    grab->resource = FakeClientID(client->index);
     grab->device = device;
     grab->window = window;
     if (grabtype == CORE || grabtype == XI)
@@ -647,7 +647,7 @@ DeletePassiveGrabFromList(GrabPtr pMinuendGrab)
             param.other_devices_mode = grab->pointerMode;
             param.modifiers = any_modifier;
 
-            pNewGrab = CreateGrab(CLIENT_ID(grab->resource), grab->device,
+            pNewGrab = CreateGrab(clients[CLIENT_ID(grab->resource)], grab->device,
                                   grab->modifierDevice, grab->window,
                                   grab->grabtype,
                                   (GrabMask *) &grab->eventMask,

@@ -35,18 +35,6 @@ extern GrabPtr AllocGrab(const GrabPtr src);
 extern void FreeGrab(GrabPtr grab);
 extern Bool CopyGrab(GrabPtr dst, const GrabPtr src);
 
-extern GrabPtr CreateGrab(int /* client */ ,
-                          DeviceIntPtr /* device */ ,
-                          DeviceIntPtr /* modDevice */ ,
-                          WindowPtr /* window */ ,
-                          enum InputLevel /* grabtype */ ,
-                          GrabMask * /* mask */ ,
-                          struct _GrabParameters * /* param */ ,
-                          int /* type */ ,
-                          KeyCode /* keybut */ ,
-                          WindowPtr /* confineTo */ ,
-                          CursorPtr /* cursor */ );
-
 extern _X_EXPORT int DeletePassiveGrab(void *value,
                                        XID id);
 
