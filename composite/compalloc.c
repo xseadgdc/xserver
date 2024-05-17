@@ -47,6 +47,8 @@
 
 #include "compint.h"
 
+#include "dix/dix_priv.h"
+
 static Bool
 compScreenUpdate(ClientPtr pClient, void *closure)
 {
@@ -427,7 +429,7 @@ compFreeClientSubwindows(WindowPtr pWin, XID id)
         return;
     for (prev = &csw->clients; (ccw = *prev); prev = &ccw->next) {
         if (ccw->id == id) {
-            ClientPtr pClient = clients[CLIENT_ID(id)];
+            ClientPtr pClient = dixGetClientByXID(id);
 
             *prev = ccw->next;
             if (ccw->update == CompositeRedirectManual) {
@@ -496,7 +498,7 @@ compRedirectOneSubwindow(WindowPtr pParent, WindowPtr pWin)
     if (!csw)
         return Success;
     for (ccw = csw->clients; ccw; ccw = ccw->next) {
-        int ret = compRedirectWindow(clients[CLIENT_ID(ccw->id)],
+        int ret = compRedirectWindow(dixGetClientByXID(ccw->id),
                                      pWin, ccw->update);
 
         if (ret != Success)
@@ -518,7 +520,7 @@ compUnredirectOneSubwindow(WindowPtr pParent, WindowPtr pWin)
     if (!csw)
         return Success;
     for (ccw = csw->clients; ccw; ccw = ccw->next) {
-        int ret = compUnredirectWindow(clients[CLIENT_ID(ccw->id)],
+        int ret = compUnredirectWindow(dixGetClientByXID(ccw->id),
                                        pWin, ccw->update);
 
         if (ret != Success)

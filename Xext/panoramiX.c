@@ -351,7 +351,7 @@ PanoramiXFindIDByScrnum(RESTYPE type, XID id, int screen)
     data.screen = screen;
     data.id = id;
 
-    return LookupClientResourceComplex(clients[CLIENT_ID(id)], type,
+    return LookupClientResourceComplex(dixGetClientByXID(id), type,
                                        XineramaFindIDByScrnum, &data);
 }
 

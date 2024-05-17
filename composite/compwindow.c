@@ -589,7 +589,7 @@ compCreateWindow(WindowPtr pWin)
             (*pScreen->SetWindowPixmap) (pWin, parent_pixmap);
         if (csw)
             for (ccw = csw->clients; ccw; ccw = ccw->next)
-                compRedirectWindow(clients[CLIENT_ID(ccw->id)],
+                compRedirectWindow(dixGetClientByXID(ccw->id),
                                    pWin, ccw->update);
         if (compImplicitRedirect(pWin, pWin->parent))
             compRedirectWindow(serverClient, pWin, CompositeRedirectAutomatic);

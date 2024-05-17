@@ -34,6 +34,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <X11/Xatom.h>
 #include <X11/Xfuncproto.h>
 
+#include "dix/dix_priv.h"
 #include "dix/registry_priv.h"
 
 #include "selection.h"
@@ -632,7 +633,7 @@ SELinuxResource(CallbackListPtr *pcbl, void *unused, void *calldata)
     if (offset < 0) {
         /* No: use the SID of the owning client */
         class = SECCLASS_X_RESOURCE;
-        privatePtr = &clients[CLIENT_ID(rec->id)]->devPrivates;
+        privatePtr = &dixGetClientByXID(rec->id)->devPrivates;
         obj = dixLookupPrivate(privatePtr, objectKey);
     }
     else {

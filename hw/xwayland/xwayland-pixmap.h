@@ -29,6 +29,8 @@
 #include <xwayland-config.h>
 #include <wayland-client.h>
 
+#include "dix/dix_priv.h"
+
 #include "pixmapstr.h"
 
 /* This is an opaque structure implemented in the different backends */
@@ -48,7 +50,7 @@ Bool xwl_pixmap_init(void);
 static inline Bool
 xwl_is_client_pixmap(PixmapPtr pixmap)
 {
-    return clients[CLIENT_ID(pixmap->drawable.id)] != serverClient;
+    return dixGetClientByXID(pixmap->drawable.id) != serverClient;
 }
 
 #endif /* XWAYLAND_PIXMAP_H */

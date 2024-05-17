@@ -58,6 +58,8 @@ and Jim Haggerty of Metheus.
 #include "cursor.h"
 #endif
 
+#include "dix/dix_priv.h"
+
 #include "protocol-versions.h"
 
 static RESTYPE RTContext;       /* internal resource type for Record contexts */
@@ -865,7 +867,7 @@ RecordInstallHooks(RecordClientsAndProtocolPtr pRCAP, XID oneclient)
             if (pRCAP->pRequestMajorOpSet) {
                 RecordSetIteratePtr pIter = NULL;
                 RecordSetInterval interval;
-                ClientPtr pClient = clients[CLIENT_ID(client)];
+                ClientPtr pClient = dixGetClientByXID(client);
 
                 if (pClient && !RecordClientPrivate(pClient)) {
                     RecordClientPrivatePtr pClientPriv;
@@ -948,7 +950,7 @@ RecordUninstallHooks(RecordClientsAndProtocolPtr pRCAP, XID oneclient)
     while (client) {
         if (client != XRecordFutureClients) {
             if (pRCAP->pRequestMajorOpSet) {
-                ClientPtr pClient = clients[CLIENT_ID(client)];
+                ClientPtr pClient = dixGetClientByXID(client);
                 int c;
                 Bool otherRCAPwantsProcVector = FALSE;
                 RecordClientPrivatePtr pClientPriv = NULL;

@@ -78,6 +78,18 @@ void DeleteWindowFromAnySaveSet(WindowPtr pWin);
             ValidateGC(pDraw, pGC);                                     \
     } while (0)
 
+/* get the ClientPtr for given XID (upper bits of XID) */
+static inline ClientPtr dixGetClientByXID(XID id) {
+    return clients[CLIENT_ID(id)];
+}
+
+static inline ClientPtr dixGetClientByIndex(int idx) {
+    return clients[idx];
+}
+
+#define wClient(w)   (dixGetClientByXID((w)->drawable.id))
+#define rClient(obj) (dixGetClientByXID((obj)->resource))
+
 int dixLookupGC(GCPtr *result,
                 XID id,
                 ClientPtr client,

@@ -41,6 +41,8 @@
 #include "winmultiwindowclass.h"
 #include "winmultiwindowicons.h"
 
+#include "dix/dix_priv.h"
+
 /*
  * Prototypes for local functions
  */

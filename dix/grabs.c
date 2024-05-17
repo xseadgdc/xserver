@@ -90,7 +90,7 @@ PrintDeviceGrabInfo(DeviceIntPtr dev)
            (grab->grabtype == XI2) ? "xi2" :
            ((grab->grabtype == CORE) ? "core" : "xi1"), dev->name, dev->id);
 
-    client = clients[CLIENT_ID(grab->resource)];
+    client = dixGetClientXID(grab->resource);
     if (client) {
         pid_t clientpid = GetClientPid(client);
         const char *cmdname = GetClientCmdName(client);
@@ -183,7 +183,7 @@ UngrabAllDevices(Bool kill_client)
         if (!dev->deviceGrab.grab)
             continue;
         PrintDeviceGrabInfo(dev);
-        client = clients[CLIENT_ID(dev->deviceGrab.grab->resource)];
+        client = dixGetClientXID(dev->deviceGrab.grab->resource);
         if (!kill_client || !client || client->clientGone)
             dev->deviceGrab.DeactivateGrab(dev);
         if (kill_client)
@@ -647,7 +647,7 @@ DeletePassiveGrabFromList(GrabPtr pMinuendGrab)
             param.other_devices_mode = grab->pointerMode;
             param.modifiers = any_modifier;
 
-            pNewGrab = CreateGrab(clients[CLIENT_ID(grab->resource)], grab->device,
+            pNewGrab = CreateGrab(dixGetClientByXID(grab->resource), grab->device,
                                   grab->modifierDevice, grab->window,
                                   grab->grabtype,
                                   (GrabMask *) &grab->eventMask,
