@@ -104,6 +104,7 @@ Equipment Corporation.
 #include "dix/exevents_priv.h"
 #include "dix/input_priv.h"
 #include "dix/property_priv.h"
+#include "dix/selection_priv.h"
 #include "os/auth.h"
 #include "os/client_priv.h"
 #include "os/screensaver.h"
@@ -133,7 +134,6 @@ Equipment Corporation.
 #ifdef COMPOSITE
 #include "compint.h"
 #endif
-#include "selection.h"
 #include "inpututils.h"
 #include "privates.h"
 #include "xace.h"
