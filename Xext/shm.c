@@ -110,6 +110,8 @@ static void SShmCompletionEvent(xShmCompletionEvent *from,
 
 static Bool ShmDestroyPixmap(PixmapPtr pPixmap);
 
+Bool noMITShmExtension = FALSE;
+
 static unsigned char ShmReqCode;
 int ShmCompletionCode;
 int BadShmSegCode;
