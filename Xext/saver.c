@@ -195,8 +195,6 @@ static DevPrivateKeyRec ScreenPrivateKeyRec;
     dixSetPrivate(&(s)->devPrivates, ScreenPrivateKey, v);
 #define SetupScreen(s)	ScreenSaverScreenPrivatePtr pPriv = (s ? GetScreenPrivate(s) : NULL)
 
-#define New(t)	(malloc(sizeof (t)))
-
 static void
 CheckScreenPrivate(ScreenPtr pScreen)
 {
@@ -219,7 +217,7 @@ MakeScreenPrivate(ScreenPtr pScreen)
 
     if (pPriv)
         return pPriv;
-    pPriv = New(ScreenSaverScreenPrivateRec);
+    pPriv = calloc(1, sizeof(ScreenSaverScreenPrivateRec));
     if (!pPriv)
         return 0;
     pPriv->events = 0;
@@ -269,7 +267,7 @@ setEventMask(ScreenPtr pScreen, ClientPtr client, unsigned long mask)
     }
     else {
         if (!pEv) {
-            pEv = New(ScreenSaverEventRec);
+            pEv = calloc(1, sizeof(ScreenSaverEventRec));
             if (!pEv) {
                 CheckScreenPrivate(pScreen);
                 return FALSE;
@@ -848,7 +846,7 @@ ScreenSaverSetAttributes(ClientPtr client)
         if (!pPriv)
             return FALSE;
     }
-    pAttr = New(ScreenSaverAttrRec);
+    pAttr = calloc(1, sizeof(ScreenSaverAttrRec));
     if (!pAttr) {
         ret = BadAlloc;
         goto bail;
