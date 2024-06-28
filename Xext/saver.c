@@ -65,30 +65,13 @@ Bool noScreenSaverExtension = FALSE;
 
 static int ScreenSaverEventBase = 0;
 
-static Bool ScreenSaverHandle(ScreenPtr /* pScreen */ ,
-                              int /* xstate */ ,
-                              Bool      /* force */
-    );
-
-static Bool
- CreateSaverWindow(ScreenPtr    /* pScreen */
-    );
-
-static Bool
- DestroySaverWindow(ScreenPtr   /* pScreen */
-    );
-
-static void
- UninstallSaverColormap(ScreenPtr       /* pScreen */
-    );
-
-static void
- CheckScreenPrivate(ScreenPtr   /* pScreen */
-    );
-
-static void SScreenSaverNotifyEvent(xScreenSaverNotifyEvent * /* from */ ,
-                                    xScreenSaverNotifyEvent *   /* to */
-    );
+static Bool ScreenSaverHandle(ScreenPtr pScreen, int xstate, Bool force);
+static Bool CreateSaverWindow(ScreenPtr pScreen);
+static Bool DestroySaverWindow(ScreenPtr pScreen);
+static void UninstallSaverColormap(ScreenPtr pScreen);
+static void CheckScreenPrivate(ScreenPtr pScreen);
+static void SScreenSaverNotifyEvent(xScreenSaverNotifyEvent *from,
+                                    xScreenSaverNotifyEvent *to);
 
 static RESTYPE SuspendType;     /* resource type for suspension records */
 
