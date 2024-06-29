@@ -340,7 +340,7 @@ xnestOpenScreen(ScreenPtr pScreen, int argc, char *argv[])
 #define POSITION_OFFSET (pScreen->myNum * (xnestWidth + xnestHeight) / 32)
 
     if (xnestDoFullGeneration) {
-        XnestScreenPtr xnscr = xnestScreenPriv(pScreen);
+        XnestScreenPtr xnscr = xnestAllocScreenPriv(pScreen);
 
         valuemask = CWBackPixel | CWEventMask | CWColormap;
         attributes.background_pixel = xnestWhitePixel;

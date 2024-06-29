@@ -13,6 +13,7 @@
 
 typedef struct xnest_screen {
     Window rootWindow;
+    ScreenPtr pScreen;
 } XnestScreenRec, *XnestScreenPtr;
 
 /* retrieve private screen structure by ScreenPtr */
@@ -20,5 +21,8 @@ XnestScreenPtr xnestScreenPriv(ScreenPtr pScreen);
 
 /* retrieve private screen structure by global index */
 XnestScreenPtr xnestScreenByIdx(int idx);
+
+/* allocate new private screen structure for ScreenPtr */
+XnestScreenPtr xnestAllocScreenPriv(ScreenPtr pScreen);
 
 #endif /* _XSERVER_CALLBACK_PRIV_H */
