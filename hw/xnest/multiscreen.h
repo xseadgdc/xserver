@@ -12,6 +12,8 @@
 #include "screenint.h"
 
 typedef struct xnest_screen {
+    int clonedFrom;
+    Display *upstreamDisplay;
     Window rootWindow;
     Window screenSaverWindow;
     ScreenPtr pScreen;

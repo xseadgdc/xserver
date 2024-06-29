@@ -69,6 +69,9 @@ xnestOpenDisplay(int argc, char *argv[])
     long mask;
     int i, j;
 
+    /* fill out the first screen and later copy it to all others */
+    XnestScreenPtr xnscr = XnestScreenByIdx(0);
+
     if (!xnestDoFullGeneration)
         return;
 
@@ -76,16 +79,16 @@ xnestOpenDisplay(int argc, char *argv[])
 
     xnestCloseDisplay();
 
-    xnestDisplay = XOpenDisplay(xnestDisplayName);
-    if (xnestDisplay == NULL)
+    xnscr->upstreamDisplay = XOpenDisplay(xnestDisplayName);
+    if (xnscr->upstreamDisplay == NULL)
         FatalError("Unable to open display \"%s\".\n",
                    XDisplayName(xnestDisplayName));
 
     if (xnestSynchronize)
-        XSynchronize(xnestDisplay, True);
+        XSynchronize(xnscr->upstreamDisplay, True);
 
     mask = VisualScreenMask;
-    vi.screen = DefaultScreen(xnestDisplay);
+    vi.screen = DefaultScreen(xnscr->upstreamDisplay);
     xnestVisuals = XGetVisualInfo(xnestDisplay, mask, &vi, &xnestNumVisuals);
     if (xnestNumVisuals == 0 || xnestVisuals == NULL)
         FatalError("Unable to find any visuals.\n");
@@ -124,14 +127,14 @@ xnestOpenDisplay(int argc, char *argv[])
                                                    xnestVisuals[i].visual,
                                                    AllocNone);
 
-    xnestDepths = XListDepths(xnestDisplay, DefaultScreen(xnestDisplay),
+    xnestDepths = XListDepths(xnestDisplay, DefaultScreen(xnscr->upstreamDisplay),
                               &xnestNumDepths);
 
-    xnestPixmapFormats = XListPixmapFormats(xnestDisplay,
+    xnestPixmapFormats = XListPixmapFormats(xnscr->upstreamDisplay,
                                             &xnestNumPixmapFormats);
 
-    xnestBlackPixel = BlackPixel(xnestDisplay, DefaultScreen(xnestDisplay));
-    xnestWhitePixel = WhitePixel(xnestDisplay, DefaultScreen(xnestDisplay));
+    xnestBlackPixel = BlackPixel(xnscr->upstreamDisplay, DefaultScreen(xnscr->upstreamDisplay));
+    xnestWhitePixel = WhitePixel(xnscr->upstreamDisplay, DefaultScreen(xnscr->upstreamDisplay));
 
     if (xnestParentWindow != (Window) 0)
         xnestEventMask = StructureNotifyMask;
@@ -146,11 +149,11 @@ xnestOpenDisplay(int argc, char *argv[])
             if (xnestPixmapFormats[i].depth == 1 ||
                 xnestPixmapFormats[i].depth == xnestDepths[j]) {
                 xnestDefaultDrawables[xnestPixmapFormats[i].depth] =
-                    XCreatePixmap(xnestDisplay, DefaultRootWindow(xnestDisplay),
+                    XCreatePixmap(xnscr->upstreamDisplay, DefaultRootWindow(xnscr->upstreamDisplay),
                                   1, 1, xnestPixmapFormats[i].depth);
             }
 
-    xnestBitmapGC = XCreateGC(xnestDisplay, xnestDefaultDrawables[1], 0L, NULL);
+    xnestBitmapGC = XCreateGC(xnscr->upstreamDisplay, xnestDefaultDrawables[1], 0L, NULL);
 
     if (!(xnestUserGeometry & XValue))
         xnestX = 0;
@@ -160,38 +163,47 @@ xnestOpenDisplay(int argc, char *argv[])
 
     if (xnestParentWindow == 0) {
         if (!(xnestUserGeometry & WidthValue))
-            xnestWidth = 3 * DisplayWidth(xnestDisplay,
-                                          DefaultScreen(xnestDisplay)) / 4;
+            xnestWidth = 3 * DisplayWidth(xnscr->upstreamDisplay,
+                                          DefaultScreen(xnscr->upstreamDisplay)) / 4;
 
         if (!(xnestUserGeometry & HeightValue))
-            xnestHeight = 3 * DisplayHeight(xnestDisplay,
-                                            DefaultScreen(xnestDisplay)) / 4;
+            xnestHeight = 3 * DisplayHeight(xnscr->upstreamDisplay,
+                                            DefaultScreen(xnscr->upstreamDisplay)) / 4;
     }
 
     if (!xnestUserBorderWidth)
         xnestBorderWidth = 1;
 
     xnestIconBitmap =
-        XCreateBitmapFromData(xnestDisplay,
-                              DefaultRootWindow(xnestDisplay),
+        XCreateBitmapFromData(xnscr->upstreamDisplay,
+                              DefaultRootWindow(xnscr->upstreamDisplay),
                               (char *) icon_bits, icon_width, icon_height);
 
     xnestScreenSaverPixmap =
-        XCreatePixmapFromBitmapData(xnestDisplay,
-                                    DefaultRootWindow(xnestDisplay),
+        XCreatePixmapFromBitmapData(xnscr->upstreamDisplay,
+                                    DefaultRootWindow(xnscr->upstreamDisplay),
                                     (char *) screensaver_bits,
                                     screensaver_width,
                                     screensaver_height,
                                     xnestWhitePixel,
                                     xnestBlackPixel,
-                                    DefaultDepth(xnestDisplay,
-                                                 DefaultScreen(xnestDisplay)));
+                                    DefaultDepth(xndscr->display,
+                                                 DefaultScreen(xnscr->upstreamDisplay)));
+
+    /* now copy over the remaining screens */
+    for (i=1; i<xnestNumScreens; i++) {
+        XnestScreenPtr s2 = XnestScreenByIdx(i);
+        s2->display = xnscr->upstreamDisplay;
+        s2->clonedFrom = 0;
+    }
 }
 
 void
 xnestCloseDisplay(void)
 {
-    if (!xnestDoFullGeneration || !xnestDisplay)
+    XnestScreenPtr xnscr = xnestScreenByIdx(0);
+
+    if (!xnestDoFullGeneration || !xnscr->upstreamDisplay)
         return;
 
     /*
@@ -203,5 +215,5 @@ xnestCloseDisplay(void)
     XFree(xnestVisuals);
     XFree(xnestDepths);
     XFree(xnestPixmapFormats);
-    XCloseDisplay(xnestDisplay);
+    XCloseDisplay(xnscr->upstreamDisplay);
 }

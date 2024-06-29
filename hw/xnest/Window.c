@@ -78,6 +78,7 @@ xnestCreateWindow(WindowPtr pWin)
     XSetWindowAttributes attributes;
     Visual *visual;
     ColormapPtr pCmap;
+    XnestScreenPtr xnscr = xnestScreenPriv(pWin->drawable.pScreen);
 
     if (pWin->drawable.class == InputOnly) {
         mask = 0L;
@@ -115,7 +116,7 @@ xnestCreateWindow(WindowPtr pWin)
         }
     }
 
-    xnestWindowPriv(pWin)->window = XCreateWindow(xnestDisplay,
+    xnestWindowPriv(pWin)->window = XCreateWindow(xnscr->upstreamDisplay,
                                                   xnestWindowParent(pWin),
                                                   pWin->origin.x -
                                                   wBorderWidth(pWin),
@@ -148,12 +149,14 @@ xnestCreateWindow(WindowPtr pWin)
 Bool
 xnestDestroyWindow(WindowPtr pWin)
 {
+    XnestScreenPtr xnscr = xnestScreenPriv(pWin->drawable.pScreen);
+
     if (pWin->nextSib)
         xnestWindowPriv(pWin->nextSib)->sibling_above =
             xnestWindowPriv(pWin)->sibling_above;
     RegionDestroy(xnestWindowPriv(pWin)->bounding_shape);
     RegionDestroy(xnestWindowPriv(pWin)->clip_shape);
-    XDestroyWindow(xnestDisplay, xnestWindow(pWin));
+    XDestroyWindow(xnscr->upstreamDisplay, xnestWindow(pWin));
     xnestWindowPriv(pWin)->window = None;
 
     if (pWin->optional && pWin->optional->colormap && pWin->parent)
@@ -177,10 +180,11 @@ xnestConfigureWindow(WindowPtr pWin, unsigned int mask)
 {
     unsigned int valuemask;
     XWindowChanges values;
+    XnestScreenPtr xnscr = xnestScreenPriv(pWin->drawable.pScreen);
 
     if (mask & CWParent &&
         xnestWindowPriv(pWin)->parent != xnestWindowParent(pWin)) {
-        XReparentWindow(xnestDisplay, xnestWindow(pWin),
+        XReparentWindow(xnscr->upstreamDisplay, xnestWindow(pWin),
                         xnestWindowParent(pWin),
                         pWin->origin.x - wBorderWidth(pWin),
                         pWin->origin.y - wBorderWidth(pWin));
@@ -227,7 +231,7 @@ xnestConfigureWindow(WindowPtr pWin, unsigned int mask)
     }
 
     if (valuemask)
-        XConfigureWindow(xnestDisplay, xnestWindow(pWin), valuemask, &values);
+        XConfigureWindow(xnscr->upstreamDisplay, xnestWindow(pWin), valuemask, &values);
 
     if (mask & CWStackingOrder &&
         xnestWindowPriv(pWin)->sibling_above != xnestWindowSiblingAbove(pWin)) {
@@ -239,7 +243,7 @@ xnestConfigureWindow(WindowPtr pWin, unsigned int mask)
         /* the top sibling */
         valuemask = CWStackMode;
         values.stack_mode = Above;
-        XConfigureWindow(xnestDisplay, xnestWindow(pSib), valuemask, &values);
+        XConfigureWindow(xnscr->upstreamDisplay, xnestWindow(pSib), valuemask, &values);
         xnestWindowPriv(pSib)->sibling_above = None;
 
         /* the rest of siblings */
@@ -247,7 +251,7 @@ xnestConfigureWindow(WindowPtr pWin, unsigned int mask)
             valuemask = CWSibling | CWStackMode;
             values.sibling = xnestWindowSiblingAbove(pSib);
             values.stack_mode = Below;
-            XConfigureWindow(xnestDisplay, xnestWindow(pSib), valuemask,
+            XConfigureWindow(xnscr->upstreamDisplay, xnestWindow(pSib), valuemask,
                              &values);
             xnestWindowPriv(pSib)->sibling_above =
                 xnestWindowSiblingAbove(pSib);
@@ -259,6 +263,7 @@ Bool
 xnestChangeWindowAttributes(WindowPtr pWin, unsigned long mask)
 {
     XSetWindowAttributes attributes;
+    XnestScreenPtr xnscr = xnestScreenPriv(pWin->drawable.pScreen);
 
     if (mask & CWBackPixmap)
         switch (pWin->backgroundState) {
@@ -342,7 +347,7 @@ xnestChangeWindowAttributes(WindowPtr pWin, unsigned long mask)
         mask &= ~CWCursor;
 
     if (mask)
-        XChangeWindowAttributes(xnestDisplay, xnestWindow(pWin),
+        XChangeWindowAttributes(xnscr->upstreamDisplay, xnestWindow(pWin),
                                 mask, &attributes);
 
     return True;
@@ -351,9 +356,11 @@ xnestChangeWindowAttributes(WindowPtr pWin, unsigned long mask)
 Bool
 xnestRealizeWindow(WindowPtr pWin)
 {
+    XnestScreenPtr xnscr = xnestScreenPriv(pWin->drawable.pScreen);
+
     xnestConfigureWindow(pWin, CWStackingOrder);
     xnestShapeWindow(pWin);
-    XMapWindow(xnestDisplay, xnestWindow(pWin));
+    XMapWindow(xnscr->upstreamDisplay, xnestWindow(pWin));
 
     return True;
 }
@@ -361,7 +368,9 @@ xnestRealizeWindow(WindowPtr pWin)
 Bool
 xnestUnrealizeWindow(WindowPtr pWin)
 {
-    XUnmapWindow(xnestDisplay, xnestWindow(pWin));
+    XnestScreenPtr xnscr = xnestScreenPriv(pWin->drawable.pScreen);
+
+    XUnmapWindow(xnscr->upstreamDisplay, xnestWindow(pWin));
 
     return True;
 }
@@ -390,6 +399,7 @@ xnestWindowExposures(WindowPtr pWin, RegionPtr pRgn)
     XEvent event;
     Window window;
     BoxRec Box;
+    XnestScreenPtr xnscr = xnestScreenPriv(pWin->drawable.pScreen);
 
     XSync(xnestDisplay, False);
 
@@ -406,7 +416,7 @@ xnestWindowExposures(WindowPtr pWin, RegionPtr pRgn)
         event.xexpose.type = ProcessedExpose;
 
         if (RegionContainsRect(pRgn, &Box) != rgnIN)
-            XPutBackEvent(xnestDisplay, &event);
+            XPutBackEvent(xnscr->upstreamDisplay, &event);
     }
 
     miWindowExposures(pWin, pRgn);
@@ -456,6 +466,7 @@ xnestShapeWindow(WindowPtr pWin)
     BoxPtr pBox;
     XRectangle rect;
     int i;
+    XnestScreenPtr xnscr = xnestScreenPriv(pWin->drawable.pScreen);
 
     if (!xnestRegionEqual(xnestWindowPriv(pWin)->bounding_shape,
                           wBoundingShape(pWin))) {
@@ -475,14 +486,14 @@ xnestShapeWindow(WindowPtr pWin)
                 rect.height = pBox[i].y2 - pBox[i].y1;
                 XUnionRectWithRegion(&rect, reg, reg);
             }
-            XShapeCombineRegion(xnestDisplay, xnestWindow(pWin),
+            XShapeCombineRegion(xnscr->upstreamDisplay, xnestWindow(pWin),
                                 ShapeBounding, 0, 0, reg, ShapeSet);
             XDestroyRegion(reg);
         }
         else {
             RegionEmpty(xnestWindowPriv(pWin)->bounding_shape);
 
-            XShapeCombineMask(xnestDisplay, xnestWindow(pWin),
+            XShapeCombineMask(xnscr->upstreamDisplay, xnestWindow(pWin),
                               ShapeBounding, 0, 0, None, ShapeSet);
         }
     }
@@ -502,14 +513,14 @@ xnestShapeWindow(WindowPtr pWin)
                 rect.height = pBox[i].y2 - pBox[i].y1;
                 XUnionRectWithRegion(&rect, reg, reg);
             }
-            XShapeCombineRegion(xnestDisplay, xnestWindow(pWin),
+            XShapeCombineRegion(xnscr->upstreamDisplay, xnestWindow(pWin),
                                 ShapeClip, 0, 0, reg, ShapeSet);
             XDestroyRegion(reg);
         }
         else {
             RegionEmpty(xnestWindowPriv(pWin)->clip_shape);
 
-            XShapeCombineMask(xnestDisplay, xnestWindow(pWin),
+            XShapeCombineMask(xnscr->upstreamDisplay, xnestWindow(pWin),
                               ShapeClip, 0, 0, None, ShapeSet);
         }
     }

@@ -75,26 +75,27 @@ xnestSaveScreen(ScreenPtr pScreen, int what)
     if (xnestSoftwareScreenSaver)
         return False;
     else {
-        Window saverWin = xnestScreenPriv(pScreen)->screenSaverWindow;
+        XnestScreenPtr xnscr = xnestScreenPriv(pScreen);
+        Window saverWin = xnscr->screenSaverWindow;
         switch (what) {
         case SCREEN_SAVER_ON:
-            XMapRaised(xnestDisplay, saverWin);
+            XMapRaised(xnscr->upstreamDisplay, saverWin);
             xnestSetScreenSaverColormapWindow(pScreen);
             break;
 
         case SCREEN_SAVER_OFF:
-            XUnmapWindow(xnestDisplay, saverWin);
+            XUnmapWindow(xnscr->upstreamDisplay, saverWin);
             xnestSetInstalledColormapWindows(pScreen);
             break;
 
         case SCREEN_SAVER_FORCER:
             lastEventTime = GetTimeInMillis();
-            XUnmapWindow(xnestDisplay, saverWin);
+            XUnmapWindow(xnscr->upstreamDisplay, saverWin);
             xnestSetInstalledColormapWindows(pScreen);
             break;
 
         case SCREEN_SAVER_CYCLE:
-            XUnmapWindow(xnestDisplay, saverWin);
+            XUnmapWindow(xnscr->upstreamDisplay, saverWin);
             xnestSetInstalledColormapWindows(pScreen);
             break;
         }
@@ -142,6 +143,7 @@ xnestOpenScreen(ScreenPtr pScreen, int argc, char *argv[])
     VisualID defaultVisual;
     int rootDepth;
     miPointerScreenPtr PointPriv;
+    XnestScreenPtr xnscr = xnestScreenPriv(pScreen);
 
     if (!dixRegisterPrivateKey
         (&xnestWindowPrivateKeyRec, PRIVATE_WINDOW, sizeof(xnestPrivWin)))
@@ -235,7 +237,7 @@ xnestOpenScreen(ScreenPtr pScreen, int argc, char *argv[])
     rootDepth = visuals[xnestDefaultVisualIndex].nplanes;
 
     if (xnestParentWindow != 0) {
-        XGetWindowAttributes(xnestDisplay, xnestParentWindow, &gattributes);
+        XGetWindowAttributes(xnscr->upstreamDisplay, xnestParentWindow, &gattributes);
         xnestWidth = gattributes.width;
         xnestHeight = gattributes.height;
     }
@@ -321,13 +323,13 @@ xnestOpenScreen(ScreenPtr pScreen, int argc, char *argv[])
                   &xnestCursorFuncs);
     PointPriv->spriteFuncs = &xnestPointerSpriteFuncs;
 
-    pScreen->mmWidth = xnestWidth * DisplayWidthMM(xnestDisplay,
-                                                   DefaultScreen(xnestDisplay))
-        / DisplayWidth(xnestDisplay, DefaultScreen(xnestDisplay));
+    pScreen->mmWidth = xnestWidth * DisplayWidthMM(xnscr->upstreamDisplay,
+                                                   DefaultScreen(xnscr->upstreamDisplay))
+        / DisplayWidth(xnestDisplay, DefaultScreen(xnscr->upstreamDisplay));
     pScreen->mmHeight =
-        xnestHeight * DisplayHeightMM(xnestDisplay,
-                                      DefaultScreen(xnestDisplay)) /
-        DisplayHeight(xnestDisplay, DefaultScreen(xnestDisplay));
+        xnestHeight * DisplayHeightMM(xnscr->upstreamDisplay,
+                                      DefaultScreen(xnscr->upstreamDisplay)) /
+        DisplayHeight(xnscr->upstreamDisplay, DefaultScreen(xnscr->upstreamDisplay));
 
     /* overwrite miCloseScreen with our own */
     pScreen->CloseScreen = xnestCloseScreen;
@@ -350,12 +352,12 @@ xnestOpenScreen(ScreenPtr pScreen, int argc, char *argv[])
 
         if (xnestParentWindow != 0) {
             xnscr->rootWindow = xnestParentWindow;
-            XSelectInput(xnestDisplay, xnestParentWindow, xnestEventMask);
+            XSelectInput(xnscr->upstreamDisplay, xnestParentWindow, xnestEventMask);
         }
         else
             xnscr->rootWindow =
-                XCreateWindow(xnestDisplay,
-                              DefaultRootWindow(xnestDisplay),
+                XCreateWindow(xnscr->upstreamDisplay,
+                              DefaultRootWindow(xnscr->upstreamDisplay),
                               xnestX + POSITION_OFFSET,
                               xnestY + POSITION_OFFSET,
                               xnestWidth, xnestHeight,
@@ -377,27 +379,27 @@ xnestOpenScreen(ScreenPtr pScreen, int argc, char *argv[])
             sizeHints.flags |= USPosition;
         if (xnestUserGeometry & WidthValue || xnestUserGeometry & HeightValue)
             sizeHints.flags |= USSize;
-        XSetStandardProperties(xnestDisplay,
+        XSetStandardProperties(xnscr->upstreamDisplay,
                                xnscr->rootWindow,
                                xnestWindowName,
                                xnestWindowName,
                                xnestIconBitmap, argv, argc, &sizeHints);
 
-        XMapWindow(xnestDisplay, xnscr->rootWindow);
+        XMapWindow(xnscr->upstreamDisplay, xnscr->rootWindow);
 
         valuemask = CWBackPixmap | CWColormap;
         attributes.background_pixmap = xnestScreenSaverPixmap;
         attributes.colormap =
-            DefaultColormap(xnestDisplay, DefaultScreen(xnestDisplay));
+            DefaultColormap(xnscr->upstreamDisplay, DefaultScreen(xnscr->upstreamDisplay));
         xnscr->screenSaverWindow =
-            XCreateWindow(xnestDisplay,
+            XCreateWindow(xnscr->upstreamDisplay,
                           xnscr->rootWindow,
                           0, 0, xnestWidth, xnestHeight, 0,
-                          DefaultDepth(xnestDisplay,
-                                       DefaultScreen(xnestDisplay)),
-                          InputOutput, DefaultVisual(xnestDisplay,
+                          DefaultDepth(xnscr->upstreamDisplay,
+                                       DefaultScreen(xnscr->upstreamDisplay)),
+                          InputOutput, DefaultVisual(xnscr->upstreamDisplay,
                                                      DefaultScreen
-                                                     (xnestDisplay)), valuemask,
+                                                     (xnscr->upstreamDisplay)), valuemask,
                           &attributes);
     }
 
