@@ -387,7 +387,8 @@ xnestOpenScreen(ScreenPtr pScreen, int argc, char *argv[])
                                xnestWindowName,
                                xnestIconBitmap, argv, argc, &sizeHints);
 
-        XMapWindow(xnestDisplay, xnestDefaultWindows[pScreen->myNum]);
+        if (!xnestRootless)
+            XMapWindow(xnestDisplay, xnestDefaultWindows[pScreen->myNum]);
 
         valuemask = CWBackPixmap | CWColormap;
         attributes.background_pixmap = xnestScreenSaverPixmap;

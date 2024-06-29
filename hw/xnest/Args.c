@@ -52,6 +52,7 @@ char *xnestWindowName = NULL;
 int xnestNumScreens = 0;
 Bool xnestDoDirectColormaps = False;
 Window xnestParentWindow = 0;
+Bool xnestRootless = 0;
 
 int
 ddxProcessArgument(int argc, char *argv[], int i)
@@ -175,6 +176,10 @@ ddxProcessArgument(int argc, char *argv[], int i)
             xnestParentWindow = (XID) strtol(argv[i], (char **) NULL, 0);
             return 2;
         }
+    }
+    if (!strcmp(argv[i], "-rootless")) {
+        xnestRootless = True;
+        return 1;
     }
     return 0;
 }

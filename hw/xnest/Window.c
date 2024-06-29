@@ -145,6 +145,11 @@ xnestCreateWindow(WindowPtr pWin)
     if (!pWin->parent)          /* only the root window will have the right colormap */
         xnestSetInstalledColormapWindows(pWin->drawable.pScreen);
 
+    if (xnestRootless) {
+        if (pWin->parent && !(pWin->parent->parent)) {
+            XSelectInput(xnestDisplay, xnestWindowPriv(pWin)->window, xnestEventMask);
+        }
+    }
     return True;
 }
 
@@ -356,7 +361,10 @@ xnestRealizeWindow(WindowPtr pWin)
 {
     xnestConfigureWindow(pWin, CWStackingOrder);
     xnestShapeWindow(pWin);
-    XMapWindow(xnestDisplay, xnestWindow(pWin));
+
+    /* in rootless mode, don't map the screen's root window on upstream server */
+    if (!(xnestRootless && pWin->parent == NULL))
+        XMapWindow(xnestDisplay, xnestWindow(pWin));
 
     return True;
 }
@@ -516,4 +524,22 @@ xnestShapeWindow(WindowPtr pWin)
                               ShapeClip, 0, 0, None, ShapeSet);
         }
     }
+}
+
+Window xnestWindowParent(WindowPtr pWin) {
+    /* it's the screen's root window */
+    if (pWin->parent == NULL) {
+        if (xnestRootless)
+            return DefaultRootWindow(xnestDisplay);
+        else
+            return xnestDefaultWindows[pWin->drawable.pScreen->myNum];
+    }
+
+    /* toplevel window */
+    if (pWin->parent->parent == NULL) {
+        if (xnestRootless)
+            return DefaultRootWindow(xnestDisplay);
+    }
+
+    return (xnestWindow(pWin->parent));
 }
