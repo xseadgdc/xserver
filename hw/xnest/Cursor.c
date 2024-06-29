@@ -44,7 +44,7 @@ xnestRealizeCursor(DeviceIntPtr pDev, ScreenPtr pScreen, CursorPtr pCursor)
     XColor fg_color, bg_color;
     unsigned long valuemask;
     XGCValues values;
-    XnestScreenPtr xscr = xnestScreenPriv(pScreen);
+    XnestScreenPtr xnscr = xnestScreenPriv(pScreen);
 
     valuemask = GCFunction |
         GCPlaneMask | GCForeground | GCBackground | GCClipMask;
@@ -55,24 +55,24 @@ xnestRealizeCursor(DeviceIntPtr pDev, ScreenPtr pScreen, CursorPtr pCursor)
     values.background = 0L;
     values.clip_mask = None;
 
-    XChangeGC(xnestDisplay, xnestBitmapGC, valuemask, &values);
+    XChangeGC(xnscr->upstreamDisplay, xnestBitmapGC, valuemask, &values);
 
-    source = XCreatePixmap(xnestDisplay,
-                           xscr->rootWindow,
+    source = XCreatePixmap(xnscr->upstreamDisplay,
+                           xnscr->rootWindow,
                            pCursor->bits->width, pCursor->bits->height, 1);
 
-    mask = XCreatePixmap(xnestDisplay,
-                         xscr->rootWindow,
+    mask = XCreatePixmap(xnscr->upstreamDisplay,
+                         xnscr->rootWindow,
                          pCursor->bits->width, pCursor->bits->height, 1);
 
-    ximage = XCreateImage(xnestDisplay,
+    ximage = XCreateImage(xnscr->upstreamDisplay,
                           xnestDefaultVisual(pScreen),
                           1, XYBitmap, 0,
                           (char *) pCursor->bits->source,
                           pCursor->bits->width,
                           pCursor->bits->height, BitmapPad(xnestDisplay), 0);
 
-    XPutImage(xnestDisplay, source, xnestBitmapGC, ximage,
+    XPutImage(xnscr->upstreamDisplay, source, xnestBitmapGC, ximage,
               0, 0, 0, 0, pCursor->bits->width, pCursor->bits->height);
 
     XFree(ximage);

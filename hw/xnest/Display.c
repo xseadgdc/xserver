@@ -71,6 +71,7 @@ xnestOpenDisplay(int argc, char *argv[])
 
     /* fill out the first screen and later copy it to all others */
     XnestScreenPtr xnscr = XnestScreenByIdx(0);
+    xnscr->clonedFrom = -1;
 
     if (!xnestDoFullGeneration)
         return;
@@ -187,13 +188,13 @@ xnestOpenDisplay(int argc, char *argv[])
                                     screensaver_height,
                                     xnestWhitePixel,
                                     xnestBlackPixel,
-                                    DefaultDepth(xndscr->display,
+                                    DefaultDepth(xnscr->upstreamDisplay,
                                                  DefaultScreen(xnscr->upstreamDisplay)));
 
     /* now copy over the remaining screens */
     for (i=1; i<xnestNumScreens; i++) {
         XnestScreenPtr s2 = XnestScreenByIdx(i);
-        s2->display = xnscr->upstreamDisplay;
+        s2->upstreamDisplay = xnscr->upstreamDisplay;
         s2->clonedFrom = 0;
     }
 }

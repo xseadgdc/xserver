@@ -38,8 +38,15 @@ DeviceIntPtr xnestPointerDevice = NULL;
 void
 xnestChangePointerControl(DeviceIntPtr pDev, PtrCtrl * ctrl)
 {
-    XChangePointerControl(xnestDisplay, True, True,
+    int i;
+    // we have to send it to all upstream servers, but only once per connection
+    for (i=0; i<xnestNumScreens; i++) {
+        XnestScreenPtr xnscr = XnestScreenByIdx(i);
+        if (xnscr->clonedFrom >= 0) { // skip the cloned ones
+            XChangePointerControl(xnscr->upstreamDisplay, True, True,
                           ctrl->num, ctrl->den, ctrl->threshold);
+        }
+    }
 }
 
 int

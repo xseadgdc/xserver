@@ -58,7 +58,7 @@ xnestCreateColormap(ColormapPtr pCmap)
     XnestScreenPtr xnscr = xnestScreenPriv(pCmap->pScreen);
 
     xnestColormapPriv(pCmap)->colormap =
-        XCreateColormap(xnestDisplay,
+        XCreateColormap(xnscr->upstreamDisplay,
                         xnscr->rootWindow,
                         xnestVisual(pVisual),
                         (pVisual->class & DynamicClass) ? AllocAll : AllocNone);
@@ -68,7 +68,7 @@ xnestCreateColormap(ColormapPtr pCmap)
         colors = xallocarray(ncolors, sizeof(XColor));
         for (i = 0; i < ncolors; i++)
             colors[i].pixel = i;
-        XQueryColors(xnestDisplay, xnestColormap(pCmap), colors, ncolors);
+        XQueryColors(xnscr->upstreamDisplay, xnestColormap(pCmap), colors, ncolors);
         for (i = 0; i < ncolors; i++) {
             pCmap->red[i].co.local.red = colors[i].red;
             pCmap->red[i].co.local.green = colors[i].red;
@@ -81,7 +81,7 @@ xnestCreateColormap(ColormapPtr pCmap)
         colors = xallocarray(ncolors, sizeof(XColor));
         for (i = 0; i < ncolors; i++)
             colors[i].pixel = i;
-        XQueryColors(xnestDisplay, xnestColormap(pCmap), colors, ncolors);
+        XQueryColors(xnscr->upstreamDisplay, xnestColormap(pCmap), colors, ncolors);
         for (i = 0; i < ncolors; i++) {
             pCmap->red[i].co.local.red = colors[i].red;
             pCmap->red[i].co.local.green = colors[i].green;
@@ -108,7 +108,7 @@ xnestCreateColormap(ColormapPtr pCmap)
             if (blue > pVisual->blueMask)
                 blue = 0L;
         }
-        XQueryColors(xnestDisplay, xnestColormap(pCmap), colors, ncolors);
+        XQueryColors(xnscr->upstreamDisplay, xnestColormap(pCmap), colors, ncolors);
         for (i = 0; i < ncolors; i++) {
             pCmap->red[i].co.local.red = colors[i].red;
             pCmap->green[i].co.local.green = colors[i].green;
@@ -133,7 +133,8 @@ xnestCreateColormap(ColormapPtr pCmap)
 void
 xnestDestroyColormap(ColormapPtr pCmap)
 {
-    XFreeColormap(xnestDisplay, xnestColormap(pCmap));
+    XnestScreenPtr xnscr = xnestScreenPriv(pCmap->pScreen);
+    XFreeColormap(xnscr->upstreamDisplay, xnestColormap(pCmap));
 }
 
 #define SEARCH_PREDICATE \
@@ -219,7 +220,7 @@ xnestSetInstalledColormapWindows(ScreenPtr pScreen)
     if (!xnestSameInstalledColormapWindows(icws.windows, icws.numWindows)) {
         free(xnestOldInstalledColormapWindows);
 
-        XSetWMColormapWindows(xnestDisplay, xnscr->rootWindow,
+        XSetWMColormapWindows(xnscr->upstreamDisplay, xnscr->rootWindow,
                               icws.windows, numWindows);
 
         xnestOldInstalledColormapWindows = icws.windows;
@@ -247,7 +248,7 @@ xnestSetInstalledColormapWindows(ScreenPtr pScreen)
                                         pScreen->defColormap, X11_RESTYPE_COLORMAP,
                                         serverClient, DixUseAccess);
 
-            XSetWindowColormap(xnestDisplay, xnscr->rootWindow, xnestColormap(pCmap));
+            XSetWindowColormap(xnscr->upstreamDisplay, xnscr->rootWindow, xnestColormap(pCmap));
         }
 #endif                          /* DUMB_WINDOW_MANAGERS */
     }
@@ -262,7 +263,7 @@ xnestSetScreenSaverColormapWindow(ScreenPtr pScreen)
 
     free(xnestOldInstalledColormapWindows);
 
-    XSetWMColormapWindows(xnestDisplay, xnscr->rootWindow,
+    XSetWMColormapWindows(xnscr->upstreamDisplay, xnscr->rootWindow,
                           &xnscr->screenSaverWindow, 1);
 
     xnestOldInstalledColormapWindows = NULL;
@@ -288,7 +289,7 @@ xnestDirectInstallColormaps(ScreenPtr pScreen)
         dixLookupResourceByType((void **) &pCmap, pCmapIDs[i], X11_RESTYPE_COLORMAP,
                                 serverClient, DixInstallAccess);
         if (pCmap)
-            XInstallColormap(xnestDisplay, xnestColormap(pCmap));
+            XInstallColormap(xnscr->upstreamDisplay, xnestColormap(pCmap));
     }
 }
 
@@ -309,7 +310,7 @@ xnestDirectUninstallColormaps(ScreenPtr pScreen)
         dixLookupResourceByType((void **) &pCmap, pCmapIDs[i], X11_RESTYPE_COLORMAP,
                                 serverClient, DixUninstallAccess);
         if (pCmap)
-            XUninstallColormap(xnestDisplay, xnestColormap(pCmap));
+            XUninstallColormap(xnscr->upstreamDisplay, xnestColormap(pCmap));
     }
 }
 
@@ -365,8 +366,10 @@ xnestListInstalledColormaps(ScreenPtr pScreen, Colormap * pCmapIDs)
 void
 xnestStoreColors(ColormapPtr pCmap, int nColors, xColorItem * pColors)
 {
+    XnestScreenPtr xnscr = xnestScreenPriv(pScreen);
+
     if (pCmap->pVisual->class & DynamicClass)
-        XStoreColors(xnestDisplay, xnestColormap(pCmap),
+        XStoreColors(xnscr->upstreamDisplay, xnestColormap(pCmap),
                      (XColor *) pColors, nColors);
 }
 

@@ -64,13 +64,23 @@ DeviceIntPtr xnestKeyboardDevice = NULL;
 void
 xnestBell(int volume, DeviceIntPtr pDev, void *ctrl, int cls)
 {
-    XBell(xnestDisplay, volume);
+    int i;
+    for (i=0; x<xnestNumDisplays; i++) {
+        XnestScreenPtr xnscr = xnestScreenByIdx(i);
+        if (xnscr->clonedFrom >= 0)
+            XBell(xnscr->upstreamDisplay, volume);
+    }
 }
 
 void
 DDXRingBell(int volume, int pitch, int duration)
 {
-    XBell(xnestDisplay, volume);
+    int i;
+    for (i=0; x<xnestNumDisplays; i++) {
+        XnestScreenPtr xnscr = xnestScreenByIdx(i);
+        if (xnscr->clonedFrom >= 0)
+            XBell(xnscr->upstreamDisplay, volume);
+    }
 }
 
 void
@@ -79,7 +89,7 @@ xnestChangeKeyboardControl(DeviceIntPtr pDev, KeybdCtrl * ctrl)
 #if 0
     unsigned long value_mask;
     XKeyboardControl values;
-    int i;
+    int i,j;
 
     value_mask = KBKeyClickPercent |
         KBBellPercent | KBBellPitch | KBBellDuration | KBAutoRepeatMode;
@@ -91,7 +101,11 @@ xnestChangeKeyboardControl(DeviceIntPtr pDev, KeybdCtrl * ctrl)
     values.auto_repeat_mode = ctrl->autoRepeat ?
         AutoRepeatModeOn : AutoRepeatModeOff;
 
-    XChangeKeyboardControl(xnestDisplay, value_mask, &values);
+    for (j=0; x<xnestNumDisplays; j++) {
+        XnestScreenPtr xnscr = xnestScreenByIdx(j);
+        if (xnscr->clonedFrom >= 0)
+            XChangeKeyboardControl(xnscr->upstreamDisplay, value_mask, &values);
+    }
 
     /*
        value_mask = KBKey | KBAutoRepeatMode;
@@ -105,6 +119,12 @@ xnestChangeKeyboardControl(DeviceIntPtr pDev, KeybdCtrl * ctrl)
         values.led_mode =
             (ctrl->leds & (1 << (i - 1))) ? LedModeOn : LedModeOff;
         XChangeKeyboardControl(xnestDisplay, value_mask, &values);
+
+        for (j=0; x<xnestNumDisplays; j++) {
+            XnestScreenPtr xnscr = xnestScreenByIdx(j);
+            if (xnscr->clonedFrom >= 0)
+                XChangeKeyboardControl(xnscr->upstreamDisplay, value_mask, &values);
+        }
     }
 #endif
 }
