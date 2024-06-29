@@ -47,7 +47,7 @@ extern DevPrivateKeyRec xnestWindowPrivateKeyRec;
 #define xnestWindowParent(pWin) \
   ((pWin)->parent ? \
    xnestWindow((pWin)->parent) : \
-   xnestDefaultWindows[pWin->drawable.pScreen->myNum])
+   xnestScreenPriv(pWin->drawable.pScreen)->rootWindow)
 
 #define xnestWindowSiblingAbove(pWin) \
   ((pWin)->prevSib ? xnestWindow((pWin)->prevSib) : None)

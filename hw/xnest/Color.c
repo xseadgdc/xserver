@@ -32,6 +32,7 @@ is" without express or implied warranty.
 #include "Visual.h"
 #include "XNWindow.h"
 #include "Args.h"
+#include "multiscreen.h"
 
 DevPrivateKeyRec xnestColormapPrivateKeyRec;
 
@@ -54,9 +55,11 @@ xnestCreateColormap(ColormapPtr pCmap)
     pVisual = pCmap->pVisual;
     ncolors = pVisual->ColormapEntries;
 
+    XnestScreenPtr xnscr = xnestScreenPriv(pCmap->pScreen);
+
     xnestColormapPriv(pCmap)->colormap =
         XCreateColormap(xnestDisplay,
-                        xnestDefaultWindows[pCmap->pScreen->myNum],
+                        xnscr->rootWindow,
                         xnestVisual(pVisual),
                         (pVisual->class & DynamicClass) ? AllocAll : AllocNone);
 
@@ -193,6 +196,7 @@ xnestSetInstalledColormapWindows(ScreenPtr pScreen)
 {
     xnestInstalledColormapWindows icws;
     int numWindows;
+    XnestScreenPtr xnscr = xnestScreenPriv(pScreen);
 
     icws.cmapIDs = xallocarray(pScreen->maxInstalledCmaps, sizeof(Colormap));
     icws.numCmapIDs = xnestListInstalledColormaps(pScreen, icws.cmapIDs);
@@ -202,7 +206,7 @@ xnestSetInstalledColormapWindows(ScreenPtr pScreen)
         icws.windows = xallocarray(icws.numWindows + 1, sizeof(Window));
         icws.index = 0;
         WalkTree(pScreen, xnestGetInstalledColormapWindows, (void *) &icws);
-        icws.windows[icws.numWindows] = xnestDefaultWindows[pScreen->myNum];
+        icws.windows[icws.numWindows] = xnscr->rootWindow;
         numWindows = icws.numWindows + 1;
     }
     else {
@@ -215,7 +219,7 @@ xnestSetInstalledColormapWindows(ScreenPtr pScreen)
     if (!xnestSameInstalledColormapWindows(icws.windows, icws.numWindows)) {
         free(xnestOldInstalledColormapWindows);
 
-        XSetWMColormapWindows(xnestDisplay, xnestDefaultWindows[pScreen->myNum],
+        XSetWMColormapWindows(xnestDisplay, xnscr->rootWindow,
                               icws.windows, numWindows);
 
         xnestOldInstalledColormapWindows = icws.windows;
@@ -243,9 +247,7 @@ xnestSetInstalledColormapWindows(ScreenPtr pScreen)
                                         pScreen->defColormap, X11_RESTYPE_COLORMAP,
                                         serverClient, DixUseAccess);
 
-            XSetWindowColormap(xnestDisplay,
-                               xnestDefaultWindows[pScreen->myNum],
-                               xnestColormap(pCmap));
+            XSetWindowColormap(xnestDisplay, xnscr->rootWindow, xnestColormap(pCmap));
         }
 #endif                          /* DUMB_WINDOW_MANAGERS */
     }
@@ -256,9 +258,11 @@ xnestSetInstalledColormapWindows(ScreenPtr pScreen)
 void
 xnestSetScreenSaverColormapWindow(ScreenPtr pScreen)
 {
+    XnestScreenPtr xnscr = xnestScreenPriv(pScreen);
+
     free(xnestOldInstalledColormapWindows);
 
-    XSetWMColormapWindows(xnestDisplay, xnestDefaultWindows[pScreen->myNum],
+    XSetWMColormapWindows(xnestDisplay, xnscr->rootWindow,
                           &xnestScreenSaverWindows[pScreen->myNum], 1);
 
     xnestOldInstalledColormapWindows = NULL;

@@ -15,6 +15,7 @@ srcs = [
     'Screen.c',
     'Visual.c',
     'Window.c',
+    'multiscreen.c',
     '../../mi/miinitext.c',
     '../../mi/miinitext.h',
 ]

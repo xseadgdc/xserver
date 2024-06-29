@@ -34,6 +34,7 @@ is" without express or implied warranty.
 #include "Keyboard.h"
 #include "Args.h"
 #include "Events.h"
+#include "multiscreen.h"
 
 #include <X11/extensions/XKB.h>
 #include "xkbsrv.h"
@@ -175,13 +176,17 @@ xnestKeyboardProc(DeviceIntPtr pDev, int onoff)
         break;
     case DEVICE_ON:
         xnestEventMask |= XNEST_KEYBOARD_EVENT_MASK;
-        for (i = 0; i < xnestNumScreens; i++)
-            XSelectInput(xnestDisplay, xnestDefaultWindows[i], xnestEventMask);
+        for (i = 0; i < xnestNumScreens; i++) {
+            XnestScreenPtr xnscr = xnestScreenByIdx(i);
+            XSelectInput(xnestDisplay, xnscr->rootWindow, xnestEventMask);
+        }
         break;
     case DEVICE_OFF:
         xnestEventMask &= ~XNEST_KEYBOARD_EVENT_MASK;
-        for (i = 0; i < xnestNumScreens; i++)
-            XSelectInput(xnestDisplay, xnestDefaultWindows[i], xnestEventMask);
+        for (i = 0; i < xnestNumScreens; i++) {
+            XnestScreenPtr xnscr = xnestScreenByIdx(i);
+            XSelectInput(xnestDisplay, xnscr->rootWindow, xnestEventMask);
+        }
         break;
     case DEVICE_CLOSE:
         break;

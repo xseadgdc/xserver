@@ -18,7 +18,6 @@ is" without express or implied warranty.
 #include <X11/X.h>
 #include <X11/Xdefs.h>
 
-extern Window xnestDefaultWindows[MAXSCREENS];
 extern Window xnestScreenSaverWindows[MAXSCREENS];
 
 ScreenPtr xnestScreen(Window window);

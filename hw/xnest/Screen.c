@@ -41,8 +41,8 @@ is" without express or implied warranty.
 #include "mipointer.h"
 #include "Args.h"
 #include "mipointrst.h"
+#include "multiscreen.h"
 
-Window xnestDefaultWindows[MAXSCREENS];
 Window xnestScreenSaverWindows[MAXSCREENS];
 DevPrivateKeyRec xnestScreenCursorFuncKeyRec;
 DevScreenPrivateKeyRec xnestScreenCursorPrivKeyRec;
@@ -53,7 +53,7 @@ xnestScreen(Window window)
     int i;
 
     for (i = 0; i < xnestNumScreens; i++)
-        if (xnestDefaultWindows[i] == window)
+        if (xnestScreenByIdx(i)->rootWindow == window)
             return screenInfo.screens[i];
 
     return NULL;
@@ -340,6 +340,7 @@ xnestOpenScreen(ScreenPtr pScreen, int argc, char *argv[])
 #define POSITION_OFFSET (pScreen->myNum * (xnestWidth + xnestHeight) / 32)
 
     if (xnestDoFullGeneration) {
+        XnestScreenPtr xnscr = xnestScreenPriv(pScreen);
 
         valuemask = CWBackPixel | CWEventMask | CWColormap;
         attributes.background_pixel = xnestWhitePixel;
@@ -348,12 +349,11 @@ xnestOpenScreen(ScreenPtr pScreen, int argc, char *argv[])
             xnestDefaultVisualColormap(xnestDefaultVisual(pScreen));
 
         if (xnestParentWindow != 0) {
-            xnestDefaultWindows[pScreen->myNum] = xnestParentWindow;
-            XSelectInput(xnestDisplay, xnestDefaultWindows[pScreen->myNum],
-                         xnestEventMask);
+            xnscr->rootWindow = xnestParentWindow;
+            XSelectInput(xnestDisplay, xnestParentWindow, xnestEventMask);
         }
         else
-            xnestDefaultWindows[pScreen->myNum] =
+            xnscr->rootWindow =
                 XCreateWindow(xnestDisplay,
                               DefaultRootWindow(xnestDisplay),
                               xnestX + POSITION_OFFSET,
@@ -378,12 +378,12 @@ xnestOpenScreen(ScreenPtr pScreen, int argc, char *argv[])
         if (xnestUserGeometry & WidthValue || xnestUserGeometry & HeightValue)
             sizeHints.flags |= USSize;
         XSetStandardProperties(xnestDisplay,
-                               xnestDefaultWindows[pScreen->myNum],
+                               xnscr->rootWindow,
                                xnestWindowName,
                                xnestWindowName,
                                xnestIconBitmap, argv, argc, &sizeHints);
 
-        XMapWindow(xnestDisplay, xnestDefaultWindows[pScreen->myNum]);
+        XMapWindow(xnestDisplay, xnscr->rootWindow);
 
         valuemask = CWBackPixmap | CWColormap;
         attributes.background_pixmap = xnestScreenSaverPixmap;
@@ -391,7 +391,7 @@ xnestOpenScreen(ScreenPtr pScreen, int argc, char *argv[])
             DefaultColormap(xnestDisplay, DefaultScreen(xnestDisplay));
         xnestScreenSaverWindows[pScreen->myNum] =
             XCreateWindow(xnestDisplay,
-                          xnestDefaultWindows[pScreen->myNum],
+                          xnscr->rootWindow,
                           0, 0, xnestWidth, xnestHeight, 0,
                           DefaultDepth(xnestDisplay,
                                        DefaultScreen(xnestDisplay)),

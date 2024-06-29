@@ -29,6 +29,7 @@ is" without express or implied warranty.
 #include "Display.h"
 #include "Screen.h"
 #include "XNPixmap.h"
+#include "multiscreen.h"
 
 DevPrivateKeyRec xnestPixmapPrivateKeyRec;
 
@@ -58,8 +59,8 @@ xnestCreatePixmap(ScreenPtr pScreen, int width, int height, int depth,
     if (width && height)
         xnestPixmapPriv(pPixmap)->pixmap =
             XCreatePixmap(xnestDisplay,
-                          xnestDefaultWindows[pScreen->myNum],
-                          width, height, depth);
+                xnestScreenPriv(pScreen)->rootWindow,
+                width, height, depth);
     else
         xnestPixmapPriv(pPixmap)->pixmap = 0;
 
@@ -83,7 +84,7 @@ xnestModifyPixmapHeader(PixmapPtr pPixmap, int width, int height, int depth,
   if(!xnestPixmapPriv(pPixmap)->pixmap && width > 0 && height > 0) {
     xnestPixmapPriv(pPixmap)->pixmap =
         XCreatePixmap(xnestDisplay,
-                      xnestDefaultWindows[pPixmap->drawable.pScreen->myNum],
+                      xnestScreenPriv(pPixmap->drawable.pScreen)->rootWindow,
                       width, height, depth);
   }
 

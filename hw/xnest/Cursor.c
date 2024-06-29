@@ -32,6 +32,7 @@ is" without express or implied warranty.
 #include "Visual.h"
 #include "Keyboard.h"
 #include "Args.h"
+#include "multiscreen.h"
 
 xnestCursorFuncRec xnestCursorFuncs = { NULL };
 
@@ -43,6 +44,7 @@ xnestRealizeCursor(DeviceIntPtr pDev, ScreenPtr pScreen, CursorPtr pCursor)
     XColor fg_color, bg_color;
     unsigned long valuemask;
     XGCValues values;
+    XnestScreenPtr xscr = xnestScreenPriv(pScreen);
 
     valuemask = GCFunction |
         GCPlaneMask | GCForeground | GCBackground | GCClipMask;
@@ -56,11 +58,11 @@ xnestRealizeCursor(DeviceIntPtr pDev, ScreenPtr pScreen, CursorPtr pCursor)
     XChangeGC(xnestDisplay, xnestBitmapGC, valuemask, &values);
 
     source = XCreatePixmap(xnestDisplay,
-                           xnestDefaultWindows[pScreen->myNum],
+                           xscr->rootWindow,
                            pCursor->bits->width, pCursor->bits->height, 1);
 
     mask = XCreatePixmap(xnestDisplay,
-                         xnestDefaultWindows[pScreen->myNum],
+                         xscr->rootWindow,
                          pCursor->bits->width, pCursor->bits->height, 1);
 
     ximage = XCreateImage(xnestDisplay,
@@ -136,8 +138,9 @@ xnestSetCursor(DeviceIntPtr pDev, ScreenPtr pScreen, CursorPtr pCursor, int x,
                int y)
 {
     if (pCursor) {
+        XnestScreenPtr xnscr = xnestScreenPriv(pScreen);
         XDefineCursor(xnestDisplay,
-                      xnestDefaultWindows[pScreen->myNum],
+                      xnscr->rootWindow,
                       xnestCursor(pCursor, pScreen));
     }
 }

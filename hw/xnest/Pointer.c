@@ -28,6 +28,7 @@ is" without express or implied warranty.
 #include "Screen.h"
 #include "Pointer.h"
 #include "Args.h"
+#include "multiscreen.h"
 
 #include "xserver-properties.h"
 #include "exevents.h"           /* For XIGetKnownProperty */
@@ -78,12 +79,12 @@ xnestPointerProc(DeviceIntPtr pDev, int onoff)
     case DEVICE_ON:
         xnestEventMask |= XNEST_POINTER_EVENT_MASK;
         for (i = 0; i < xnestNumScreens; i++)
-            XSelectInput(xnestDisplay, xnestDefaultWindows[i], xnestEventMask);
+            XSelectInput(xnestDisplay, xnestScreenByIdx(i)->rootWindow, xnestEventMask);
         break;
     case DEVICE_OFF:
         xnestEventMask &= ~XNEST_POINTER_EVENT_MASK;
         for (i = 0; i < xnestNumScreens; i++)
-            XSelectInput(xnestDisplay, xnestDefaultWindows[i], xnestEventMask);
+            XSelectInput(xnestDisplay, xnestScreenByIdx(i)->rootWindow, xnestEventMask);
         break;
     case DEVICE_CLOSE:
         break;

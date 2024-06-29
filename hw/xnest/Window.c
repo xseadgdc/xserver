@@ -36,6 +36,7 @@ is" without express or implied warranty.
 #include "Visual.h"
 #include "Events.h"
 #include "Args.h"
+#include "multiscreen.h"
 
 DevPrivateKeyRec xnestWindowPrivateKeyRec;
 

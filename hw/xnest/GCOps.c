@@ -34,6 +34,7 @@ is" without express or implied warranty.
 #include "GCOps.h"
 #include "Drawable.h"
 #include "Visual.h"
+#include "multiscreen.h"
 
 void
 xnestFillSpans(DrawablePtr pDrawable, GCPtr pGC, int nSpans, xPoint * pPoints,
@@ -61,12 +62,13 @@ xnestQueryBestSize(int class, unsigned short *pWidth, unsigned short *pHeight,
                    ScreenPtr pScreen)
 {
     unsigned int width, height;
+    XnestScreenPtr xnscr = xnestScreenPriv(pScreen);
 
     width = *pWidth;
     height = *pHeight;
 
     XQueryBestSize(xnestDisplay, class,
-                   xnestDefaultWindows[pScreen->myNum],
+                   xnscr->rootWindow,
                    width, height, &width, &height);
 
     *pWidth = width;
