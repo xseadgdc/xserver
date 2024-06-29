@@ -263,7 +263,7 @@ xnestSetScreenSaverColormapWindow(ScreenPtr pScreen)
     free(xnestOldInstalledColormapWindows);
 
     XSetWMColormapWindows(xnestDisplay, xnscr->rootWindow,
-                          &xnestScreenSaverWindows[pScreen->myNum], 1);
+                          &xnscr->screenSaverWindow, 1);
 
     xnestOldInstalledColormapWindows = NULL;
     xnestNumOldInstalledColormapWindows = 0;

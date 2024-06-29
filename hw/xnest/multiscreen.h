@@ -13,6 +13,7 @@
 
 typedef struct xnest_screen {
     Window rootWindow;
+    Window screenSaverWindow;
     ScreenPtr pScreen;
 } XnestScreenRec, *XnestScreenPtr;
 

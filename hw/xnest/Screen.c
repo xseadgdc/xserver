@@ -43,7 +43,6 @@ is" without express or implied warranty.
 #include "mipointrst.h"
 #include "multiscreen.h"
 
-Window xnestScreenSaverWindows[MAXSCREENS];
 DevPrivateKeyRec xnestScreenCursorFuncKeyRec;
 DevScreenPrivateKeyRec xnestScreenCursorPrivKeyRec;
 
@@ -76,25 +75,26 @@ xnestSaveScreen(ScreenPtr pScreen, int what)
     if (xnestSoftwareScreenSaver)
         return False;
     else {
+        Window saverWin = xnestScreenPriv(pScreen)->screenSaverWindow;
         switch (what) {
         case SCREEN_SAVER_ON:
-            XMapRaised(xnestDisplay, xnestScreenSaverWindows[pScreen->myNum]);
+            XMapRaised(xnestDisplay, saverWin);
             xnestSetScreenSaverColormapWindow(pScreen);
             break;
 
         case SCREEN_SAVER_OFF:
-            XUnmapWindow(xnestDisplay, xnestScreenSaverWindows[pScreen->myNum]);
+            XUnmapWindow(xnestDisplay, saverWin);
             xnestSetInstalledColormapWindows(pScreen);
             break;
 
         case SCREEN_SAVER_FORCER:
             lastEventTime = GetTimeInMillis();
-            XUnmapWindow(xnestDisplay, xnestScreenSaverWindows[pScreen->myNum]);
+            XUnmapWindow(xnestDisplay, saverWin);
             xnestSetInstalledColormapWindows(pScreen);
             break;
 
         case SCREEN_SAVER_CYCLE:
-            XUnmapWindow(xnestDisplay, xnestScreenSaverWindows[pScreen->myNum]);
+            XUnmapWindow(xnestDisplay, saverWin);
             xnestSetInstalledColormapWindows(pScreen);
             break;
         }
@@ -389,7 +389,7 @@ xnestOpenScreen(ScreenPtr pScreen, int argc, char *argv[])
         attributes.background_pixmap = xnestScreenSaverPixmap;
         attributes.colormap =
             DefaultColormap(xnestDisplay, DefaultScreen(xnestDisplay));
-        xnestScreenSaverWindows[pScreen->myNum] =
+        xnscr->screenSaverWindow =
             XCreateWindow(xnestDisplay,
                           xnscr->rootWindow,
                           0, 0, xnestWidth, xnestHeight, 0,
