@@ -152,7 +152,7 @@ xnestCreateWindow(WindowPtr pWin)
                 (KeyPressMask | KeyReleaseMask | FocusChangeMask | KeymapStateMask |
                  ButtonPressMask | ButtonReleaseMask | PointerMotionMask |
                  EnterWindowMask | LeaveWindowMask | ExposureMask | PropertyChangeMask |
-                 PointerMotionHintMask | ResizeRedirectMask ));
+                 PointerMotionHintMask | /*ResizeRedirectMask |*/ StructureNotifyMask));
     }
     return True;
 }

@@ -85,7 +85,6 @@ xnestCollectExposures(void)
     RegionRec Rgn;
     BoxRec Box;
 
-//    printf("xnestCollectExposures\n");
     while (XCheckIfEvent(xnestDisplay, &X, xnestExposurePredicate, NULL)) {
         pWin = xnestWindowPtr(X.xexpose.window);
 
@@ -106,83 +105,75 @@ void
 xnestQueueKeyEvent(int type, unsigned int keycode)
 {
     lastEventTime = GetTimeInMillis();
-    printf("xnestQueueKeyEvent()\n");
     QueueKeyboardEvents(xnestKeyboardDevice, type, keycode);
 }
 
-int deliverEventsDownstream(WindowPtr pWin, void *data)
+static const char* evTypeName(XEvent *ev) {
+    switch (ev->type) {
+        case PropertyNotify: return "PropertyNotify";
+        case KeyPress: return "KeyPress";
+        case KeyRelease: return "KeyRelease";
+        case ButtonPress: return "ButtonPress";
+        case ButtonRelease: return "ButtonRelease";
+        case MotionNotify: return "MotionNotify";
+        case FocusIn: return "FocusIn";
+        case FocusOut: return "FocusOut";
+        case KeymapNotify: return "KeymapNotify";
+        case EnterNotify: return "EnterNotify";
+        case LeaveNotify: return "LeaveNotify";
+        case DestroyNotify: return "DestroyNotify";
+        case CirculateNotify: return "CirculateNotify";
+        case ConfigureNotify: return "ConfigureNotify";
+        case GravityNotify: return "GravityNotify";
+        case MapNotify: return "MapNotify";
+        case ReparentNotify: return "ReparentNotify";
+        case UnmapNotify: return "UnmapNotify";
+        case NoExpose: return "NoExpose";
+        case ResizeRequest: return "ResizeRequest";
+        default: return "UNKNOWN";
+    }
+    return "<UNKNOWN>";
+}
+
+static int deliverEventsDownstream(WindowPtr pWin, void *data)
 {
     XEvent *ev = (XEvent*)data;
 
-    printf("deliverEventsDownstream: event type: %d\n", ev->type);
+    /* ignore them for now */
+    switch (ev->type) {
+        case PropertyNotify:
+        case MapNotify:
+        case UnmapNotify:
+        case FocusOut:
+        case FocusIn:
+        case KeymapNotify:
+        break;
+        default:
+            printf("deliverEventsDownstream: event type: %d %s\n", ev->type, evTypeName(ev));
+    }
+
+    switch (ev->type) {
+        case ConfigureNotify:
+            if (ev->xconfigure.window == ev->xconfigure.event) {
+                printf("was sent to the window itself: %ld\n", ev->xconfigure.window);
+            }
+            else {
+                printf("was sent to parent %ld for %ld\n", ev->xconfigure.event, ev->xconfigure.window);
+            }
+
+        break;
+    }
 
     return WT_WALKCHILDREN;
 }
 
-void rootlessEventDownstream(XEvent *ev)
+static void rootlessEventDownstream(XEvent *ev)
 {
-    switch (ev->type) {
-        case KeyPress:
-            printf("-> KeyPress\n");
-            break;
-
-        case KeyRelease:
-            printf("-> KeyRelease\n");
-            break;
-
-        case ButtonPress:
-            printf("-> ButtonPress\n");
-            break;
-
-        case ButtonRelease:
-            printf("-> ButtonRelease\n");
-            break;
-
-        case MotionNotify:
-            printf("-> MotionNotify\n");
-            break;
-
-        case FocusIn:
-            printf("-> FocusIn\n");
-            break;
-
-        case FocusOut:
-            printf("-> FocusOut\n");
-            break;
-
-        case KeymapNotify:
-            printf("-> KeymapNotify\n");
-            break;
-
-        case EnterNotify:
-            printf("-> EnterNotify\n");
-            break;
-
-        case LeaveNotify:
-            printf("-> LeaveNotify\n");
-            break;
-
-        case DestroyNotify:
-            printf("-> DestroyNotify\n");
-            break;
-
-        case CirculateNotify:
-        case ConfigureNotify:
-        case GravityNotify:
-        case MapNotify:
-        case ReparentNotify:
-        case UnmapNotify:
-        case NoExpose:
-            printf("-> other event (ignored)\n");
-            break;
-
-        case ResizeRequest:
-            printf("==> ResizeRequest\n");
-        break;
-
-        default:
-            printf("downstream: unhandled event: %d\n", ev->type);
-            break;
+    // FIXME: we should have a hashtable of mappings upstream XID to WindowPtr
+    int i;
+    for (i = 0; i < xnestNumScreens; i++) {
+        // FIXME: stop when an event was delivered
+        WalkTree(screenInfo.screens[i], deliverEventsDownstream, (void *) ev);
     }
 }
 
@@ -292,7 +283,7 @@ xnestCollectEvents(void)
             break;
 
         default:
-            ErrorF("xnest warning: unhandled event: %d\n", X.type);
+//            ErrorF("xnest warning: unhandled event: %d\n", X.type);
             break;
         }
         if (xnestRootless)
