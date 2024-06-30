@@ -135,86 +135,47 @@ static const char* evTypeName(XEvent *ev) {
     return "<UNKNOWN>";
 }
 
-static int deliverEventsDownstream(WindowPtr pWin, void *data)
-{
-    XEvent *ev = (XEvent*)data;
-
-    /* ignore them for now */
-    switch (ev->type) {
-        case PropertyNotify:
-        case MapNotify:
-        case UnmapNotify:
-        case FocusOut:
-        case FocusIn:
-        case KeymapNotify:
-        break;
-        default:
-            printf("deliverEventsDownstream: event type: %d %s\n", ev->type, evTypeName(ev));
-    }
-
-    switch (ev->type) {
-        case ConfigureNotify:
-            if (ev->xconfigure.window == ev->xconfigure.event) {
-                printf("was sent to the window itself: %ld\n", ev->xconfigure.window);
-                xnestPrivWin *priv = xnestWindowPriv(pWin);
-                if (priv->window == ev->xconfigure.window) {
-                    printf("its for us\n");
-                    // FIXME: need to update our internal state
-#if 0
-                    xEvent event = {
-                        .u.configureNotify.type = ConfigureNotify,
-                        .u.configureNotify.window = pWin->drawable.id,
-
-                        .u.configureNotify.aboveSibling = None, // FIXME ! need to look it up
-                        .u.configureNotify.x = 0,
-                        .u.configureNotify.y = 0,
-                        .u.configureNotify.width = pWin->drawable.width,
-                        .u.configureNotify.height = pWin->drawable.height,
-                        .u.configureNotify.borderWidth = wBorderWidth(pWin),
-                        .u.configureNotify.override = pWin->overrideRedirect
-                    };
-
-    int type;	        /* ConfigureNotify */
-    unsigned long serial;	/* # of last request processed by server */
-    Bool send_event;	/* true if this came from a SendEvent request */
-    Display *display;	/* Display the event was read from */
-    Window event;
-    Window window;
-    int x, y;
-    int width, height;
-    int border_width;
-    Window above;
-    Bool override_redirect;
-
-
-                    event.u.u.type = ConfigureNotify;
-                    DeliverEvents(pWin, &event, 1, NullWindow); /* ??? */
-#endif
-                    
-
-
-                } else {
-                    printf("not for us\n");
-                }
-
-            }
-            else {
-                printf("was sent to parent %ld for %ld\n", ev->xconfigure.event, ev->xconfigure.window);
-            }
-
-        break;
-    }
-
-    return WT_WALKCHILDREN;
-}
-
 static void rootlessEventDownstream(XEvent *ev)
 {
-    // FIXME: we should have a hashtable of mappings upstream XID to WindowPtr
-    int i;
-    for (i = 0; i < xnestNumScreens; i++) {
-        // FIXME: stop when an event was delivered
-        WalkTree(screenInfo.screens[i], deliverEventsDownstream, (void *) ev);
+    switch (ev->type) {
+        // FIXME: check whether it's really a toplevel window
+        case ConfigureNotify:
+            // ignore messages sent to parents
+            if (ev->xconfigure.window != ev->xconfigure.event)
+                return;
+
+            WindowPtr pWin = xnestWindowPtr(ev->xconfigure.window);
+            xnestPrivWin *priv = xnestWindowPriv(pWin);
+
+            // FIXME: missing aboveSibling
+            // FIXME: missing borderWidth
+            // FIXME: missing overrideRedirect
+            pWin->drawable.x = ev->xconfigure.x;
+            pWin->drawable.y = ev->xconfigure.y;
+            pWin->drawable.width = ev->xconfigure.width;
+            pWin->drawable.height = ev->xconfigure.height;
+
+            printf("ConfigureNotify: X=%d Y=%d W=%d H=%d\n",
+                pWin->drawable.x, pWin->drawable.y, pWin->drawable.width, pWin->drawable.height);
+
+            xEvent event = {
+//                .u.configureNotify = {},
+                .u.configureNotify.window = pWin->drawable.id,
+                .u.configureNotify.aboveSibling = None, // FIXME ! need to look it up !!!
+                .u.configureNotify.x = pWin->drawable.x, 
+                .u.configureNotify.y = pWin->drawable.y,
+                .u.configureNotify.width = pWin->drawable.width,
+                .u.configureNotify.height = pWin->drawable.height,
+                .u.configureNotify.borderWidth = wBorderWidth(pWin),
+                .u.configureNotify.override = pWin->overrideRedirect
+            };
+            event.u.u.type = ConfigureNotify;
+
+            printf(" ---> type=%d\n", (&event)->u.u.type);
+//            DeliverEvents(pWin, &event, 1, NullWindow); /* ??? */
+            DeliverEvents(pWin, &event, 1, pWin); /* ??? */
+            printf(" ----> finished ConfigureNotify\n");
+        break;
     }
 }
 

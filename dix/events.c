@@ -2339,25 +2339,32 @@ DeliverEventsToWindow(DeviceIntPtr pDev, WindowPtr pWin, xEvent
                                    this mask is the mask of the grab. */
     int type = pEvents->u.u.type;
 
+    printf("DeliverEventsToWindow() type=%d\n", type);
+
     /* Deliver to window owner */
     if ((filter == CantBeFiltered) || core_get_type(pEvents) != 0) {
         enum EventDeliveryState rc;
 
         rc = DeliverToWindowOwner(pDev, pWin, pEvents, count, filter, grab);
+        printf("called DeliverToWindowOwner() rc=%d\n", rc);
 
         switch (rc) {
         case EVENT_SKIP:
+            printf(" --> SKIP\n");
             return 0;
         case EVENT_REJECTED:
+            printf(" --> REJECTED\n");
             nondeliveries--;
             break;
         case EVENT_DELIVERED:
+            printf(" --> DELIVERED\n");
             /* We delivered to the owner, with our event mask */
             deliveries++;
             client = wClient(pWin);
             deliveryMask = pWin->eventMask;
             break;
         case EVENT_NOT_DELIVERED:
+            printf(" --> NOT_DELIVERED\n");
             break;
         }
     }
@@ -2369,16 +2376,22 @@ DeliverEventsToWindow(DeviceIntPtr pDev, WindowPtr pWin, xEvent
         rc = DeliverEventToWindowMask(pDev, pWin, pEvents, count, filter,
                                       grab, &client, &deliveryMask);
 
+        printf("called DeliverToWindowMask() rc=%d\n", rc);
+
         switch (rc) {
         case EVENT_SKIP:
+            printf(" --> SKIP\n");
             return 0;
         case EVENT_REJECTED:
+            printf(" --> REJECTED\n");
             nondeliveries--;
             break;
         case EVENT_DELIVERED:
+            printf(" --> DELIVERED\n");
             deliveries++;
             break;
         case EVENT_NOT_DELIVERED:
+            printf(" --> NOT_DELIVERED\n");
             break;
         }
     }
@@ -2397,8 +2410,10 @@ DeliverEventsToWindow(DeviceIntPtr pDev, WindowPtr pWin, xEvent
             CheckDeviceGrabAndHintWindow(pWin, type,
                                          (deviceKeyButtonPointer *) pEvents,
                                          grab, client, deliveryMask);
+        printf(" => deliveries %d\n", deliveries);
         return deliveries;
     }
+    printf(" => nondeliveries %d\n", nondeliveries);
     return nondeliveries;
 }
 
@@ -2929,6 +2944,8 @@ DeliverEvents(WindowPtr pWin, xEvent *xE, int count, WindowPtr otherParent)
 
     if (!count)
         return 0;
+
+    printf("DeliverEvents(): type=%d count=%d\n", xE->u.u.type, count);
 
     dummy.id = XIAllDevices;
 
