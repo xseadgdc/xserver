@@ -85,7 +85,7 @@ xnestCollectExposures(void)
     RegionRec Rgn;
     BoxRec Box;
 
-    printf("xnestCollectExposures\n");
+//    printf("xnestCollectExposures\n");
     while (XCheckIfEvent(xnestDisplay, &X, xnestExposurePredicate, NULL)) {
         pWin = xnestWindowPtr(X.xexpose.window);
 
@@ -118,7 +118,7 @@ xnestCollectEvents(void)
     ValuatorMask mask;
     ScreenPtr pScreen;
 
-    printf("xnestCollectEvents()\n");
+//    printf("xnestCollectEvents()\n");
     while (XCheckIfEvent(xnestDisplay, &X, xnestNotExposurePredicate, NULL)) {
         switch (X.type) {
         case KeyPress:
