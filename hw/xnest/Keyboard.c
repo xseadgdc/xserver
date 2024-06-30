@@ -79,6 +79,7 @@ DDXRingBell(int volume, int pitch, int duration)
 void
 xnestChangeKeyboardControl(DeviceIntPtr pDev, KeybdCtrl * ctrl)
 {
+    printf("xnestChangeKeyboardControl()\n");
 #if 0
     unsigned long value_mask;
     XKeyboardControl values;
@@ -125,6 +126,8 @@ xnestKeyboardProc(DeviceIntPtr pDev, int onoff)
     XKeyboardState values;
     XkbDescPtr xkb;
     int op, event, error, major, minor;
+
+    printf("xnestKeyboardProc()\n");
 
     switch (onoff) {
     case DEVICE_INIT:
@@ -227,6 +230,8 @@ xnestUpdateModifierState(unsigned int state)
     int i;
     CARD8 mask;
     int xkb_state;
+
+    printf("xnestUpdateModifierState()\n");
 
     if (!pDev)
         return;

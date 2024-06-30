@@ -54,6 +54,8 @@ xnestPointerProc(DeviceIntPtr pDev, int onoff)
     int nmap;
     int i;
 
+    printf("xnestPointerProc()\n");
+
     switch (onoff) {
     case DEVICE_INIT:
         nmap = XGetPointerMapping(xnestDisplay, map, MAXBUTTONS);
