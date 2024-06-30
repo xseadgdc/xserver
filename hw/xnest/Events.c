@@ -150,8 +150,10 @@ static void rootlessEventDownstream(XEvent *ev)
             // FIXME: missing aboveSibling
             // FIXME: missing borderWidth
             // FIXME: missing overrideRedirect
-            pWin->drawable.x = ev->xconfigure.x;
-            pWin->drawable.y = ev->xconfigure.y;
+// FIXME: trouble w/ framed windows. does the WM fake this data ?
+// problem: the client's content looks moved up under the title bar
+//            pWin->drawable.x = ev->xconfigure.x;
+//            pWin->drawable.y = ev->xconfigure.y;
             pWin->drawable.width = ev->xconfigure.width;
             pWin->drawable.height = ev->xconfigure.height;
 
@@ -159,15 +161,16 @@ static void rootlessEventDownstream(XEvent *ev)
                 pWin->drawable.x, pWin->drawable.y, pWin->drawable.width, pWin->drawable.height);
 
             xEvent event = {
-//                .u.configureNotify = {},
-                .u.configureNotify.window = pWin->drawable.id,
-                .u.configureNotify.aboveSibling = None, // FIXME ! need to look it up !!!
-                .u.configureNotify.x = pWin->drawable.x, 
-                .u.configureNotify.y = pWin->drawable.y,
-                .u.configureNotify.width = pWin->drawable.width,
-                .u.configureNotify.height = pWin->drawable.height,
-                .u.configureNotify.borderWidth = wBorderWidth(pWin),
-                .u.configureNotify.override = pWin->overrideRedirect
+                .u.configureNotify = {
+                .window = pWin->drawable.id,
+                .aboveSibling = None, // FIXME ! need to look it up !!!
+                .x = pWin->drawable.x,
+                .y = pWin->drawable.y,
+                .width = pWin->drawable.width,
+                .height = pWin->drawable.height,
+                .borderWidth = wBorderWidth(pWin),
+                .override = pWin->overrideRedirect
+                }
             };
             event.u.u.type = ConfigureNotify;
 
