@@ -135,6 +135,8 @@ static const char* evTypeName(XEvent *ev) {
     return "<UNKNOWN>";
 }
 
+#define SEND_EVENT_BIT 0x80
+
 static void rootlessEventDownstream(XEvent *ev)
 {
     switch (ev->type) {
@@ -152,13 +154,15 @@ static void rootlessEventDownstream(XEvent *ev)
             // FIXME: missing overrideRedirect
 // FIXME: trouble w/ framed windows. does the WM fake this data ?
 // problem: the client's content looks moved up under the title bar
-//            pWin->drawable.x = ev->xconfigure.x;
-//            pWin->drawable.y = ev->xconfigure.y;
+            pWin->drawable.x = ev->xconfigure.x;
+            pWin->drawable.y = ev->xconfigure.y;
+
             pWin->drawable.width = ev->xconfigure.width;
             pWin->drawable.height = ev->xconfigure.height;
 
-            printf("ConfigureNotify: X=%d Y=%d W=%d H=%d\n",
-                pWin->drawable.x, pWin->drawable.y, pWin->drawable.width, pWin->drawable.height);
+            printf("ConfigureNotify: X=%d Y=%d W=%d H=%d override_redirect=%d send_event=%d\n",
+                pWin->drawable.x, pWin->drawable.y, pWin->drawable.width, pWin->drawable.height,
+                ev->xconfigure.override_redirect, ev->xconfigure.send_event);
 
             xEvent event = {
                 .u.configureNotify = {
@@ -172,9 +176,8 @@ static void rootlessEventDownstream(XEvent *ev)
                 .override = pWin->overrideRedirect
                 }
             };
-            event.u.u.type = ConfigureNotify;
+            event.u.u.type = ConfigureNotify | (ev->xconfigure.send_event ? SEND_EVENT_BIT : 0);
 
-            printf(" ---> type=%d\n", (&event)->u.u.type);
 //            DeliverEvents(pWin, &event, 1, NullWindow); /* ??? */
             DeliverEvents(pWin, &event, 1, pWin); /* ??? */
             printf(" ----> finished ConfigureNotify\n");
