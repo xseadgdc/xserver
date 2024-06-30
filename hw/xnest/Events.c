@@ -156,6 +156,47 @@ static int deliverEventsDownstream(WindowPtr pWin, void *data)
         case ConfigureNotify:
             if (ev->xconfigure.window == ev->xconfigure.event) {
                 printf("was sent to the window itself: %ld\n", ev->xconfigure.window);
+                xnestPrivWin *priv = xnestWindowPriv(pWin);
+                if (priv->window == ev->xconfigure.window) {
+                    printf("its for us\n");
+                    // FIXME: need to update our internal state
+#if 0
+                    xEvent event = {
+                        .u.configureNotify.type = ConfigureNotify,
+                        .u.configureNotify.window = pWin->drawable.id,
+
+                        .u.configureNotify.aboveSibling = None, // FIXME ! need to look it up
+                        .u.configureNotify.x = 0,
+                        .u.configureNotify.y = 0,
+                        .u.configureNotify.width = pWin->drawable.width,
+                        .u.configureNotify.height = pWin->drawable.height,
+                        .u.configureNotify.borderWidth = wBorderWidth(pWin),
+                        .u.configureNotify.override = pWin->overrideRedirect
+                    };
+
+    int type;	        /* ConfigureNotify */
+    unsigned long serial;	/* # of last request processed by server */
+    Bool send_event;	/* true if this came from a SendEvent request */
+    Display *display;	/* Display the event was read from */
+    Window event;
+    Window window;
+    int x, y;
+    int width, height;
+    int border_width;
+    Window above;
+    Bool override_redirect;
+
+
+                    event.u.u.type = ConfigureNotify;
+                    DeliverEvents(pWin, &event, 1, NullWindow); /* ??? */
+#endif
+                    
+
+
+                } else {
+                    printf("not for us\n");
+                }
+
             }
             else {
                 printf("was sent to parent %ld for %ld\n", ev->xconfigure.event, ev->xconfigure.window);
