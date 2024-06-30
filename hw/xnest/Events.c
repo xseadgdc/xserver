@@ -110,6 +110,82 @@ xnestQueueKeyEvent(int type, unsigned int keycode)
     QueueKeyboardEvents(xnestKeyboardDevice, type, keycode);
 }
 
+int deliverEventsDownstream(WindowPtr pWin, void *data)
+{
+    XEvent *ev = (XEvent*)data;
+
+    printf("deliverEventsDownstream: event type: %d\n", ev->type);
+
+    return WT_WALKCHILDREN;
+}
+
+void rootlessEventDownstream(XEvent *ev)
+{
+    switch (ev->type) {
+        case KeyPress:
+            printf("-> KeyPress\n");
+            break;
+
+        case KeyRelease:
+            printf("-> KeyRelease\n");
+            break;
+
+        case ButtonPress:
+            printf("-> ButtonPress\n");
+            break;
+
+        case ButtonRelease:
+            printf("-> ButtonRelease\n");
+            break;
+
+        case MotionNotify:
+            printf("-> MotionNotify\n");
+            break;
+
+        case FocusIn:
+            printf("-> FocusIn\n");
+            break;
+
+        case FocusOut:
+            printf("-> FocusOut\n");
+            break;
+
+        case KeymapNotify:
+            printf("-> KeymapNotify\n");
+            break;
+
+        case EnterNotify:
+            printf("-> EnterNotify\n");
+            break;
+
+        case LeaveNotify:
+            printf("-> LeaveNotify\n");
+            break;
+
+        case DestroyNotify:
+            printf("-> DestroyNotify\n");
+            break;
+
+        case CirculateNotify:
+        case ConfigureNotify:
+        case GravityNotify:
+        case MapNotify:
+        case ReparentNotify:
+        case UnmapNotify:
+        case NoExpose:
+            printf("-> other event (ignored)\n");
+            break;
+
+        case ResizeRequest:
+            printf("==> ResizeRequest\n");
+        break;
+
+        default:
+            printf("downstream: unhandled event: %d\n", ev->type);
+            break;
+    }
+}
+
 void
 xnestCollectEvents(void)
 {
@@ -118,23 +194,19 @@ xnestCollectEvents(void)
     ValuatorMask mask;
     ScreenPtr pScreen;
 
-//    printf("xnestCollectEvents()\n");
     while (XCheckIfEvent(xnestDisplay, &X, xnestNotExposurePredicate, NULL)) {
         switch (X.type) {
         case KeyPress:
-            printf("-> KeyPress\n");
             xnestUpdateModifierState(X.xkey.state);
             xnestQueueKeyEvent(KeyPress, X.xkey.keycode);
             break;
 
         case KeyRelease:
-            printf("-> KeyRelease\n");
             xnestUpdateModifierState(X.xkey.state);
             xnestQueueKeyEvent(KeyRelease, X.xkey.keycode);
             break;
 
         case ButtonPress:
-            printf("-> ButtonPress\n");
             valuator_mask_set_range(&mask, 0, 0, NULL);
             xnestUpdateModifierState(X.xkey.state);
             lastEventTime = GetTimeInMillis();
@@ -143,7 +215,6 @@ xnestCollectEvents(void)
             break;
 
         case ButtonRelease:
-            printf("-> ButtonRelease\n");
             valuator_mask_set_range(&mask, 0, 0, NULL);
             xnestUpdateModifierState(X.xkey.state);
             lastEventTime = GetTimeInMillis();
@@ -152,7 +223,6 @@ xnestCollectEvents(void)
             break;
 
         case MotionNotify:
-            printf("-> MotionNotify\n");
             valuators[0] = X.xmotion.x;
             valuators[1] = X.xmotion.y;
             valuator_mask_set_range(&mask, 0, 2, valuators);
@@ -162,7 +232,6 @@ xnestCollectEvents(void)
             break;
 
         case FocusIn:
-            printf("-> FocusIn\n");
             if (X.xfocus.detail != NotifyInferior) {
                 pScreen = xnestScreen(X.xfocus.window);
                 if (pScreen)
@@ -171,7 +240,6 @@ xnestCollectEvents(void)
             break;
 
         case FocusOut:
-            printf("-> FocusOut\n");
             if (X.xfocus.detail != NotifyInferior) {
                 pScreen = xnestScreen(X.xfocus.window);
                 if (pScreen)
@@ -180,11 +248,9 @@ xnestCollectEvents(void)
             break;
 
         case KeymapNotify:
-            printf("-> KeymapNotify\n");
             break;
 
         case EnterNotify:
-            printf("-> EnterNotify\n");
             if (X.xcrossing.detail != NotifyInferior) {
                 pScreen = xnestScreen(X.xcrossing.window);
                 if (pScreen) {
@@ -202,7 +268,6 @@ xnestCollectEvents(void)
             break;
 
         case LeaveNotify:
-            printf("-> LeaveNotify\n");
             if (X.xcrossing.detail != NotifyInferior) {
                 pScreen = xnestScreen(X.xcrossing.window);
                 if (pScreen) {
@@ -212,7 +277,6 @@ xnestCollectEvents(void)
             break;
 
         case DestroyNotify:
-            printf("-> DestroyNotify\n");
             if (xnestParentWindow != (Window) 0 &&
                 X.xdestroywindow.window == xnestParentWindow)
                 exit(0);
@@ -225,12 +289,13 @@ xnestCollectEvents(void)
         case ReparentNotify:
         case UnmapNotify:
         case NoExpose:
-            printf("-> other event (ignored)\n");
             break;
 
         default:
             ErrorF("xnest warning: unhandled event: %d\n", X.type);
             break;
         }
+        if (xnestRootless)
+            rootlessEventDownstream(&X);
     }
 }

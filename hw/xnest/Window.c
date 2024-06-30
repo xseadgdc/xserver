@@ -145,10 +145,14 @@ xnestCreateWindow(WindowPtr pWin)
     if (!pWin->parent)          /* only the root window will have the right colormap */
         xnestSetInstalledColormapWindows(pWin->drawable.pScreen);
 
-    if (xnestRootless) {
-        if (pWin->parent && !(pWin->parent->parent)) {
-            XSelectInput(xnestDisplay, xnestWindowPriv(pWin)->window, xnestEventMask);
-        }
+    /* for rootless mode, catch events of toplevel windows to proxy them
+       FIXME: maybe we should track all of them ? */
+    if (xnestRootless && pWin->parent && !(pWin->parent->parent)) {
+        XSelectInput(xnestDisplay, xnestWindowPriv(pWin)->window,
+                (KeyPressMask | KeyReleaseMask | FocusChangeMask | KeymapStateMask |
+                 ButtonPressMask | ButtonReleaseMask | PointerMotionMask |
+                 EnterWindowMask | LeaveWindowMask | ExposureMask | PropertyChangeMask |
+                 PointerMotionHintMask | ResizeRedirectMask ));
     }
     return True;
 }
