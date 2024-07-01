@@ -55,6 +55,9 @@ Window xnestWindowParent(WindowPtr pWin);
 #define CWParent CWSibling
 #define CWStackingOrder CWStackMode
 
+/* get our client's (downstream) Window XID from the frame's (upstream) XID */
+Window xnestWindowByUpstream(Window frame);
+
 WindowPtr xnestWindowPtr(Window window);
 Bool xnestCreateWindow(WindowPtr pWin);
 Bool xnestDestroyWindow(WindowPtr pWin);

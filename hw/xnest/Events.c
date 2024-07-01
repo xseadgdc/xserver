@@ -137,25 +137,32 @@ static const char* evTypeName(XEvent *ev) {
 
 #define SEND_EVENT_BIT 0x80
 
+static int xmitDownstream(WindowPtr pWin, int type, int send_event, xEventPtr ev)
+{
+    ev->u.u.type = type | (send_event ? SEND_EVENT_BIT : 0);
+//            DeliverEvents(pWin, &event, 1, NullWindow); /* ??? */
+    return DeliverEvents(pWin, ev, 1, pWin); /* ??? */
+}
+
 static void rootlessEventDownstream(XEvent *ev)
 {
     switch (ev->type) {
         // FIXME: check whether it's really a toplevel window
         case ConfigureNotify:
+        {
             // ignore messages sent to parents
             if (ev->xconfigure.window != ev->xconfigure.event)
                 return;
 
             WindowPtr pWin = xnestWindowPtr(ev->xconfigure.window);
-            xnestPrivWin *priv = xnestWindowPriv(pWin);
 
             // FIXME: missing aboveSibling
             // FIXME: missing borderWidth
             // FIXME: missing overrideRedirect
 // FIXME: trouble w/ framed windows. does the WM fake this data ?
 // problem: the client's content looks moved up under the title bar
-            pWin->drawable.x = ev->xconfigure.x;
-            pWin->drawable.y = ev->xconfigure.y;
+//            pWin->drawable.x = ev->xconfigure.x;
+//            pWin->drawable.y = ev->xconfigure.y;
 
             pWin->drawable.width = ev->xconfigure.width;
             pWin->drawable.height = ev->xconfigure.height;
@@ -166,21 +173,60 @@ static void rootlessEventDownstream(XEvent *ev)
 
             xEvent event = {
                 .u.configureNotify = {
-                .window = pWin->drawable.id,
-                .aboveSibling = None, // FIXME ! need to look it up !!!
-                .x = pWin->drawable.x,
-                .y = pWin->drawable.y,
-                .width = pWin->drawable.width,
-                .height = pWin->drawable.height,
-                .borderWidth = wBorderWidth(pWin),
-                .override = pWin->overrideRedirect
+                    .window = pWin->drawable.id,
+                    .aboveSibling = None, // FIXME ! need to look it up !!!
+                    .x = pWin->drawable.x,
+                    .y = pWin->drawable.y,
+                    .width = pWin->drawable.width,
+                    .height = pWin->drawable.height,
+                    .borderWidth = wBorderWidth(pWin),
+                    .override = pWin->overrideRedirect
                 }
             };
-            event.u.u.type = ConfigureNotify | (ev->xconfigure.send_event ? SEND_EVENT_BIT : 0);
-
-//            DeliverEvents(pWin, &event, 1, NullWindow); /* ??? */
-            DeliverEvents(pWin, &event, 1, pWin); /* ??? */
+            xmitDownstream(pWin, ConfigureNotify, ev->xconfigure.send_event, &event);
             printf(" ----> finished ConfigureNotify\n");
+        }
+        break;
+
+        case FocusIn:
+        case FocusOut:
+        {
+            WindowPtr pWin = xnestWindowPtr(ev->xfocus.window);
+            xEvent event = {
+                .u.focus = {
+                    .window = pWin->drawable.id,
+                    .mode = ev->xfocus.mode,
+                }
+            };
+            xmitDownstream(pWin, ev->type, ev->xfocus.send_event, &event);
+        }
+        break;
+
+        case EnterNotify:
+        {
+            printf("RECV EnterNotify\n");
+            WindowPtr pWin = xnestWindowPtr(ev->xcrossing.window);
+            xEvent event = {
+                .u.enterLeave = {
+                    .root = xnestWindowByUpstream(ev->xcrossing.root),
+                    .event = pWin->drawable.id,
+                    .child = xnestWindowByUpstream(ev->xcrossing.subwindow),
+                    .eventX = ev->xcrossing.x,
+                    .eventY = ev->xcrossing.y,
+                    .rootX = ev->xcrossing.x_root,
+                    .rootY = ev->xcrossing.y_root,
+                    .state = ev->xcrossing.state,
+                    .mode = ev->xcrossing.mode,
+                    .flags = (ev->xcrossing.same_screen ? ELFlagSameScreen : 0) |
+                             (ev->xcrossing.focus ? ELFlagFocus : 0)
+                }
+            };
+            event.u.u.detail = ev->xcrossing.detail;
+            xmitDownstream(pWin, ev->type, ev->xfocus.send_event, &event);
+        }
+        break;
+        case LeaveNotify:
+            printf("RECV LeaveNotify\n");
         break;
     }
 }
@@ -194,6 +240,7 @@ xnestCollectEvents(void)
     ScreenPtr pScreen;
 
     while (XCheckIfEvent(xnestDisplay, &X, xnestNotExposurePredicate, NULL)) {
+#if 1
         switch (X.type) {
         case KeyPress:
             xnestUpdateModifierState(X.xkey.state);
@@ -294,6 +341,7 @@ xnestCollectEvents(void)
 //            ErrorF("xnest warning: unhandled event: %d\n", X.type);
             break;
         }
+#endif
         if (xnestRootless)
             rootlessEventDownstream(&X);
     }

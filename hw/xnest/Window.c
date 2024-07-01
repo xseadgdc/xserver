@@ -547,3 +547,13 @@ Window xnestWindowParent(WindowPtr pWin) {
 
     return (xnestWindow(pWin->parent));
 }
+
+/* get our client's (downstream) Window XID from the frame's (upstream) XID */
+Window xnestWindowByUpstream(Window frame) {
+    WindowPtr pWin = xnestWindowPtr(frame);
+    if (pWin == 0) {
+        printf("ERR: failed finding frame by XID %ld\n", frame);
+        return None;
+    }
+    return pWin->drawable.id;
+}
