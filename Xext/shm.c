@@ -1480,7 +1480,6 @@ static int _X_COLD
 SProcShmAttachFd(ClientPtr client)
 {
     REQUEST(xShmAttachFdReq);
-    SetReqFds(client, 1);
     REQUEST_SIZE_MATCH(xShmAttachFdReq);
     swapl(&stuff->shmseg);
     return ProcShmAttachFd(client);
