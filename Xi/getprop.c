@@ -88,9 +88,7 @@ ProcXGetDeviceDontPropagateList(ClientPtr client)
     REQUEST_FIELD_CARD32(window);
 
     xGetDeviceDontPropagateListReply rep = {
-        .repType = X_Reply,
         .RepType = X_GetDeviceDontPropagateList,
-        .sequenceNumber = client->sequence,
     };
 
     rc = dixLookupWindow(&pWin, stuff->window, client, DixGetAttrAccess);
@@ -112,7 +110,8 @@ ProcXGetDeviceDontPropagateList(ClientPtr client)
         }
     }
 
-    WriteReplyToClient(client, sizeof(xGetDeviceDontPropagateListReply), &rep);
+    REPLY_FIELD_CARD16(count);
+    REPLY_SEND();
 
     if (count) {
         client->pSwapReplyFunc = (ReplySwapPtr) Swap32Write;
@@ -148,21 +147,4 @@ XEventClass
                 }
         }
     return buf;
-}
-
-/***********************************************************************
- *
- * This procedure writes the reply for the XGetDeviceDontPropagateList function,
- * if the client and server have a different byte ordering.
- *
- */
-
-void _X_COLD
-SRepXGetDeviceDontPropagateList(ClientPtr client, int size,
-                                xGetDeviceDontPropagateListReply * rep)
-{
-    swaps(&rep->sequenceNumber);
-    swapl(&rep->length);
-    swaps(&rep->count);
-    WriteToClient(client, size, rep);
 }

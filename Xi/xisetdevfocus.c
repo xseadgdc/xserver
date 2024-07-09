@@ -80,9 +80,7 @@ ProcXIGetFocus(ClientPtr client)
         return BadDevice;
 
     xXIGetFocusReply rep = {
-        .repType = X_Reply,
         .RepType = X_XIGetFocus,
-        .sequenceNumber = client->sequence,
     };
 
     if (dev->focus->win == NoneWin)
@@ -94,15 +92,6 @@ ProcXIGetFocus(ClientPtr client)
     else
         rep.focus = dev->focus->win->drawable.id;
 
-    WriteReplyToClient(client, sizeof(xXIGetFocusReply), &rep);
-    return Success;
-}
-
-void
-SRepXIGetFocus(ClientPtr client, int len, xXIGetFocusReply * rep)
-{
-    swaps(&rep->sequenceNumber);
-    swapl(&rep->length);
-    swapl(&rep->focus);
-    WriteToClient(client, len, rep);
+    REPLY_FIELD_CARD32(focus);
+    REPLY_SEND_RET_SUCCESS();
 }

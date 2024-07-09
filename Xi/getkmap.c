@@ -106,13 +106,11 @@ ProcXGetDeviceKeyMapping(ClientPtr client)
         return BadAlloc;
 
     xGetDeviceKeyMappingReply rep = {
-        .repType = X_Reply,
         .RepType = X_GetDeviceKeyMapping,
-        .sequenceNumber = client->sequence,
         .keySymsPerKeyCode = syms->mapWidth,
         .length = (syms->mapWidth * stuff->count) /* KeySyms are 4 bytes */
     };
-    WriteReplyToClient(client, sizeof(xGetDeviceKeyMappingReply), &rep);
+    REPLY_SEND();
 
     client->pSwapReplyFunc = (ReplySwapPtr) CopySwap32Write;
     WriteSwappedDataToClient(client,
@@ -123,20 +121,4 @@ ProcXGetDeviceKeyMapping(ClientPtr client)
     free(syms);
 
     return Success;
-}
-
-/***********************************************************************
- *
- * This procedure writes the reply for the XGetDeviceKeyMapping function,
- * if the client and server have a different byte ordering.
- *
- */
-
-void _X_COLD
-SRepXGetDeviceKeyMapping(ClientPtr client, int size,
-                         xGetDeviceKeyMappingReply * rep)
-{
-    swaps(&rep->sequenceNumber);
-    swapl(&rep->length);
-    WriteToClient(client, size, rep);
 }
