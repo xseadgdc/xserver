@@ -6441,21 +6441,19 @@ ProcXkbGetDeviceInfo(ClientPtr client)
 
     struct {
         char name[nameLen];
+        xkbActionWireDesc actions[rep.nBtnsRtrn];
     } buf;
 
     XkbWriteCountedString(buf.name, dev->name, client->swapped);
+    if (rep.nBtnsRtrn > 0) {
+        memcpy(buf.actions,
+               &dev->button->xkb_acts[rep.firstBtnRtrn],
+               sizeof(xkbActionWireDesc)*rep.nBtnsRtrn);
+    }
+
     WriteToClient(client, sizeof(buf), &buf);
     length -= sizeof(buf);
 
-    if (rep.nBtnsRtrn > 0) {
-        int sz;
-        xkbActionWireDesc *awire;
-
-        sz = rep.nBtnsRtrn * SIZEOF(xkbActionWireDesc);
-        awire = (xkbActionWireDesc *) &dev->button->xkb_acts[rep.firstBtnRtrn];
-        WriteToClient(client, sz, awire);
-        length -= sz;
-    }
     if (nDeviceLedFBs > 0) {
         status = SendDeviceLedFBs(dev, ledClass, ledID, length, client);
         if (status != Success)
