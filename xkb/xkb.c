@@ -6338,7 +6338,6 @@ ProcXkbGetDeviceInfo(ClientPtr client)
     unsigned length, nameLen;
     CARD16 ledClass, ledID;
     unsigned wanted;
-    char *str;
 
     REQUEST(xkbGetDeviceInfoReq);
     REQUEST_SIZE_MATCH(xkbGetDeviceInfoReq);
@@ -6440,13 +6439,13 @@ ProcXkbGetDeviceInfo(ClientPtr client)
     }
     WriteToClient(client, SIZEOF(xkbGetDeviceInfoReply), &rep);
 
-    str = malloc(nameLen);
-    if (!str)
-        return BadAlloc;
-    XkbWriteCountedString(str, dev->name, client->swapped);
-    WriteToClient(client, nameLen, str);
-    free(str);
-    length -= nameLen;
+    struct {
+        char name[nameLen];
+    } buf;
+
+    XkbWriteCountedString(buf.name, dev->name, client->swapped);
+    WriteToClient(client, sizeof(buf), &buf);
+    length -= sizeof(buf);
 
     if (rep.nBtnsRtrn > 0) {
         int sz;
