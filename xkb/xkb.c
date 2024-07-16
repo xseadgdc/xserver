@@ -3781,8 +3781,6 @@ static int
 XkbSendNames(ClientPtr client, XkbDescPtr xkb, xkbGetNamesReply * rep)
 {
     register unsigned i, length, which;
-    char *start;
-    char *desc;
 
     length = rep->length * 4;
     which = rep->which;
@@ -3794,9 +3792,10 @@ XkbSendNames(ClientPtr client, XkbDescPtr xkb, xkbGetNamesReply * rep)
         swapl(&rep->indicators);
     }
 
-    start = desc = calloc(1, length);
-    if (!start)
-        return BadAlloc;
+    char start[length];
+    memset(start, 0, length);
+    char* desc = start;
+
     if (xkb->names) {
         if (which & XkbKeycodesNameMask) {
             *((CARD32 *) desc) = xkb->names->keycodes;
@@ -3925,7 +3924,6 @@ XkbSendNames(ClientPtr client, XkbDescPtr xkb, xkbGetNamesReply * rep)
     }
     WriteToClient(client, SIZEOF(xkbGetNamesReply), rep);
     WriteToClient(client, length, start);
-    free((char *) start);
     return Success;
 }
 
