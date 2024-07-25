@@ -2795,12 +2795,12 @@ XkbComputeGetCompatMapReplySize(XkbCompatMapPtr compat,
     return Success;
 }
 
-static int
-XkbSendCompatMap(ClientPtr client,
-                 XkbCompatMapPtr compat, xkbGetCompatMapReply rep)
+static void
+XkbAssembleCompatMap(ClientPtr client,
+                     XkbCompatMapPtr compat,
+                     xkbGetCompatMapReply rep,
+                     char *buf)
 {
-    char buf[rep.length * 4];
-
     if (rep.length > 0) {
         register unsigned i, bit;
         xkbModsWireDesc *grp;
@@ -2835,20 +2835,6 @@ XkbSendCompatMap(ClientPtr client,
             wire = (xkbSymInterpretWireDesc *) grp;
         }
     }
-
-    if (client->swapped) {
-        swaps(&rep.sequenceNumber);
-        swapl(&rep.length);
-        swaps(&rep.firstSI);
-        swaps(&rep.nSI);
-        swaps(&rep.nTotalSI);
-    }
-
-    WriteToClient(client, sizeof(xkbGetCompatMapReply), &rep);
-    if (rep.length > 0) {
-        WriteToClient(client, sizeof(buf), buf);
-    }
-    return Success;
 }
 
 int
@@ -2888,7 +2874,21 @@ ProcXkbGetCompatMap(ClientPtr client)
         return BadValue;
     }
     XkbComputeGetCompatMapReplySize(compat, &rep);
-    return XkbSendCompatMap(client, compat, rep);
+
+    char buf[rep.length * 4];
+    XkbAssembleCompatMap(client, compat, rep, buf);
+
+    if (client->swapped) {
+        swaps(&rep.sequenceNumber);
+        swapl(&rep.length);
+        swaps(&rep.firstSI);
+        swaps(&rep.nSI);
+        swaps(&rep.nTotalSI);
+    }
+
+    WriteToClient(client, sizeof(xkbGetCompatMapReply), &rep);
+    WriteToClient(client, sizeof(buf), buf);
+    return Success;
 }
 
 /**
@@ -6018,8 +6018,22 @@ ProcXkbGetKbdByName(ClientPtr client)
         WriteToClient(client, sizeof(buf), buf);
     }
 
-    if (reported & XkbGBN_CompatMapMask)
-        XkbSendCompatMap(client, new->compat, crep);
+    if (reported & XkbGBN_CompatMapMask) {
+        char buf[crep.length * 4];
+        XkbAssembleCompatMap(client, new->compat, crep, buf);
+
+        if (client->swapped) {
+            swaps(&crep.sequenceNumber);
+            swapl(&crep.length);
+            swaps(&crep.firstSI);
+            swaps(&crep.nSI);
+            swaps(&crep.nTotalSI);
+        }
+
+        WriteToClient(client, sizeof(crep), &crep);
+        WriteToClient(client, sizeof(buf), buf);
+    }
+
     if (reported & XkbGBN_IndicatorMapMask)
         XkbSendIndicatorMap(client, new->indicators, irep);
     if (reported & (XkbGBN_KeyNamesMask | XkbGBN_OtherNamesMask))
