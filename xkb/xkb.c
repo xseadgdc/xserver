@@ -3783,23 +3783,14 @@ XkbComputeGetNamesReplySize(XkbDescPtr xkb, xkbGetNamesReply * rep)
         desc += sizeof(CARD32); \
     } while (0)
 
-static int
-XkbSendNames(ClientPtr client, XkbDescPtr xkb, xkbGetNamesReply rep)
+static void
+XkbAssembleNames(ClientPtr client, XkbDescPtr xkb, xkbGetNamesReply rep, char *buf)
 {
-    register unsigned i, length, which;
-
-    length = rep.length * 4;
+    register unsigned i, which;
     which = rep.which;
-    if (client->swapped) {
-        swaps(&rep.sequenceNumber);
-        swapl(&rep.length);
-        swapl(&rep.which);
-        swaps(&rep.virtualMods);
-        swapl(&rep.indicators);
-    }
 
-    char start[length];
-    memset(start, 0, length);
+    char start[rep.length * 4];
+    memset(start, 0, sizeof(start));
     char* desc = start;
 
     if (xkb->names) {
@@ -3876,14 +3867,6 @@ XkbSendNames(ClientPtr client, XkbDescPtr xkb, xkbGetNamesReply rep)
             }
         }
     }
-
-    if ((desc - start) != (length)) {
-        ErrorF("[xkb] BOGUS LENGTH in write names, expected %d, got %ld\n",
-               length, (unsigned long) (desc - start));
-    }
-    WriteToClient(client, sizeof(rep), &rep);
-    WriteToClient(client, length, start);
-    return Success;
 }
 #undef _ADD_CARD32
 
@@ -3916,7 +3899,23 @@ ProcXkbGetNames(ClientPtr client)
         .nRadioGroups = xkb->names ? xkb->names->num_rg : 0
     };
     XkbComputeGetNamesReplySize(xkb, &rep);
-    return XkbSendNames(client, xkb, rep);
+
+    char payload_buf[rep.length * 4];
+    memset(payload_buf, 0, sizeof(payload_buf));
+
+    XkbAssembleNames(client, xkb, rep, payload_buf);
+
+    if (client->swapped) {
+        swaps(&rep.sequenceNumber);
+        swapl(&rep.length);
+        swapl(&rep.which);
+        swaps(&rep.virtualMods);
+        swapl(&rep.indicators);
+    }
+
+    WriteToClient(client, sizeof(rep), &rep);
+    WriteToClient(client, sizeof(payload_buf), payload_buf);
+    return Success;
 }
 
 /***====================================================================***/
@@ -6051,8 +6050,24 @@ ProcXkbGetKbdByName(ClientPtr client)
         WriteToClient(client, sizeof(buf), buf);
     }
 
-    if (reported & (XkbGBN_KeyNamesMask | XkbGBN_OtherNamesMask))
-        XkbSendNames(client, new, nrep);
+    if (reported & (XkbGBN_KeyNamesMask | XkbGBN_OtherNamesMask)) {
+        char buf[nrep.length * 4];
+        memset(buf, 0, sizeof(buf));
+
+        XkbAssembleNames(client, new, nrep, buf);
+
+        if (client->swapped) {
+            swaps(&nrep.sequenceNumber);
+            swapl(&nrep.length);
+            swapl(&nrep.which);
+            swaps(&nrep.virtualMods);
+            swapl(&nrep.indicators);
+        }
+
+        WriteToClient(client, sizeof(nrep), &nrep);
+        WriteToClient(client, sizeof(buf), buf);
+    }
+
     if (reported & XkbGBN_GeometryMask)
         XkbSendGeometry(client, new->geom, grep);
 
