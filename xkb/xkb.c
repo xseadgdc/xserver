@@ -3162,12 +3162,13 @@ XkbComputeGetIndicatorMapReplySize(XkbIndicatorPtr indicators,
     return Success;
 }
 
-static int
-XkbSendIndicatorMap(ClientPtr client,
-                    XkbIndicatorPtr indicators, xkbGetIndicatorMapReply rep)
+static void
+XkbAssembleIndicatorMap(ClientPtr client,
+                        XkbIndicatorPtr indicators,
+                        xkbGetIndicatorMapReply rep,
+                        char *buf)
 {
-    int length = rep.length * 4;
-    CARD8 map[length];
+    CARD8 *map = (CARD8*)buf;
     register int i;
     register unsigned bit;
 
@@ -3192,18 +3193,6 @@ XkbSendIndicatorMap(ClientPtr client,
             }
         }
     }
-
-    if (client->swapped) {
-        swaps(&rep.sequenceNumber);
-        swapl(&rep.length);
-        swapl(&rep.which);
-        swapl(&rep.realIndicators);
-    }
-    WriteToClient(client, sizeof(xkbGetIndicatorMapReply), &rep);
-    if (sizeof(map)) {
-        WriteToClient(client, sizeof(map), map);
-    }
-    return Success;
 }
 
 int
@@ -3231,7 +3220,20 @@ ProcXkbGetIndicatorMap(ClientPtr client)
         .which = stuff->which
     };
     XkbComputeGetIndicatorMapReplySize(leds, &rep);
-    return XkbSendIndicatorMap(client, leds, rep);
+
+    char buf[rep.length * 4];
+    XkbAssembleIndicatorMap(client, leds, rep, buf);
+
+    if (client->swapped) {
+        swaps(&rep.sequenceNumber);
+        swapl(&rep.length);
+        swapl(&rep.which);
+        swapl(&rep.realIndicators);
+    }
+
+    WriteToClient(client, sizeof(xkbGetIndicatorMapReply), &rep);
+    WriteToClient(client, sizeof(buf), buf);
+    return Success;
 }
 
 /**
@@ -6034,8 +6036,21 @@ ProcXkbGetKbdByName(ClientPtr client)
         WriteToClient(client, sizeof(buf), buf);
     }
 
-    if (reported & XkbGBN_IndicatorMapMask)
-        XkbSendIndicatorMap(client, new->indicators, irep);
+    if (reported & XkbGBN_IndicatorMapMask) {
+        char buf[irep.length * 4];
+        XkbAssembleIndicatorMap(client, new->indicators, irep, buf);
+
+        if (client->swapped) {
+            swaps(&irep.sequenceNumber);
+            swapl(&irep.length);
+            swapl(&irep.which);
+            swapl(&irep.realIndicators);
+        }
+
+        WriteToClient(client, sizeof(irep), &irep);
+        WriteToClient(client, sizeof(buf), buf);
+    }
+
     if (reported & (XkbGBN_KeyNamesMask | XkbGBN_OtherNamesMask))
         XkbSendNames(client, new, nrep);
     if (reported & XkbGBN_GeometryMask)
