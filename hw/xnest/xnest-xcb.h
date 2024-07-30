@@ -27,4 +27,14 @@ uint32_t xnestUpstreamGC(GCPtr pGC);
 typedef XSetWindowAttributes XnSetWindowAttr;
 void xnest_encode_window_attr(XnSetWindowAttr attr, uint32_t mask, uint32_t *values);
 
+typedef struct {
+    int x, y;
+    int width, height;
+    int border_width;
+    uint32_t sibling;
+    int stack_mode;
+} XnWindowChanges;
+
+void xnest_configure_window(xcb_connection_t *conn, uint32_t window, uint32_t mask, XnWindowChanges values);
+
 #endif /* __XNEST__XCB_H */
