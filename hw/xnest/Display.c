@@ -91,6 +91,8 @@ xnestOpenDisplay(int argc, char *argv[])
     if (xnestNumVisuals == 0 || xnestVisuals == NULL)
         FatalError("Unable to find any visuals.\n");
 
+    fprintf(stderr, "got %d visuals\n", xnestNumVisuals);
+
     if (xnestUserDefaultClass || xnestUserDefaultDepth) {
         xnestDefaultVisualIndex = UNDEFINED;
         for (i = 0; i < xnestNumVisuals; i++)
@@ -143,14 +145,15 @@ xnestOpenDisplay(int argc, char *argv[])
         xnestDefaultDrawables[i] = None;
 
     for (i = 0; i < xnestNumPixmapFormats; i++)
-        for (j = 0; j < xnestNumDepths; j++)
+        for (j = 0; j < xnestNumDepths; j++) {
+            fprintf(stderr, "pixfmt #%d depth #%d: xnestDepth=%d\n", i, j, xnestDepths[j]);
             if (xnestPixmapFormats[i].depth == 1 ||
                 xnestPixmapFormats[i].depth == xnestDepths[j]) {
                 xnestDefaultDrawables[xnestPixmapFormats[i].depth] =
                     XCreatePixmap(xnestDisplay, DefaultRootWindow(xnestDisplay),
                                   1, 1, xnestPixmapFormats[i].depth);
             }
-
+        }
     xnestBitmapGC = XCreateGC(xnestDisplay, xnestDefaultDrawables[1], 0L, NULL);
 
     if (!(xnestUserGeometry & XValue))

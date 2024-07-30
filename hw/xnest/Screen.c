@@ -173,7 +173,10 @@ xnestOpenScreen(ScreenPtr pScreen, int argc, char *argv[])
     depths[0].vids = (VisualID *) malloc(MAXVISUALSPERDEPTH * sizeof(VisualID));
     numDepths = 1;
 
+    fprintf(stderr, "xnestNumVisuals=%d\n", xnestNumVisuals);
+
     for (i = 0; i < xnestNumVisuals; i++) {
+        fprintf(stderr, "visual #%d planes=%d\n", i, xnestVisuals[i].depth);
         visuals[numVisuals].class = xnestVisuals[i].class;
         visuals[numVisuals].bitsPerRGBValue = xnestVisuals[i].bits_per_rgb;
         visuals[numVisuals].ColormapEntries = xnestVisuals[i].colormap_size;
@@ -207,6 +210,7 @@ xnestOpenScreen(ScreenPtr pScreen, int argc, char *argv[])
         visuals[numVisuals].vid = FakeClientID(0);
 
         depthIndex = UNDEFINED;
+        fprintf(stderr, "OpenScreen: numDepths=%d\n", numDepths);
         for (j = 0; j < numDepths; j++)
             if (depths[j].depth == xnestVisuals[i].depth) {
                 depthIndex = j;
@@ -219,6 +223,7 @@ xnestOpenScreen(ScreenPtr pScreen, int argc, char *argv[])
             depths[depthIndex].numVids = 0;
             depths[depthIndex].vids =
                 (VisualID *) malloc(MAXVISUALSPERDEPTH * sizeof(VisualID));
+            fprintf(stderr, "added depth: %d\n", depths[depthIndex].depth);
             numDepths++;
         }
         if (depths[depthIndex].numVids >= MAXVISUALSPERDEPTH) {

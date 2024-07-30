@@ -920,6 +920,8 @@ ProcPanoramiXShmGetImage(ClientPtr client)
 static int
 ProcPanoramiXShmCreatePixmap(ClientPtr client)
 {
+    fprintf(stderr, "ProcPanoramiXShmCreatePixmap\n");
+
     ScreenPtr pScreen = NULL;
     PixmapPtr pMap = NULL;
     DrawablePtr pDraw;
@@ -1065,10 +1067,17 @@ ProcShmCreatePixmap(ClientPtr client)
     unsigned int width, height, depth;
     unsigned long size;
 
+    fprintf(stderr, "ProcShmCreatePixmap\n");
+
     REQUEST_SIZE_MATCH(xShmCreatePixmapReq);
     client->errorValue = stuff->pid;
-    if (!sharedPixmaps)
+    if (!sharedPixmaps) {
+        fprintf(stderr, "ProcShmCreatePixmap: no shared pixmaps\n");
         return BadImplementation;
+    }
+
+    fprintf(stderr, "ProcShmCreatePixmap: supporting shared pixmaps\n");
+
     LEGAL_NEW_RESOURCE(stuff->pid, client);
     rc = dixLookupDrawable(&pDraw, stuff->drawable, client, M_ANY,
                            DixGetAttrAccess);
@@ -1077,34 +1086,48 @@ ProcShmCreatePixmap(ClientPtr client)
 
     VERIFY_SHMPTR(stuff->shmseg, stuff->offset, TRUE, shmdesc, client);
 
+    fprintf(stderr, "ProcShmCreatePixmap: 3\n");
+
     width = stuff->width;
     height = stuff->height;
     depth = stuff->depth;
     if (!width || !height || !depth) {
         client->errorValue = 0;
+        fprintf(stderr, "ProcShmCreatePixmap: broken dims %d %d %d\n", width, height, depth);
         return BadValue;
     }
-    if (width > 32767 || height > 32767)
+    if (width > 32767 || height > 32767) {
+        fprintf(stderr, "ProcShmCreatePixmap: out of memory %d %d %d\n", width, height, depth);
         return BadAlloc;
+    }
 
     if (stuff->depth != 1) {
         pDepth = pDraw->pScreen->allowedDepths;
-        for (i = 0; i < pDraw->pScreen->numDepths; i++, pDepth++)
+        for (i = 0; i < pDraw->pScreen->numDepths; i++, pDepth++) {
+            fprintf(stderr, "ProcShmCreatePixmap() trying depth: have=%d want=%d\n", pDepth->depth, stuff->depth);
             if (pDepth->depth == stuff->depth)
                 goto CreatePmap;
+        }
         client->errorValue = stuff->depth;
+        fprintf(stderr, "ProcShmCreatePixmap: not allowed screen depth %d %d %d\n", width, height, depth);
         return BadValue;
     }
 
  CreatePmap:
     size = PixmapBytePad(width, depth) * height;
     if (sizeof(size) == 4 && BitsPerPixel(depth) > 8) {
-        if (size < width * height)
+        if (size < width * height) {
+            fprintf(stderr, "shm stoo small\n");
             return BadAlloc;
+        }
     }
     /* thankfully, offset is unsigned */
-    if (stuff->offset + size < size)
+    if (stuff->offset + size < size) {
+        fprintf(stderr, "out of segment\n");
         return BadAlloc;
+    }
+
+    fprintf(stderr, "4\n");
 
     VERIFY_SHMSIZE(shmdesc, stuff->offset, size, client);
     screen_priv = ShmGetScreenPriv(pDraw->pScreen);
@@ -1112,10 +1135,13 @@ ProcShmCreatePixmap(ClientPtr client)
                                                    stuff->height, stuff->depth,
                                                    shmdesc->addr +
                                                    stuff->offset);
+    fprintf(stderr, "called shmfuncs->CreatePixmap\n");
     if (pMap) {
+        fprintf(stderr, "got pMap\n");
         rc = XaceHookResourceAccess(client, stuff->pid, X11_RESTYPE_PIXMAP,
                       pMap, X11_RESTYPE_NONE, NULL, DixCreateAccess);
         if (rc != Success) {
+            fprintf(stderr, "xace denied\n");
             dixDestroyPixmap(pMap, 0);
             return rc;
         }
@@ -1124,9 +1150,12 @@ ProcShmCreatePixmap(ClientPtr client)
         pMap->drawable.serialNumber = NEXT_SERIAL_NUMBER;
         pMap->drawable.id = stuff->pid;
         if (AddResource(stuff->pid, X11_RESTYPE_PIXMAP, (void *) pMap)) {
+            fprintf(stderr, "CreatePixmap() Success\n");
             return Success;
         }
+        fprintf(stderr, "failed adding resource\n");
     }
+    fprintf(stderr, "shmfuncs->CreatePixmap() failed\n");
     return BadAlloc;
 }
 
@@ -1335,6 +1364,8 @@ ProcShmCreateSegment(ClientPtr client)
 static int
 ProcShmDispatch(ClientPtr client)
 {
+    fprintf(stderr, "ProcShmDispatch\n");
+
     REQUEST(xReq);
 
     if (stuff->data == X_ShmQueryVersion)
