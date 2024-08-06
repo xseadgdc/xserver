@@ -552,6 +552,18 @@ Dispatch(void)
                 if (result > (maxBigRequestSize << 2))
                     result = BadLength;
                 else {
+                    fprintf(stderr, "client #%d: %s (%d) len_units=%d (%ld bytes) req_len=%d\n",
+                            client->index,
+                            LookupMajorName(client->majorOp),
+                            client->majorOp,
+                            ((xReq *) client->requestBuffer)->length,
+                            ((xReq *) client->requestBuffer)->length * sizeof(CARD32),
+                            client->req_len);
+
+                    if (((xReq *) client->requestBuffer)->length != client->req_len)
+                        LogMessage(X_ERROR, "request lengths mismatch: buffer -> %d client -> %d\n",
+                            ((xReq *) client->requestBuffer)->length, client->req_len);
+
                     result = XaceHookDispatch(client, client->majorOp);
                     if (result == Success) {
                         currentClient = client;
