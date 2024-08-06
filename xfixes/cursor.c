@@ -296,8 +296,6 @@ SProcXFixesSelectCursorInput(ClientPtr client)
 {
     REQUEST(xXFixesSelectCursorInputReq);
     REQUEST_SIZE_MATCH(xXFixesSelectCursorInputReq);
-
-    swaps(&stuff->length);
     swapl(&stuff->window);
     swapl(&stuff->eventMask);
     return ProcXFixesSelectCursorInput(client);
@@ -415,8 +413,6 @@ ProcXFixesGetCursorImage(ClientPtr client)
 int _X_COLD
 SProcXFixesGetCursorImage(ClientPtr client)
 {
-    REQUEST(xXFixesGetCursorImageReq);
-    swaps(&stuff->length);
     return ProcXFixesGetCursorImage(client);
 }
 
@@ -444,8 +440,6 @@ int _X_COLD
 SProcXFixesSetCursorName(ClientPtr client)
 {
     REQUEST(xXFixesSetCursorNameReq);
-
-    swaps(&stuff->length);
     REQUEST_AT_LEAST_SIZE(xXFixesSetCursorNameReq);
     swapl(&stuff->cursor);
     swaps(&stuff->nbytes);
@@ -492,8 +486,6 @@ int _X_COLD
 SProcXFixesGetCursorName(ClientPtr client)
 {
     REQUEST(xXFixesGetCursorNameReq);
-
-    swaps(&stuff->length);
     REQUEST_SIZE_MATCH(xXFixesGetCursorNameReq);
     swapl(&stuff->cursor);
     return ProcXFixesGetCursorName(client);
@@ -571,8 +563,6 @@ ProcXFixesGetCursorImageAndName(ClientPtr client)
 int _X_COLD
 SProcXFixesGetCursorImageAndName(ClientPtr client)
 {
-    REQUEST(xXFixesGetCursorImageAndNameReq);
-    swaps(&stuff->length);
     return ProcXFixesGetCursorImageAndName(client);
 }
 
@@ -699,8 +689,6 @@ int _X_COLD
 SProcXFixesChangeCursor(ClientPtr client)
 {
     REQUEST(xXFixesChangeCursorReq);
-
-    swaps(&stuff->length);
     REQUEST_SIZE_MATCH(xXFixesChangeCursorReq);
     swapl(&stuff->source);
     swapl(&stuff->destination);
@@ -738,8 +726,6 @@ int _X_COLD
 SProcXFixesChangeCursorByName(ClientPtr client)
 {
     REQUEST(xXFixesChangeCursorByNameReq);
-
-    swaps(&stuff->length);
     REQUEST_AT_LEAST_SIZE(xXFixesChangeCursorByNameReq);
     swapl(&stuff->source);
     swaps(&stuff->nbytes);
@@ -897,8 +883,6 @@ int _X_COLD
 SProcXFixesHideCursor(ClientPtr client)
 {
     REQUEST(xXFixesHideCursorReq);
-
-    swaps(&stuff->length);
     REQUEST_SIZE_MATCH(xXFixesHideCursorReq);
     swapl(&stuff->window);
     return ProcXFixesHideCursor(client);
@@ -947,8 +931,6 @@ int _X_COLD
 SProcXFixesShowCursor(ClientPtr client)
 {
     REQUEST(xXFixesShowCursorReq);
-
-    swaps(&stuff->length);
     REQUEST_SIZE_MATCH(xXFixesShowCursorReq);
     swapl(&stuff->window);
     return ProcXFixesShowCursor(client);
@@ -1022,7 +1004,6 @@ SProcXFixesCreatePointerBarrier(ClientPtr client)
 
     REQUEST_AT_LEAST_SIZE(xXFixesCreatePointerBarrierReq);
 
-    swaps(&stuff->length);
     swaps(&stuff->num_devices);
     REQUEST_FIXED_SIZE(xXFixesCreatePointerBarrierReq,
                        pad_to_int32(stuff->num_devices * sizeof(CARD16)));
@@ -1055,8 +1036,6 @@ int _X_COLD
 SProcXFixesDestroyPointerBarrier(ClientPtr client)
 {
     REQUEST(xXFixesDestroyPointerBarrierReq);
-
-    swaps(&stuff->length);
     REQUEST_SIZE_MATCH(xXFixesDestroyPointerBarrierReq);
     swapl(&stuff->barrier);
     return ProcXFixesDestroyPointerBarrier(client);
