@@ -45,8 +45,6 @@ XVisualInfo *xnestVisuals;
 int xnestNumVisuals;
 Colormap *xnestDefaultColormaps;
 static uint16_t xnestNumDefaultColormaps;
-int *xnestDepths;
-int xnestNumDepths;
 XPixmapFormatValues *xnestPixmapFormats;
 int xnestNumPixmapFormats;
 Drawable xnestDefaultDrawables[MAXDEPTH + 1];
@@ -69,7 +67,7 @@ xnestOpenDisplay(int argc, char *argv[])
 {
     XVisualInfo vi;
     long mask;
-    int i, j;
+    int i;
 
     if (!xnestDoFullGeneration)
         return;
@@ -106,9 +104,6 @@ xnestOpenDisplay(int argc, char *argv[])
                             xnestVisuals[i].visual->visualid);
     }
 
-    xnestDepths = XListDepths(xnestDisplay, xnestUpstreamInfo.screenId,
-                              &xnestNumDepths);
-
     xnestPixmapFormats = XListPixmapFormats(xnestDisplay,
                                             &xnestNumPixmapFormats);
 
@@ -120,10 +115,14 @@ xnestOpenDisplay(int argc, char *argv[])
     for (i = 0; i <= MAXDEPTH; i++)
         xnestDefaultDrawables[i] = XCB_WINDOW_NONE;
 
-    for (i = 0; i < xnestNumPixmapFormats; i++)
-        for (j = 0; j < xnestNumDepths; j++)
+    for (i = 0; i < xnestNumPixmapFormats; i++) {
+        xcb_depth_iterator_t depth_iter;
+        for (depth_iter = xcb_screen_allowed_depths_iterator(xnestUpstreamInfo.screenInfo);
+             depth_iter.rem;
+             xcb_depth_next(&depth_iter))
+        {
             if (xnestPixmapFormats[i].depth == 1 ||
-                xnestPixmapFormats[i].depth == xnestDepths[j]) {
+                xnestPixmapFormats[i].depth == depth_iter.data->depth) {
                 uint32_t pixmap = xnestUpstreamXID();
                 xcb_create_pixmap(xnestUpstreamInfo.conn,
                                   xnestPixmapFormats[i].depth,
@@ -132,6 +131,8 @@ xnestOpenDisplay(int argc, char *argv[])
                                   1, 1);
                 xnestDefaultDrawables[xnestPixmapFormats[i].depth] = pixmap;
             }
+        }
+    }
 
     xnestBitmapGC = xnestUpstreamXID();
     xcb_create_gc(xnestUpstreamInfo.conn,
@@ -186,7 +187,6 @@ xnestCloseDisplay(void)
 
     free(xnestDefaultColormaps);
     XFree(xnestVisuals);
-    XFree(xnestDepths);
     XFree(xnestPixmapFormats);
     XCloseDisplay(xnestDisplay);
 }

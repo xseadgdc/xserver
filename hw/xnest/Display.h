@@ -27,8 +27,6 @@ extern XVisualInfo *xnestVisuals;
 extern int xnestNumVisuals;
 extern Colormap *xnestDefaultColormaps;
 extern int xnestNumDefaultClormaps;
-extern int *xnestDepths;
-extern int xnestNumDepths;
 extern XPixmapFormatValues *xnestPixmapFormats;
 extern int xnestNumPixmapFormats;
 extern Drawable xnestDefaultDrawables[MAXDEPTH + 1];
