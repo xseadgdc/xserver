@@ -245,7 +245,7 @@ xnestOpenScreen(ScreenPtr pScreen, int argc, char *argv[])
         }
         else
         {
-            VisualID visual_id = XVisualIDFromVisual(DefaultVisual(xnestDisplay, DefaultScreen(xnestDisplay)));
+            VisualID visual_id = xnestUpstreamInfo.screenInfo->root_visual;
             if (visual_id == xnestVisuals[i].visualid) {
                 defaultVisual = visuals[numVisuals].vid;
                 rootDepth = visuals[numVisuals].nplanes;
