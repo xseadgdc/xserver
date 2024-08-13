@@ -7025,6 +7025,7 @@ static int
 ProcXkbDispatch(ClientPtr client)
 {
     REQUEST(xReq);
+
     switch (stuff->data) {
     case X_kbUseExtension:
         return ProcXkbUseExtension(client);
