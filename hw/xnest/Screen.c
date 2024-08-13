@@ -206,6 +206,8 @@ xnestOpenScreen(ScreenPtr pScreen, int argc, char *argv[])
     depths[0].vids = (VisualID *) malloc(MAXVISUALSPERDEPTH * sizeof(VisualID));
     numDepths = 1;
 
+    fprintf(stderr, "xnestNumVisuals=%d\n", xnestNumVisuals);
+
     int found_default_visual = 0;
 
     for (i = 0; i < xnestNumVisuals; i++) {
