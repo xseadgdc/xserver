@@ -278,6 +278,8 @@ breakout:
         rootDepth = visuals[0].nplanes;
     }
 
+    fprintf(stderr, "defaultVisual: %d rootDepth=%d\n", defaultVisual, rootDepth);
+
     if (xnestParentWindow != 0) {
         xRectangle r = xnestGetGeometry(xnestUpstreamInfo.conn, xnestParentWindow);
         xnestGeometry.width = r.width;
@@ -286,6 +288,7 @@ breakout:
 
     /* myNum */
     /* id */
+    fprintf(stderr, "calling miScreenInit: defaultVisual: %d\n", defaultVisual);
     if (!miScreenInit(pScreen, NULL, xnestGeometry.width, xnestGeometry.height,
                       1, 1, xnestGeometry.width, rootDepth, numDepths, depths, defaultVisual, /* root visual */
                       numVisuals, visuals))
@@ -404,6 +407,12 @@ breakout:
         else {
             uint32_t values[32] = { 0 };
             xnestEncodeWindowAttr(attributes, valuemask, values);
+
+            fprintf(stderr, "pScreen->rootDepth: %d\n", pScreen->rootDepth);
+            fprintf(stderr, "pScreen->myNum=%d\n", pScreen->myNum);
+            fprintf(stderr, "pScreen->rootVisual: %ld\n", pScreen->rootVisual);
+            fprintf(stderr, "rootwin: %d\n", xnestUpstreamInfo.screenInfo->root);
+            fprintf(stderr, "visualid: %ld\n", xnestDefaultVisual(pScreen)->visualid);
 
             xnestDefaultWindows[pScreen->myNum] = xnestUpstreamXID();
             xcb_create_window(xnestUpstreamInfo.conn,
