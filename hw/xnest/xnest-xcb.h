@@ -119,4 +119,6 @@ void xnestGetPointerControl(xcb_connection_t *conn, int *acc_num, int *acc_den, 
 
 xRectangle xnestGetGeometry(xcb_connection_t *conn, uint32_t window);
 
+int xnestParseGeometry(const char *string, xRectangle *geometry);
+
 #endif /* __XNEST__XCB_H */
