@@ -384,3 +384,24 @@ void xnestGetPointerControl(
         free(reply);
     }
 }
+
+xRectangle xnestGetGeometry(xcb_connection_t *conn, uint32_t window)
+{
+    xcb_generic_error_t *err = NULL;
+    xcb_get_geometry_reply_t *reply = xcb_get_geometry_reply(
+        xnestUpstreamInfo.conn,
+        xcb_get_geometry(xnestUpstreamInfo.conn, window),
+        &err);
+
+    if (err) {
+        ErrorF("failed getting window attributes for %d: %d\n", window, err->error_code);
+        free(err);
+        return (xRectangle) { 0 };
+    }
+
+    return (xRectangle) {
+        .x = reply->x,
+        .y = reply->y,
+        .width = reply->width,
+        .height = reply->height };
+}
