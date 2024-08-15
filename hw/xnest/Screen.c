@@ -392,7 +392,7 @@ breakout:
         XnSetWindowAttr attributes = {
             .background_pixel = xnestUpstreamInfo.screenInfo->white_pixel,
             .event_mask = xnestEventMask,
-            .colormap = xnestDefaultVisualColormap(xnestDefaultVisual(pScreen)),
+            .colormap = xnestDefaultVisualColormap(xnestVisualFromID(pScreen, pScreen->rootVisual)),
         };
 
         valuemask = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK | XCB_CW_COLORMAP;
@@ -412,7 +412,7 @@ breakout:
             fprintf(stderr, "pScreen->myNum=%d\n", pScreen->myNum);
             fprintf(stderr, "pScreen->rootVisual: %ld\n", pScreen->rootVisual);
             fprintf(stderr, "rootwin: %d\n", xnestUpstreamInfo.screenInfo->root);
-            fprintf(stderr, "visualid: %ld\n", xnestDefaultVisual(pScreen)->visualid);
+            fprintf(stderr, "visualid: %ld\n", xnestVisualFromID(pScreen, pScreen->rootVisual)->visualid);
 
             xnestDefaultWindows[pScreen->myNum] = xnestUpstreamXID();
             xcb_create_window(xnestUpstreamInfo.conn,
@@ -425,7 +425,7 @@ breakout:
                               xnestGeometry.height,
                               xnestBorderWidth,
                               XCB_WINDOW_CLASS_INPUT_OUTPUT,
-                              xnestDefaultVisual(pScreen)->visualid,
+                              xnestVisualFromID(pScreen, pScreen->rootVisual)->visualid,
                               valuemask,
                               values);
         }
