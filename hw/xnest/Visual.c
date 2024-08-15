@@ -31,6 +31,10 @@ xnestVisual(VisualPtr pVisual)
 {
     int i;
 
+    fprintf(stderr, "xnestVisual: class=%d bits=%d cm=%d depth=%d red=%ld green=%ld blue=%ld\n",
+        pVisual->class, pVisual->bitsPerRGBValue, pVisual->ColormapEntries,
+        pVisual->nplanes, pVisual->redMask, pVisual->greenMask, pVisual->blueMask);
+
     for (i = 0; i < xnestNumVisuals; i++)
         if (pVisual->class == xnestVisuals[i].class &&
             pVisual->bitsPerRGBValue == xnestVisuals[i].bits_per_rgb &&
@@ -38,8 +42,10 @@ xnestVisual(VisualPtr pVisual)
             pVisual->nplanes == xnestVisuals[i].depth &&
             pVisual->redMask == xnestVisuals[i].red_mask &&
             pVisual->greenMask == xnestVisuals[i].green_mask &&
-            pVisual->blueMask == xnestVisuals[i].blue_mask)
+            pVisual->blueMask == xnestVisuals[i].blue_mask) {
+                fprintf(stderr, "found visual object\n");
             return xnestVisuals[i].visual;
+        }
 
     return NULL;
 }

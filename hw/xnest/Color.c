@@ -244,6 +244,8 @@ xnestSetInstalledColormapWindows(ScreenPtr pScreen)
         xnestNumOldInstalledColormapWindows = icws.numWindows;
 
 #ifdef DUMB_WINDOW_MANAGERS
+        fprintf(stderr, "DUMB_WINDOW_MANAGERS\n");
+
         /*
            This code is for dumb window managers.
            This will only work with default local visual colormaps.
