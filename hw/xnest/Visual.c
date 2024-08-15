@@ -67,17 +67,9 @@ VisualPtr ScreenGetVisual(ScreenPtr pScreen, VisualID visual)
 Visual *
 xnestVisualFromID(ScreenPtr pScreen, VisualID visual)
 {
-    int i;
-
-    for (i = 0; i < pScreen->numVisuals; i++) {
-        fprintf(stderr, "comparing #%d got %d want %d\n", i, pScreen->visuals[i].vid, visual);
-        if (pScreen->visuals[i].vid == visual) {
-            fprintf(stderr, "found it by id %d\n", visual);
-            return xnestVisual(&pScreen->visuals[i]);
-        }
-    }
-
-    fprintf(stderr, "cant find visual by id %d\n", visual);
+    VisualPtr v = ScreenGetVisual(pScreen, visual);
+    if (v)
+        return xnestVisual(v);
     return NULL;
 }
 
