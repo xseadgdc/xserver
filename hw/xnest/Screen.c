@@ -176,6 +176,8 @@ xnestOpenScreen(ScreenPtr pScreen, int argc, char *argv[])
     depths[0].vids = (VisualID *) malloc(MAXVISUALSPERDEPTH * sizeof(VisualID));
     numDepths = 1;
 
+    int found_default_visual = 0;
+
     for (i = 0; i < xnestNumVisuals; i++) {
         visuals[numVisuals].class = xnestVisuals[i].class;
         visuals[numVisuals].bitsPerRGBValue = xnestVisuals[i].bits_per_rgb;
@@ -205,7 +207,7 @@ xnestOpenScreen(ScreenPtr pScreen, int argc, char *argv[])
                 break;
         }
         if (j < numVisuals)
-            break;
+            continue;
 
         visuals[numVisuals].vid = FakeClientID(0);
 
@@ -231,12 +233,33 @@ xnestOpenScreen(ScreenPtr pScreen, int argc, char *argv[])
             visuals[numVisuals].vid;
         depths[depthIndex].numVids++;
 
+        if (xnestUserDefaultClass || xnestUserDefaultDepth) {
+            if ((!xnestDefaultClass || visuals[numVisuals].class == xnestDefaultClass) &&
+                (!xnestDefaultDepth || visuals[numVisuals].nplanes == xnestDefaultDepth))
+            {
+                defaultVisual = visuals[numVisuals].vid;
+                rootDepth = visuals[numVisuals].nplanes;
+                found_default_visual = 1;
+            }
+        }
+        else
+        {
+            VisualID visual_id = XVisualIDFromVisual(DefaultVisual(xnestDisplay, DefaultScreen(xnestDisplay)));
+            if (visual_id == xnestVisuals[i].visualid) {
+                defaultVisual = visuals[numVisuals].vid;
+                rootDepth = visuals[numVisuals].nplanes;
+                found_default_visual = 1;
+            }
+        }
         numVisuals++;
     }
     visuals = reallocarray(visuals, numVisuals, sizeof(VisualRec));
 
-    defaultVisual = visuals[xnestDefaultVisualIndex].vid;
-    rootDepth = visuals[xnestDefaultVisualIndex].nplanes;
+    if (!found_default_visual) {
+        ErrorF("Xnest: can't find matching visual for user specified depth %d\n", xnestDefaultDepth);
+        defaultVisual = visuals[0].vid;
+        rootDepth = visuals[0].nplanes;
+    }
 
     if (xnestParentWindow != 0) {
         XGetWindowAttributes(xnestDisplay, xnestParentWindow, &gattributes);
