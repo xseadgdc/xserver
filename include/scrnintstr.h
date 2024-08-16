@@ -73,6 +73,8 @@ typedef struct _Visual {
                                  * it may have more or fewer */
     unsigned long redMask, greenMask, blueMask;
     int offsetRed, offsetGreen, offsetBlue;
+
+    PrivateRec *devPrivates;
 } VisualRec;
 
 typedef struct _Depth {

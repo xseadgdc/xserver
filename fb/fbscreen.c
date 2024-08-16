@@ -24,6 +24,8 @@
 #include <dix-config.h>
 #endif
 
+#include "dix/visual_priv.h"
+
 #include "fb.h"
 
 Bool
@@ -36,7 +38,7 @@ fbCloseScreen(ScreenPtr pScreen)
     for (d = 0; d < pScreen->numDepths; d++)
         free(depths[d].vids);
     free(depths);
-    free(pScreen->visuals);
+    dixVisualFreeArray(pScreen->visuals, pScreen->numVisuals);
     if (pScreen->devPrivate)
         FreePixmap((PixmapPtr)pScreen->devPrivate);
     return TRUE;

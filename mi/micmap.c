@@ -39,6 +39,8 @@
 #include "globals.h"
 #include "micmap.h"
 
+#include "dix/visual_priv.h"
+
 #define ALL_VISUALS     (StaticGrayMask|GrayScaleMask|StaticColorMask|\
                          PseudoColorMask|TrueColorMask|DirectColorMask)
 #define LARGE_VISUALS   (TrueColorMask|DirectColorMask)
@@ -431,7 +433,6 @@ miInitVisuals(VisualPtr * visualp, DepthPtr * depthp, int *nvisualp,
               unsigned long sizes, int bitsPerRGB, int preferredVis)
 {
     int i, j = 0, k;
-    VisualPtr visual;
     DepthPtr depth;
     VisualID *vid;
     int d, b;
@@ -464,14 +465,14 @@ miInitVisuals(VisualPtr * visualp, DepthPtr * depthp, int *nvisualp,
         nvisual += visuals->count;
     }
     depth = xallocarray(ndepth, sizeof(DepthRec));
-    visual = xallocarray(nvisual, sizeof(VisualRec));
     preferredCVCs = xallocarray(ndepth, sizeof(int));
-    if (!depth || !visual || !preferredCVCs) {
-        free(depth);
-        free(visual);
-        free(preferredCVCs);
-        return FALSE;
-    }
+    if (!depth || !preferredCVCs)
+        goto failed;
+
+    VisualPtr visual = dixVisualAllocArray(nvisual); /* order is important !*/
+    if (!visual)
+        goto failed;
+
     *depthp = depth;
     *visualp = visual;
     *ndepthp = ndepth;
@@ -487,12 +488,8 @@ miInitVisuals(VisualPtr * visualp, DepthPtr * depthp, int *nvisualp,
         vid = NULL;
         if (nvtype) {
             vid = xallocarray(nvtype, sizeof(VisualID));
-            if (!vid) {
-                free(depth);
-                free(visual);
-                free(preferredCVCs);
-                return FALSE;
-            }
+            if (!vid)
+                goto failed;
         }
         depth->depth = d;
         depth->numVids = nvtype;
@@ -510,12 +507,6 @@ miInitVisuals(VisualPtr * visualp, DepthPtr * depthp, int *nvisualp,
             case PseudoColor:
             case GrayScale:
             case StaticGray:
-                visual->redMask = 0;
-                visual->greenMask = 0;
-                visual->blueMask = 0;
-                visual->offsetRed = 0;
-                visual->offsetGreen = 0;
-                visual->offsetBlue = 0;
                 break;
             case DirectColor:
             case TrueColor:
@@ -589,4 +580,9 @@ miInitVisuals(VisualPtr * visualp, DepthPtr * depthp, int *nvisualp,
     free(preferredCVCs);
 
     return TRUE;
+
+failed:
+    free(depth);
+    free(preferredCVCs);
+    return FALSE;
 }

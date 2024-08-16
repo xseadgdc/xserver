@@ -55,6 +55,7 @@ SOFTWARE.
 #include <strings.h>
 
 #include "dix/colormap_priv.h"
+#include "dix/visual_priv.h"
 #include "os/osdep.h"
 
 #include "misc.h"
@@ -2520,7 +2521,7 @@ ResizeVisualArray(ScreenPtr pScreen, int new_visual_count, DepthPtr depth)
     struct colormap_lookup_data cdata;
     int numVisuals;
     VisualPtr visuals;
-    XID *vids, vid;
+    XID *vids;
     int first_new_vid, first_new_visual, i;
 
     first_new_vid = depth->numVids;
@@ -2548,9 +2549,8 @@ ResizeVisualArray(ScreenPtr pScreen, int new_visual_count, DepthPtr depth)
     pScreen->visuals = visuals;
 
     for (i = 0; i < new_visual_count; i++) {
-        vid = FakeClientID(0);
-        pScreen->visuals[first_new_visual + i].vid = vid;
-        vids[first_new_vid + i] = vid;
+        dixVisualInit(&pScreen->visuals[first_new_visual + i]);
+        vids[first_new_vid + i] = pScreen->visuals[first_new_visual + i].vid;
     }
 
     depth->numVids += new_visual_count;

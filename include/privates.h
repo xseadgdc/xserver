@@ -52,6 +52,8 @@ typedef enum {
     PRIVATE_PICTURE,
     PRIVATE_SYNC_FENCE,
 
+    PRIVATE_VISUAL,
+
     /* last private type */
     PRIVATE_LAST,
 } DevPrivateType;

@@ -49,6 +49,7 @@
 #include "dix/dix_priv.h"
 #include "dix/eventconvert.h"
 #include "dix/exevents_priv.h"
+#include "dix/visual_priv.h"
 
 #include "xf86.h"
 #include "xf86str.h"
@@ -651,7 +652,6 @@ DGACreateColormap(int index, ClientPtr client, int id, int mode, int alloc)
     ScreenPtr pScreen = screenInfo.screens[index];
     DGAScreenPtr pScreenPriv = DGA_GET_SCREEN_PRIV(pScreen);
     FakedVisualList *fvlp;
-    VisualPtr pVisual;
     DGAModePtr pMode;
     ColormapPtr pmap;
 
@@ -663,10 +663,10 @@ DGACreateColormap(int index, ClientPtr client, int id, int mode, int alloc)
 
     pMode = &(pScreenPriv->modes[mode - 1]);
 
-    if (!(pVisual = malloc(sizeof(VisualRec))))
+    VisualPtr pVisual = dixVisualAlloc();
+    if (!pVisual)
         return BadAlloc;
 
-    pVisual->vid = FakeClientID(0);
     pVisual->class = pMode->visualClass;
     pVisual->nplanes = pMode->depth;
     pVisual->ColormapEntries = 1 << pMode->depth;
@@ -677,12 +677,6 @@ DGACreateColormap(int index, ClientPtr client, int id, int mode, int alloc)
     case GrayScale:
     case StaticGray:
         pVisual->bitsPerRGBValue = 8;   /* not quite */
-        pVisual->redMask = 0;
-        pVisual->greenMask = 0;
-        pVisual->blueMask = 0;
-        pVisual->offsetRed = 0;
-        pVisual->offsetGreen = 0;
-        pVisual->offsetBlue = 0;
         break;
     case DirectColor:
     case TrueColor:

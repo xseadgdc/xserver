@@ -22,6 +22,7 @@ is" without express or implied warranty.
 
 #include <xcb/xcb_icccm.h>
 
+#include "dix/visual_priv.h"
 #include "mi/mi_priv.h"
 
 #include "scrnintstr.h"
@@ -168,7 +169,6 @@ static int addDepthVisual(DepthPtr depths, int numDepths, int nplanes, VisualID 
 Bool
 xnestOpenScreen(ScreenPtr pScreen, int argc, char *argv[])
 {
-    VisualPtr visuals;
     DepthPtr depths;
     int numVisuals, numDepths;
     int j;
@@ -197,7 +197,7 @@ xnestOpenScreen(ScreenPtr pScreen, int argc, char *argv[])
                                      PRIVATE_CURSOR, 0))
         return FALSE;
 
-    visuals = xallocarray(1, sizeof(VisualRec));
+    VisualPtr visuals = calloc(1, sizeof(VisualRec));
     numVisuals = 0;
 
     depths = (DepthPtr) malloc(MAXDEPTH * sizeof(DepthRec));
@@ -230,19 +230,17 @@ xnestOpenScreen(ScreenPtr pScreen, int argc, char *argv[])
                         goto breakout;
             }
 
-            visuals[numVisuals] = (VisualRec) {
-                .class = vts[x]._class,
-                .bitsPerRGBValue = vts[x].bits_per_rgb_value,
-                .ColormapEntries = vts[x].colormap_entries,
-                .nplanes = depth_iter.data->depth,
-                .redMask = vts[x].red_mask,
-                .greenMask = vts[x].green_mask,
-                .blueMask = vts[x].blue_mask,
-                .offsetRed = offset(vts[x].red_mask),
-                .offsetGreen = offset(vts[x].green_mask),
-                .offsetBlue = offset(vts[x].blue_mask),
-                .vid = FakeClientID(0),
-            };
+            dixVisualInit(&visuals[numVisuals]);
+            visuals[numVisuals].class = vts[x]._class;
+            visuals[numVisuals].bitsPerRGBValue = vts[x].bits_per_rgb_value;
+            visuals[numVisuals].ColormapEntries = vts[x].colormap_entries;
+            visuals[numVisuals].nplanes = depth_iter.data->depth;
+            visuals[numVisuals].redMask = vts[x].red_mask;
+            visuals[numVisuals].greenMask = vts[x].green_mask;
+            visuals[numVisuals].blueMask = vts[x].blue_mask;
+            visuals[numVisuals].offsetRed = offset(vts[x].red_mask);
+            visuals[numVisuals].offsetGreen = offset(vts[x].green_mask);
+            visuals[numVisuals].offsetBlue = offset(vts[x].blue_mask);
 
             numDepths = addDepthVisual(depths, numDepths, visuals[numVisuals].nplanes, visuals[numVisuals].vid);
 
@@ -267,6 +265,8 @@ xnestOpenScreen(ScreenPtr pScreen, int argc, char *argv[])
 
             numVisuals++;
             visuals = reallocarray(visuals, numVisuals+1, sizeof(VisualRec));
+            // no need to clear the additional element: either filled later or removed
+            // or removed by final reallocarray()
 breakout:
         }
     }
