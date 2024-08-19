@@ -15,7 +15,6 @@
 #include "include/gc.h"
 #include "include/servermd.h"
 
-#include "Xnest.h"
 #include "xnest-xcb.h"
 #include "xnest-xkb.h"
 #include "XNGC.h"
