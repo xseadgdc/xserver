@@ -116,7 +116,7 @@ apt-get install -y \
 	xutils-dev
 
 # Xnest requires xcb bugfix
-git clone https://gitlab.freedesktop.org/metux/xcbproto.git --depth 1 --branch=master
+git clone https://gitlab.freedesktop.org/xorg/proto/xcbproto.git --depth 1 --branch=master
 ( cd xcbproto && ./autogen.sh --prefix=/usr && make && make install )
 rm -Rf xcbproto
 
