@@ -17,6 +17,7 @@
 
 #include "Xnest.h"
 #include "xnest-xcb.h"
+#include "xnest-xkb.h"
 #include "XNGC.h"
 
 #include "Display.h"
@@ -319,7 +320,7 @@ int xnestXkbDeviceId(xcb_connection_t *conn)
 
     xcb_xkb_get_kbd_by_name_reply_t *reply = xcb_xkb_get_kbd_by_name_reply(
         xnestUpstreamInfo.conn,
-        xcb_xkb_get_kbd_by_name(
+        xcb_xkb_get_kbd_by_name_2(
             xnestUpstreamInfo.conn,
             XCB_XKB_ID_USE_CORE_KBD,
             XkbGBN_AllComponentsMask_2,
