@@ -222,11 +222,11 @@ meson-dist:
         when: always
         paths:
             - $MESON_BUILDDIR/meson-logs/
-            - $MESON_BUILDDIR/xserver-*/$MESON_BUILDDIR/meson-logs/
+            - $MESON_BUILDDIR/xlibre-xnest-*/$MESON_BUILDDIR/meson-logs/
     script:
         - .gitlab-ci/meson-build.sh --run-dist
         - mkdir xserver-tarball
-        - tar xf $MESON_BUILDDIR/meson-dist/xserver-*.tar.xz -C xserver-tarball --strip-components=1
+        - tar xf $MESON_BUILDDIR/meson-dist/xlibre-xnest-*.tar.xz -C xserver-tarball --strip-components=1
         - .gitlab-ci/meson-build.sh -C xserver-tarball --skip-test --skip-dist --run-install
     variables:
       MESON_DIST_ARGS: --no-tests
