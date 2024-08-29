@@ -1,4 +1,4 @@
-project('xserver', 'c',
+project('xlibre-xnest', 'c',
         default_options: [
             'buildtype=debugoptimized',
             'c_std=gnu99',
