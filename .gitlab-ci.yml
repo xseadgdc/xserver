@@ -19,9 +19,9 @@ variables:
     FDO_UPSTREAM_REPO:    'xorg/xserver'
     MESON_BUILDDIR:       'build'
     REPO_URL_XORGPROTO:   'https://gitlab.freedesktop.org/xorg/proto/xorgproto.git'
-    XORG_DEBIAN_VERSION:  'bullseye-slim'
+    XORG_DEBIAN_VERSION:  'bookworm-slim'
     XORG_DEBIAN_EXEC:     'env FDO_CI_CONCURRENT=${FDO_CI_CONCURRENT} bash .gitlab-ci/debian-install.sh'
-    XORG_DEBIAN_TAG:      '2024-09-07-fix-anongit'
+    XORG_DEBIAN_TAG:      '2024-09-09-bookworm1'
     XORG_FREEBSD_VERSION: '14.0'
     XORG_FREEBSD_EXEC:    ''
     XORG_FREEBSD_TAG:     '2024-06-10.0'
@@ -111,7 +111,7 @@ stages:
     FDO_DISTRIBUTION_EXEC:      ''
     FDO_DISTRIBUTION_PACKAGES:  'git gcc pkgconf autoconf automake libtool xorg-macros xorgproto bash meson ninja pixman xtrans libXau libXdmcp libXfont2 libxkbfile libxcvt libpciaccess font-util libepoll-shim'
 
-debian-bullseye:
+debian-bookworm:
   extends:
     - .fdo.container-build@debian
     - .ci-run-policy

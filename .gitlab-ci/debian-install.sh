@@ -16,7 +16,7 @@ EPHEMERAL="
 	"
 
 # Add bullseye-backports for the newer linux-libc-dev package
-echo 'deb http://deb.debian.org/debian bullseye-backports main' >> /etc/apt/sources.list
+echo 'deb http://deb.debian.org/debian bookworm-backports main' >> /etc/apt/sources.list
 apt update
 
 apt-get install -y \
@@ -162,7 +162,7 @@ rm -rf wayland-protocols
 # Install libdecor for Xwayland
 git clone https://gitlab.gnome.org/jadahl/libdecor.git --depth 1 --branch=0.1.0
 cd libdecor
-meson _build -D{demo,install_demo}=false
+meson _build
 ninja -C _build -j${FDO_CI_CONCURRENT:-4} install
 cd ..
 rm -rf libdecor
