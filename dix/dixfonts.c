@@ -1692,7 +1692,8 @@ SetFontPath(ClientPtr client, int npaths, unsigned char *paths)
         int bad;
 
         err = SetFontPathElements(npaths, paths, &bad, FALSE);
-        client->errorValue = bad;
+        if (err != Success)
+            client->errorValue = bad;
     }
     return err;
 }
