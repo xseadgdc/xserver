@@ -108,6 +108,7 @@ apt-get install -y \
 	python3-mako \
 	python3-numpy \
 	python3-six \
+	wayland-protocols \
 	weston \
 	x11-xkb-utils \
 	xfonts-utils \
