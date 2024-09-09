@@ -15,7 +15,7 @@ EPHEMERAL="
 	xvfb
 	"
 
-# Add bullseye-backports for the newer linux-libc-dev package
+# Add bookworm-backports for the newer linux-libc-dev package
 echo 'deb http://deb.debian.org/debian bookworm-backports main' >> /etc/apt/sources.list
 apt update
 
@@ -97,7 +97,7 @@ apt-get install -y \
 	libxtst-dev \
 	libxv-dev \
 	libz-mingw-w64-dev \
-	linux-libc-dev/bullseye-backports \
+	linux-libc-dev/bookworm-backports \
 	mesa-common-dev \
 	meson \
 	mingw-w64-tools \
@@ -144,20 +144,20 @@ popd
 rm -rf xorgproto
 
 # wayland-protocols requires wayland-scanner 1.20, but Debian bullseye has 1.18 only
-git clone https://gitlab.freedesktop.org/wayland/wayland.git --depth 1 --branch=1.21.0
-cd wayland
-meson -Dtests=false -Ddocumentation=false -Ddtd_validation=false _build
-ninja -C _build -j${FDO_CI_CONCURRENT:-4} install
-cd ..
-rm -rf wayland
+#git clone https://gitlab.freedesktop.org/wayland/wayland.git --depth 1 --branch=1.21.0
+#cd wayland
+#meson -Dtests=false -Ddocumentation=false -Ddtd_validation=false _build
+#ninja -C _build -j${FDO_CI_CONCURRENT:-4} install
+#cd ..
+#rm -rf wayland
 
 # Xwayland requires wayland-protocols >= 1.34, but Debian bullseye has 1.20 only
-git clone https://gitlab.freedesktop.org/wayland/wayland-protocols.git --depth 1 --branch=1.34
-cd wayland-protocols
-meson _build
-ninja -C _build -j${FDO_CI_CONCURRENT:-4} install
-cd ..
-rm -rf wayland-protocols
+#git clone https://gitlab.freedesktop.org/wayland/wayland-protocols.git --depth 1 --branch=1.34
+#cd wayland-protocols
+#meson _build
+#ninja -C _build -j${FDO_CI_CONCURRENT:-4} install
+#cd ..
+#rm -rf wayland-protocols
 
 # Install libdecor for Xwayland
 git clone https://gitlab.gnome.org/jadahl/libdecor.git --depth 1 --branch=0.1.0
