@@ -127,6 +127,7 @@ Equipment Corporation.
 #include "os/bug_priv.h"
 #include "os/client_priv.h"
 #include "os/fmt.h"
+#include "os/log_priv.h"
 #include "xkb/xkbsrv_priv.h"
 
 #include "misc.h"
