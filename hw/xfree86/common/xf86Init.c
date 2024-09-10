@@ -308,7 +308,7 @@ InitOutput(ScreenInfo * pScreenInfo, int argc, char **argv)
 
             t = time(NULL);
             ct = ctime(&t);
-            xf86MsgVerb(xf86LogFileFrom, 0, "Log file: \"%s\", Time: %s",
+            LogMessageVerb(xf86LogFileFrom, 0, "Log file: \"%s\", Time: %s",
                         xf86LogFile, ct);
         }
 
@@ -579,7 +579,7 @@ InitOutput(ScreenInfo * pScreenInfo, int argc, char **argv)
         if (xf86OSPMClose)
             xf86OSPMClose();
         if ((xf86OSPMClose = xf86OSPMOpen()) != NULL)
-            xf86MsgVerb(X_INFO, 3, "APM registered successfully\n");
+            LogMessageVerb(X_INFO, 3, "APM registered successfully\n");
 
         /* Make sure full I/O access is enabled */
         if (xorgHWAccess)
