@@ -60,6 +60,7 @@
 #include "xf86DDC.h"
 #include "xf86Xinput.h"
 #include "xf86InPriv.h"
+#include "xf86Config.h"
 #include "mivalidate.h"
 
 /* For xf86GetClocks */

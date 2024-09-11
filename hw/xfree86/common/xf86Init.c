@@ -865,24 +865,18 @@ OsVendorFatalError(const char *f, va_list args)
     ErrorFSigSafe("\n");
 }
 
-int
+void
 xf86SetVerbosity(int verb)
 {
-    int save = xf86Verbose;
-
     xf86Verbose = verb;
     xorgLogVerbosity = verb;
-    return save;
 }
 
-int
+void
 xf86SetLogVerbosity(int verb)
 {
-    int save = xf86LogVerbose;
-
     xf86LogVerbose = verb;
     xorgLogFileVerbosity = verb;
-    return save;
 }
 
 static void
