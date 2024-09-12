@@ -1,0 +1,53 @@
+digraph {
+    subgraph cluster_os_log {
+        label="os/log";
+        LogSWrite;
+        LogMessage             -> LogVMessageVerb;
+        LogMessageVerb         -> LogVMessageVerb;
+        LogMessageVerbSigSafe  -> LogVMessageVerbSigSafe;
+        LogVMessageVerb        -> LogVMessageVerbSigSafe;
+        LogVMessageVerb        -> LogSWrite;
+        LogVMessageVerbSigSafe -> LogSWrite;
+        LogVHdrMessageVerb     -> vpnprintf;
+        LogVHdrMessageVerb     -> pnprintf;
+        LogVHdrMessageVerb     -> LogSWrite;
+        LogHdrMessageVerb      -> LogVHdrMessageVerb;
+        VAuditF                -> ErrorF;
+        VAuditF                -> vsnprintf;
+        AuditFlush             -> ErrorF;
+        AuditF                 -> VAuditF;
+        FatalError             -> ErrofFSigSafe;
+        FatalError             -> VErrorFSigSafe;
+        FatalError             -> OsVendorFatalError;
+        FatalError             -> AbortServer;
+        FatalError             -> OsAbort;
+        VErrorF                -> OsVendorVErrorFProc;
+        VErrorF                -> LogVMessageVerb;
+        ErrorF                 -> VErrorF;
+        VErrorFSigSafe         -> LogVMessageVerbSigSafe;
+        ErrorFSigSafe          -> VErrorFSigSafe;
+        LogPrintMarkers        -> LogMessageVerb;
+    }
+    subgraph cluster_xwin {
+        label="XWin";
+        xwin__OsVendorVErrorF -> LogVMessageVerb;
+        winDrvMsg             -> LogVMessageVerb;
+        winDrvMsgVerb         -> LogVMessageVerb;
+        winErrorFVerb         -> LogVMessageVerb;
+        winDebug              -> LogVMessageVerb;
+        winTrace              -> LogVMessageVerb;
+    }
+    subgraph cluster_xf86 {
+        label="xf86";
+        xf86VDrvMsgVerb   -> LogVMessageVerb;
+        xf86DrvMsgVerb    -> xf86VDrvMsgVerb;
+        xf86IDrvMsg       -> xf86VIDrvMsgVerb;
+        xf86DrvMsg        -> xf86VDrvMsgVerb;
+        xf86VIDrvMsgVerb  -> LogHdrMessageVerb;
+        xf86ErrorFVerb    -> LogVMessageVerb;
+        xf86ErrorF        -> LogVMessageVerb;
+        xf86LogInit       -> xf86SetVerbosity;
+        xf86LogInit       -> xf86SetLogVerbosity;
+        xf86PrintChipsets -> LogMessageVerb;
+    }
+}
