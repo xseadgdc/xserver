@@ -759,9 +759,9 @@ if build_rootless
     subdir('miext/rootless')
 endif
 subdir('present')
-if build_xwin or build_xquartz
+# if build_xwin or build_xquartz
     subdir('pseudoramiX')
-endif
+# endif
 subdir('randr')
 subdir('record')
 subdir('render')
