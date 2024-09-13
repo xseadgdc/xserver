@@ -271,7 +271,7 @@ xf86-driver-build-test:
             - REPO: https://gitlab.freedesktop.org/xorg/driver/xf86-video-qxl
               SHA: e0bd955e18db0e53f8dce72b827ee4beb4afc79d # no release yet
             - REPO: https://gitlab.freedesktop.org/xorg/driver/xf86-video-vesa
-              SHA: xf86-video-vesa-2.6.0
+              SHA: a5cf155058cdb857955545f8ba9d0b357ba52fe8
             - REPO: https://gitlab.freedesktop.org/xorg/driver/xf86-video-vmware
               SHA: xf86-video-vmware-13.4.0
     script:
