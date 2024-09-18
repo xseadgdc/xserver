@@ -1544,6 +1544,8 @@ CompositePicture(CARD8 op,
     if (op == PictOpDst)
         return;
 
+    assert(ps->Composite);
+
     (*ps->Composite) (op,
                       pSrc,
                       pMask,
