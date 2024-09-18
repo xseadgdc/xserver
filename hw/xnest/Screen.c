@@ -513,10 +513,7 @@ breakout:
     if (!xnestCreateDefaultColormap(pScreen))
         return FALSE;
 
-    if (!miPictureInit(pScreen, 0, 0))
-        return FALSE;
-
-    return TRUE;
+    return xnest_picture_init(pScreen);
 }
 
 Bool

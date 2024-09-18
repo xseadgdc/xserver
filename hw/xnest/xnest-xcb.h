@@ -8,6 +8,7 @@
 #include <xcb/xcb.h>
 
 #include "include/list.h"
+#include "render/picturestr.h"
 
 struct xnest_event_queue {
     struct xorg_list entry;
@@ -79,5 +80,7 @@ typedef struct {
 
 int xnest_text_width (xnestPrivFont *font, const char *string, int count);
 int xnest_text_width_16 (xnestPrivFont *font, const uint16_t *string, int count);
+
+Bool xnest_picture_init(ScreenPtr pScreen);
 
 #endif /* __XNEST__XCB_H */
