@@ -23,6 +23,7 @@ is" without express or implied warranty.
 #include <xcb/xcb_icccm.h>
 
 #include "mi/mi_priv.h"
+#include "render/mipict.h"
 
 #include "scrnintstr.h"
 #include "dix.h"
@@ -510,6 +511,9 @@ breakout:
     }
 
     if (!xnestCreateDefaultColormap(pScreen))
+        return FALSE;
+
+    if (!miPictureInit(pScreen, 0, 0))
         return FALSE;
 
     return TRUE;
