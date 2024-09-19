@@ -11,7 +11,7 @@
 
 #include "xnest-xcb.h"
 
-struct xnest_picture_privrec {
+struct xnest_render_picture_privrec {
     xcb_render_picture_t upstream_xid;
 };
 
@@ -20,6 +20,11 @@ DevPrivateKeyRec xnestPicturePrivateKey;
 static inline struct xnest_render_picture_privrec *
     xnest_render_picture_get_priv(PicturePtr pPict)
 {
+    if (pPict == NULL) {
+        fprintf(stderr, "NULL passed\n");
+        return NULL;
+    }
+
     void *p = dixLookupPrivate(&pPict->devPrivates, &xnestPicturePrivateKey);
     if (p)
         fprintf(stderr, "PRIV OK\n");
@@ -33,6 +38,13 @@ static void xnest_render_composite(
     int16_t xSrc, int16_t ySrc, int16_t xMask, int16_t yMask,
     int16_t xDst, int16_t yDst, uint16_t width, uint16_t height)
 {
+    if (!pSrc)
+        fprintf(stderr, "xnest_render_composite: NULL pScr\n");
+    if (!pMask)
+        fprintf(stderr, "xnest_render_composite: NULL pMask\n");
+    if (!pDst)
+        fprintf(stderr, "xnest_render_composite: NULL pDst\n");
+
     struct xnest_render_picture_privrec *pSrcPriv =
         xnest_render_picture_get_priv(pSrc);
     struct xnest_render_picture_privrec *pMaskPriv =
@@ -47,7 +59,7 @@ static void xnest_render_add_traps(
     PicturePtr pPicture, int16_t xOff, int16_t yOff, int ntrap,
     xTrap *traps)
 {
-    struct xnest_render_picture_privrec *pPicture =
+    struct xnest_render_picture_privrec *pPicturePriv =
         xnest_render_picture_get_priv(pPicture);
 
     fprintf(stderr, "xnest_render_add_traps\n");
@@ -56,8 +68,8 @@ static void xnest_render_add_traps(
 static void xnest_render_rasterize_trapezoid(
     PicturePtr alpha, xTrapezoid *trap, int x_off, int y_off)
 {
-    struct xnest_render_picture_privrec *pPicture =
-        xnest_render_picture_get_priv(pPicture);
+    struct xnest_render_picture_privrec *alphaPriv =
+        xnest_render_picture_get_priv(alpha);
 
     fprintf(stderr, "xnest_render_rasterize_trapezoid\n");
 }
@@ -65,6 +77,9 @@ static void xnest_render_rasterize_trapezoid(
 static void xnest_render_add_triangles(
     PicturePtr pPicture, int16_t xOff, int16_t yOff, int ntri, xTriangle *tris)
 {
+    struct xnest_render_picture_privrec *pPicturePriv =
+        xnest_render_picture_get_priv(pPicture);
+
     fprintf(stderr, "xnest_render_add_triangles\n");
 }
 
@@ -94,11 +109,51 @@ static void xnest_render_glyphs(
     fprintf(stderr, "xnest_render_glyphs\n");
 }
 
-static int xnest_render_create_picture(PicturePtr pPict)
+static int xnest_render_create_picture(PicturePtr pPicture)
 {
+    assert(pPicture);
+
+    struct xnest_render_picture_privrec *pPicturePriv = 
+        xnest_render_picture_get_priv(pPicture);
+    assert(pPicturePriv);
+
     fprintf(stderr, "xnest_render_create_picture\n");
 
-    return miCreatePicture(pPict);
+    xcb_render_create_picture_value_list_t params = { 
+        .repeat = pPicture->repeat,
+        .alphamap = 0, // convert
+        .alphaxorigin = pPicture->alphaOrigin.x,
+        .alphayorigin = pPicture->alphaOrigin.y,
+        .clipxorigin = pPicture->clipOrigin.x,
+        .clipyorigin = pPicture->clipOrigin.y,
+        .clipmask = 0, // convert
+        .graphicsexposure = pPicture->graphicsExposures,
+        .subwindowmode = pPicture->subWindowMode,
+        .polyedge = pPicture->polyEdge,
+        .polymode = pPicture->polyMode,
+        .dither = 0, // convert
+        .componentalpha = 0, // convert
+    };
+
+    pPicturePriv->upstream_xid = xcb_generate_id(xnestUpstreamInfo.conn);
+
+    xcb_render_create_picture_aux_checked(
+        xnestUpstreamInfo.conn,
+        pPicturePriv->upstream_xid,
+        /* xcb_drawable_t 	drawable, */0,
+        /* xcb_render_pictformat_t 	format, */ 0,
+        (XCB_RENDER_CP_REPEAT | XCB_RENDER_CP_ALPHA_MAP |
+         XCB_RENDER_CP_ALPHA_X_ORIGIN | XCB_RENDER_CP_ALPHA_Y_ORIGIN |
+         XCB_RENDER_CP_CLIP_X_ORIGIN | XCB_RENDER_CP_CLIP_Y_ORIGIN |
+         XCB_RENDER_CP_CLIP_MASK | XCB_RENDER_CP_GRAPHICS_EXPOSURE |
+         XCB_RENDER_CP_SUBWINDOW_MODE | XCB_RENDER_CP_POLY_EDGE |
+         XCB_RENDER_CP_POLY_MODE | XCB_RENDER_CP_DITHER |
+         XCB_RENDER_CP_COMPONENT_ALPHA),
+        &params
+    );
+
+    // FIXME: do we need that ?
+    return miCreatePicture(pPicture);
 }
 
 Bool xnest_picture_init(ScreenPtr pScreen)
@@ -106,7 +161,9 @@ Bool xnest_picture_init(ScreenPtr pScreen)
     if (!miPictureInit(pScreen, 0, 0))
         return FALSE;
 
-    if (!dixRegisterPrivateKey(&xnestPicturePrivateKey, PRIVATE_PICTURE, sizeof(struct xnest_picture_privrec))) {
+    if (!dixRegisterPrivateKey(&xnestPicturePrivateKey,
+                               PRIVATE_PICTURE,
+                               sizeof(struct xnest_render_picture_privrec))) {
         fprintf(stderr, "failed to allocate PRIVATE_PICTURE\n");
         return FALSE;
     }

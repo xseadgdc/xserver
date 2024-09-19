@@ -26,6 +26,7 @@ xcb_aux_dep = dependency('xcb-aux', required: true)
 xcb_shape_dep = dependency('xcb-shape', required: true)
 xcb_icccm_dep = dependency('xcb-icccm', required: true)
 xcb_xkb_dep = dependency('xcb-xkb', required: true)
+xcb_render_dep = dependency('xcb-render', required: true)
 
 executable(
     'Xnest',
@@ -38,6 +39,7 @@ executable(
         xcb_shape_dep,
         xcb_icccm_dep,
         xcb_xkb_dep,
+        xcb_render_dep,
     ],
     link_with: [
         libxserver_main,
