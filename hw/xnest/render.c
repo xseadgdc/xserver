@@ -75,6 +75,7 @@ static void xnest_render_composite(
         height);
 }
 
+// TODO
 static void xnest_render_add_traps(
     PicturePtr pPicture, int16_t xOff, int16_t yOff, int ntrap,
     xTrap *traps)
@@ -85,6 +86,7 @@ static void xnest_render_add_traps(
     fprintf(stderr, "xnest_render_add_traps\n");
 }
 
+// TODO
 static void xnest_render_rasterize_trapezoid(
     PicturePtr alpha, xTrapezoid *trap, int x_off, int y_off)
 {
@@ -94,6 +96,7 @@ static void xnest_render_rasterize_trapezoid(
     fprintf(stderr, "xnest_render_rasterize_trapezoid\n");
 }
 
+// TODO
 static void xnest_render_add_triangles(
     PicturePtr pPicture, int16_t xOff, int16_t yOff, int ntri, xTriangle *tris)
 {
@@ -103,6 +106,7 @@ static void xnest_render_add_triangles(
     fprintf(stderr, "xnest_render_add_triangles\n");
 }
 
+// TODO
 static void xnest_render_trapezoids(
     uint8_t op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat,
     int16_t xSrc, int16_t ySrc, int ntrap, xTrapezoid *traps)
@@ -110,6 +114,7 @@ static void xnest_render_trapezoids(
     fprintf(stderr, "xnest_render_trapezoids\n");
 }
 
+// TODO
 static void xnest_render_triangles(
     uint8_t op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat,
     int16_t xSrc, int16_t ySrc, int ntris, xTriangle *tris)
@@ -117,11 +122,13 @@ static void xnest_render_triangles(
     fprintf(stderr, "xnest_render_triangles\n");
 }
 
+// TODO
 static void xnest_render_unrealize_glyph(ScreenPtr pScreen, GlyphPtr glyph)
 {
     fprintf(stderr, "xnest_render_unrealize_glyph\n");
 }
 
+// TODO
 static void xnest_render_glyphs(
     uint8_t op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat,
     int16_t xSrc, int16_t ySrc, int nlists, GlyphListPtr lists, GlyphPtr *glyphs)
@@ -129,17 +136,18 @@ static void xnest_render_glyphs(
     fprintf(stderr, "xnest_render_glyphs\n");
 }
 
+// TODO
 static int xnest_render_create_picture(PicturePtr pPicture)
 {
     assert(pPicture);
 
-    struct xnest_render_picture_privrec *pPicturePriv = 
+    struct xnest_render_picture_privrec *pPicturePriv =
         xnest_render_picture_get_priv(pPicture);
     assert(pPicturePriv);
 
     fprintf(stderr, "xnest_render_create_picture\n");
 
-    xcb_render_create_picture_value_list_t params = { 
+    xcb_render_create_picture_value_list_t params = {
         .repeat = pPicture->repeat,
         .alphamap = 0, // convert
         .alphaxorigin = pPicture->alphaOrigin.x,
@@ -158,6 +166,8 @@ static int xnest_render_create_picture(PicturePtr pPicture)
     pPicturePriv->upstream_xid = xcb_generate_id(xnestUpstreamInfo.conn);
     fprintf(stderr, "create_picture: XID=0x%x\n", pPicturePriv->upstream_xid);
 
+    // FIXME: need to fetch drawable / window XID
+    // FIXME: need to fetch formats --> QueryPictFormats
     xcb_render_create_picture_aux_checked(
         xnestUpstreamInfo.conn,
         pPicturePriv->upstream_xid,
@@ -179,7 +189,18 @@ static int xnest_render_create_picture(PicturePtr pPicture)
 
 static void xnest_render_destroy_picture(PicturePtr pPicture)
 {
-    fprintf(stderr, "xnest_render_destroy_picture\n");
+    assert(pPicture);
+
+    struct xnest_render_picture_privrec *pPicturePriv =
+        xnest_render_picture_get_priv(pPicture);
+    assert(pPicturePriv);
+
+    xcb_render_free_picture_checked(
+        xnestUpstreamInfo.conn,
+        pPicturePriv->upstream_xid
+    );
+    pPicturePriv->upstream_xid = XCB_NONE;
+
     miDestroyPicture(pPicture);
 }
 
