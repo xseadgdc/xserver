@@ -5,10 +5,17 @@
 #include <X11/X.h>
 #include <X11/Xdefs.h>
 #include <X11/Xproto.h>
+#include <xcb/render.h>
 
 #include "render/mipict.h"
 
 #include "xnest-xcb.h"
+
+struct xnest_picture_priv {
+    xcb_render_picture_t upstream_xid;
+};
+
+DevPrivateKeyRec xnestPicturePrivateKey;
 
 static void xnest_render_composite(
     uint8_t op, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst,
@@ -66,6 +73,7 @@ static void xnest_render_glyphs(
 static int xnest_render_create_picture(PicturePtr pPict)
 {
     fprintf(stderr, "xnest_render_create_picture\n");
+
     return miCreatePicture(pPict);
 }
 
@@ -73,6 +81,11 @@ Bool xnest_picture_init(ScreenPtr pScreen)
 {
     if (!miPictureInit(pScreen, 0, 0))
         return FALSE;
+
+    if (!dixRegisterPrivateKey(&xnestPicturePrivateKey, PRIVATE_PICTURE, sizeof(struct xnest_picture_priv))) {
+        fprintf(stderr, "failed to allocate PRIVATE_PICTURE\n");
+        return FALSE;
+    }
 
     PictureScreenPtr ps = GetPictureScreen(pScreen);
     ps->CreatePicture = xnest_render_create_picture;
