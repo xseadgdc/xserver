@@ -25,18 +25,18 @@ static inline struct xnest_render_picture_privrec *
         return NULL;
     }
 
-    void *p = dixLookupPrivate(&pPict->devPrivates, &xnestPicturePrivateKey);
-    if (p)
-        fprintf(stderr, "PRIV OK\n");
-    else
-        fprintf(stderr, "PRIV MISSING\n");
-    return p;
+    return dixLookupPrivate(&pPict->devPrivates, &xnestPicturePrivateKey);
+}
+
+static inline xcb_render_picture_t privId(struct xnest_render_picture_privrec *p)
+{
+    return p ? p->upstream_xid : 0;
 }
 
 static void xnest_render_composite(
     uint8_t op, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst,
-    int16_t xSrc, int16_t ySrc, int16_t xMask, int16_t yMask,
-    int16_t xDst, int16_t yDst, uint16_t width, uint16_t height)
+    int16_t src_x, int16_t src_y, int16_t mask_x, int16_t mask_y,
+    int16_t dst_x, int16_t dst_y, uint16_t width, uint16_t height)
 {
     if (!pSrc)
         fprintf(stderr, "xnest_render_composite: NULL pScr\n");
@@ -49,10 +49,30 @@ static void xnest_render_composite(
         xnest_render_picture_get_priv(pSrc);
     struct xnest_render_picture_privrec *pMaskPriv =
         xnest_render_picture_get_priv(pMask);
-    struct xnest_render_picture_privrec *pDstkPriv =
+    struct xnest_render_picture_privrec *pDstPriv =
         xnest_render_picture_get_priv(pDst);
 
-    fprintf(stderr, "xnest_render_composite\n");
+    xcb_render_picture_t upstreamSrc = privId(pSrcPriv);
+    xcb_render_picture_t upstreamMask = privId(pMaskPriv);
+    xcb_render_picture_t upstreamDst = privId(pDstPriv);
+
+    fprintf(stderr, "xnest_render_composite upstream src=0x%x mask=0x%x dst=0x%x\n",
+        upstreamSrc, upstreamMask, upstreamDst);
+
+    xcb_render_composite(
+        xnestUpstreamInfo.conn,
+        op,
+        upstreamSrc,
+        upstreamMask,
+        upstreamDst,
+        src_x,
+        src_y,
+        mask_x,
+        mask_y,
+        dst_x,
+        dst_y,
+        width,
+        height);
 }
 
 static void xnest_render_add_traps(
@@ -136,6 +156,7 @@ static int xnest_render_create_picture(PicturePtr pPicture)
     };
 
     pPicturePriv->upstream_xid = xcb_generate_id(xnestUpstreamInfo.conn);
+    fprintf(stderr, "create_picture: XID=0x%x\n", pPicturePriv->upstream_xid);
 
     xcb_render_create_picture_aux_checked(
         xnestUpstreamInfo.conn,
