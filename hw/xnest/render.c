@@ -177,6 +177,12 @@ static int xnest_render_create_picture(PicturePtr pPicture)
     return miCreatePicture(pPicture);
 }
 
+static void xnest_render_destroy_picture(PicturePtr pPicture)
+{
+    fprintf(stderr, "xnest_render_destroy_picture\n");
+    miDestroyPicture(pPicture);
+}
+
 Bool xnest_picture_init(ScreenPtr pScreen)
 {
     if (!miPictureInit(pScreen, 0, 0))
@@ -191,6 +197,7 @@ Bool xnest_picture_init(ScreenPtr pScreen)
 
     PictureScreenPtr ps = GetPictureScreen(pScreen);
     ps->CreatePicture = xnest_render_create_picture;
+    ps->DestroyPicture = xnest_render_destroy_picture;
     ps->Composite = xnest_render_composite;
     ps->Glyphs = xnest_render_glyphs;
     ps->UnrealizeGlyph = xnest_render_unrealize_glyph;
