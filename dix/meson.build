@@ -26,6 +26,7 @@ srcs_dix = [
     'region.c',
     'registry.c',
     'resource.c',
+    'screen_hooks.c',
     'selection.c',
     'swaprep.c',
     'swapreq.c',
