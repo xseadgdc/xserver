@@ -992,8 +992,6 @@ DisposeWindowOptional(WindowPtr pWin)
 static void
 FreeWindowResources(WindowPtr pWin)
 {
-    ScreenPtr pScreen = pWin->drawable.pScreen;
-
     DeleteWindowFromAnySaveSet(pWin);
     DeleteWindowFromAnySelections(pWin);
     DeleteWindowFromAnyEvents(pWin, TRUE);
@@ -1013,8 +1011,9 @@ FreeWindowResources(WindowPtr pWin)
         dixDestroyPixmap(pWin->background.pixmap, 0);
 
     DeleteAllWindowProperties(pWin);
+
     /* We SHOULD check for an error value here XXX */
-    (*pScreen->DestroyWindow) (pWin);
+    dixScreenRaiseWindowDestroy(pWin);
     DisposeWindowOptional(pWin);
 }
 

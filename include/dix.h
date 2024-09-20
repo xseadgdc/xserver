@@ -419,4 +419,51 @@ IsFloating(DeviceIntPtr dev);
 
 extern _X_EXPORT void *lastGLContext;
 
+/* prototype of a window destructor */
+typedef void (*XorgWindowDestroyProcPtr)(ScreenPtr pScreen,
+                                         WindowPtr pWindow,
+                                         void *arg);
+
+/**
+ * @brief register a window on the given screen
+ *
+ * @param pScreen pointer to the screen to register the destructor into
+ * @param func pointer to the window destructor function
+ * @param arg opaque pointer passed to the destructor
+ *
+ * Window destructors are the replacement for fragile and complicated wrapping of
+ * pScreen->DestroyWindow(): extensions can safely register there custom destructors
+ * here, without ever caring about anybody else.
+ +
+ * The destructors are run right before pScreen->DestroyWindow() - when the window
+ * is already removed from hierarchy (thus cannot receive any events anymore) and
+ * most of it's data already destroyed - and supposed to do necessary per-extension
+ * cleanup duties. Their execution order is *unspecified*.
+ *
+ * Screen drivers (DDX'es, xf86 video drivers, ...) shall not use these, but still
+ * set the pScreen->DestroyWindow pointer - and these should be the *only* ones
+ * ever setting it.
+ *
+ * When registration fails, the server aborts.
+ *
+ **/
+_X_EXPORT void dixScreenHookWindowDestroy(ScreenPtr pScreen,
+                                          XorgWindowDestroyProcPtr func,
+                                          void *arg);
+
+/**
+ * @brief unregister a window destructor on the given screen
+ *
+ * @param pScreen pointer to the screen to unregister the destructor from
+ * @param func pointer to the window destructor function
+ * @param arg opaque pointer passed to the destructor
+ *
+ * @see dixScreenHookWindowDestroy
+ *
+ * Unregister a window destructor hook registered via @ref dixScreenHookWindowDestroy
+ **/
+_X_EXPORT void dixScreenUnhookWindowDestroy(ScreenPtr pScreen,
+                                            XorgWindowDestroyProcPtr func,
+                                            void *arg);
+
 #endif                          /* DIX_H */
