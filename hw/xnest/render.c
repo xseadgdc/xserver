@@ -11,8 +11,38 @@
 
 #include "xnest-xcb.h"
 
+/*** glyph private data **/
+struct xnest_render_glyph_privrec {
+    xcb_render_glyph_t upstream_xid;
+    struct xnest_upstream_info *upstream_info;
+};
+
+DevPrivateKeyRec xnestGlyphPrivateKey;
+
+static inline struct xnest_render_glyph_privrec *
+    xnest_render_glyph_get_priv(GlyphPtr glyph)
+{
+    if (glyph == NULL)
+        return NULL;
+
+    return dixLookupPrivate(&glyph->devPrivates, &xnestGlyphPrivateKey);
+}
+
+static inline Bool xnest_render_register_glyph_priv(void)
+{
+    if (!dixRegisterPrivateKey(&xnestGlyphPrivateKey,
+                               PRIVATE_PICTURE,
+                               sizeof(struct xnest_render_glyph_privrec))) {
+        fprintf(stderr, "failed to allocate PRIVATE_PICTURE\n");
+        return FALSE;
+    }
+    return TRUE;
+}
+
+/*** picture private data ***/
 struct xnest_render_picture_privrec {
     xcb_render_picture_t upstream_xid;
+    struct xnest_upstream_info *upstream_info;
 };
 
 DevPrivateKeyRec xnestPicturePrivateKey;
@@ -20,18 +50,29 @@ DevPrivateKeyRec xnestPicturePrivateKey;
 static inline struct xnest_render_picture_privrec *
     xnest_render_picture_get_priv(PicturePtr pPict)
 {
-    if (pPict == NULL) {
-        fprintf(stderr, "NULL passed\n");
+    if (pPict == NULL)
         return NULL;
-    }
 
     return dixLookupPrivate(&pPict->devPrivates, &xnestPicturePrivateKey);
+}
+
+static inline Bool xnest_render_register_picture_priv(void)
+{
+    if (!dixRegisterPrivateKey(&xnestPicturePrivateKey,
+                               PRIVATE_PICTURE,
+                               sizeof(struct xnest_render_picture_privrec))) {
+        fprintf(stderr, "failed to allocate PRIVATE_PICTURE\n");
+        return FALSE;
+    }
+    return TRUE;
 }
 
 static inline xcb_render_picture_t privId(struct xnest_render_picture_privrec *p)
 {
     return p ? p->upstream_xid : 0;
 }
+
+/* **** */
 
 static void xnest_render_composite(
     uint8_t op, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst,
@@ -60,7 +101,7 @@ static void xnest_render_composite(
         upstreamSrc, upstreamMask, upstreamDst);
 
     xcb_render_composite(
-        xnestUpstreamInfo.conn,
+        pSrcPriv->upstream_info->conn,
         op,
         upstreamSrc,
         upstreamMask,
@@ -83,7 +124,7 @@ static void xnest_render_add_traps(
     struct xnest_render_picture_privrec *pPicturePriv =
         xnest_render_picture_get_priv(pPicture);
 
-    fprintf(stderr, "xnest_render_add_traps\n");
+    fprintf(stderr, "FIXME: xnest_render_add_traps\n");
 }
 
 // TODO
@@ -126,6 +167,19 @@ static void xnest_render_triangles(
 static void xnest_render_unrealize_glyph(ScreenPtr pScreen, GlyphPtr glyph)
 {
     fprintf(stderr, "xnest_render_unrealize_glyph\n");
+    assert(pScreen);
+    assert(glyph);
+}
+
+// TODO
+static Bool xnest_render_realize_glyph(ScreenPtr pScreen, GlyphPtr glyph)
+{
+    fprintf(stderr, "xnest_render_realize_glyph\n");
+    assert(pScreen);
+    assert(glyph);
+
+//    struct 
+    return TRUE;
 }
 
 // TODO
@@ -133,7 +187,19 @@ static void xnest_render_glyphs(
     uint8_t op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat,
     int16_t xSrc, int16_t ySrc, int nlists, GlyphListPtr lists, GlyphPtr *glyphs)
 {
-    fprintf(stderr, "xnest_render_glyphs\n");
+    fprintf(stderr, "FIXME: xnest_render_glyphs\n");
+    if (maskFormat)
+        fprintf(stderr, "--> have maskFormat\n");
+    if (lists) {
+        fprintf(stderr, "--> have lists --> num=%d\n", nlists);
+        for (int i=0; i<nlists; i++) {
+            fprintf(stderr, "glyph list ent %d: offset=(%d:%d) len=%d\n",
+                i, lists[i].xOff, lists[i].yOff, lists[i].len);
+        }
+    }
+
+    if (glyphs)
+        fprintf(stderr, "have pointer to glyphptr\n");
 }
 
 // TODO
@@ -144,6 +210,9 @@ static int xnest_render_create_picture(PicturePtr pPicture)
     struct xnest_render_picture_privrec *pPicturePriv =
         xnest_render_picture_get_priv(pPicture);
     assert(pPicturePriv);
+
+    // FIXME: should be fetched from screen ?
+    pPicturePriv->upstream_info = &xnestUpstreamInfo;
 
     fprintf(stderr, "xnest_render_create_picture\n");
 
@@ -163,13 +232,13 @@ static int xnest_render_create_picture(PicturePtr pPicture)
         .componentalpha = 0, // convert
     };
 
-    pPicturePriv->upstream_xid = xcb_generate_id(xnestUpstreamInfo.conn);
+    pPicturePriv->upstream_xid = xcb_generate_id(pPicturePriv->upstream_info->conn);
     fprintf(stderr, "create_picture: XID=0x%x\n", pPicturePriv->upstream_xid);
 
     // FIXME: need to fetch drawable / window XID
     // FIXME: need to fetch formats --> QueryPictFormats
     xcb_render_create_picture_aux_checked(
-        xnestUpstreamInfo.conn,
+        pPicturePriv->upstream_info->conn,
         pPicturePriv->upstream_xid,
         /* xcb_drawable_t 	drawable, */0,
         /* xcb_render_pictformat_t 	format, */ 0,
@@ -196,7 +265,7 @@ static void xnest_render_destroy_picture(PicturePtr pPicture)
     assert(pPicturePriv);
 
     xcb_render_free_picture_checked(
-        xnestUpstreamInfo.conn,
+        pPicturePriv->upstream_info->conn,
         pPicturePriv->upstream_xid
     );
     pPicturePriv->upstream_xid = XCB_NONE;
@@ -206,15 +275,9 @@ static void xnest_render_destroy_picture(PicturePtr pPicture)
 
 Bool xnest_picture_init(ScreenPtr pScreen)
 {
-    if (!miPictureInit(pScreen, 0, 0))
+    if (!(miPictureInit(pScreen, 0, 0) && xnest_render_register_glyph_priv()
+                                       && xnest_render_register_picture_priv()))
         return FALSE;
-
-    if (!dixRegisterPrivateKey(&xnestPicturePrivateKey,
-                               PRIVATE_PICTURE,
-                               sizeof(struct xnest_render_picture_privrec))) {
-        fprintf(stderr, "failed to allocate PRIVATE_PICTURE\n");
-        return FALSE;
-    }
 
     PictureScreenPtr ps = GetPictureScreen(pScreen);
     ps->CreatePicture = xnest_render_create_picture;
@@ -228,6 +291,7 @@ Bool xnest_picture_init(ScreenPtr pScreen)
     ps->AddTraps = xnest_render_add_traps;
     ps->AddTriangles = xnest_render_add_triangles;
     ps->Triangles = xnest_render_triangles;
+    ps->RealizeGlyph = xnest_render_realize_glyph;
 
     return TRUE;
 }
