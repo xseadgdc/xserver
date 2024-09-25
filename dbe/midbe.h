@@ -53,4 +53,6 @@ extern DevPrivateKeyRec dbeWindowPrivKeyRec;
 extern RESTYPE dbeDrawableResType;
 extern RESTYPE dbeWindowPrivResType;
 
+void miDbeWindowPosition(CallbackListPtr *pcbl, ScreenPtr pScreen, XorgScreenWindowPositionParamRec *param);
+
 #endif                          /* MIDBE_H */
