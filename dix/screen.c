@@ -22,5 +22,6 @@ void dixFreeScreen(ScreenPtr pScreen)
     dixFreePrivates(pScreen->devPrivates, PRIVATE_SCREEN);
     DeleteCallbackList(&pScreen->hookWindowDestroy);
     DeleteCallbackList(&pScreen->hookWindowPosition);
+    DeleteCallbackList(&pScreen->hookClose);
     free(pScreen);
 }
