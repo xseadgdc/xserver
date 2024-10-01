@@ -67,7 +67,7 @@ in this Software without prior written authorization from the X Consortium.
 
 // temporary workaround for win32/mingw32 name clash
 // see: https://gitlab.freedesktop.org/xorg/xserver/-/merge_requests/1355
-#undef CreateWindow
+// #undef CreateWindow
 
 static int ScreenSaverEventBase = 0;
 
