@@ -21,6 +21,7 @@ srcs_dix = [
     'inpututils.c',
     'lookup.c',
     'pixmap.c',
+    'pixmap_api.c',
     'privates.c',
     'property.c',
     'ptrveloc.c',

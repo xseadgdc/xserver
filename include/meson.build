@@ -437,6 +437,7 @@ if build_xorg
             'cursorstr.h',
             'dix.h',
             'dix_screen_hooks.h',
+            'dix_pixmap.h',
             'dixaccess.h',
             'dixevents.h',
             'dixfont.h',

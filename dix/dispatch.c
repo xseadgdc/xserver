@@ -111,6 +111,7 @@ Equipment Corporation.
 #include "dix/registry_priv.h"
 #include "dix/screenint_priv.h"
 #include "dix/selection_priv.h"
+#include "include/dix_pixmap.h"
 #include "include/resource.h"
 #include "miext/extinit_priv.h"
 #include "os/auth.h"
@@ -1470,11 +1471,7 @@ ProcListFontsWithInfo(ClientPtr client)
 int
 dixDestroyPixmap(void *value, XID pid)
 {
-    PixmapPtr pPixmap = (PixmapPtr) value;
-    if (pPixmap && pPixmap->refcnt == 1)
-        dixScreenRaisePixmapDestroy(pPixmap);
-    if (pPixmap && pPixmap->drawable.pScreen && pPixmap->drawable.pScreen->DestroyPixmap)
-        return pPixmap->drawable.pScreen->DestroyPixmap(pPixmap);
+    dixPixmapPut((PixmapPtr) value);
     return TRUE;
 }
 
