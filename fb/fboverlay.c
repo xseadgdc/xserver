@@ -26,6 +26,8 @@
 
 #include <stdlib.h>
 
+#include "include/dix_pixmap.h"
+
 #include "fb.h"
 #include "fboverlay.h"
 #include "shmint.h"
@@ -81,7 +83,7 @@ fbOverlayCloseScreen(ScreenPtr pScreen)
     int i;
 
     for (i = 0; i < pScrPriv->nlayers; i++) {
-        dixDestroyPixmap(pScrPriv->layer[i].u.run.pixmap, 0);
+        dixPixmapPut(pScrPriv->layer[i].u.run.pixmap);
         RegionUninit(&pScrPriv->layer[i].u.run.region);
     }
     return TRUE;
@@ -125,8 +127,7 @@ fbOverlayCreateScreenResources(ScreenPtr pScreen)
         pbits = pScrPriv->layer[i].u.init.pbits;
         width = pScrPriv->layer[i].u.init.width;
         depth = pScrPriv->layer[i].u.init.depth;
-        pPixmap = (*pScreen->CreatePixmap) (pScreen, 0, 0, depth, 0);
-        if (!pPixmap)
+        if (!(pPixmap = dixPixmapCreate(pScreen, 0, 0, depth, 0)))
             return FALSE;
         if (!(*pScreen->ModifyPixmapHeader) (pPixmap, pScreen->width,
                                              pScreen->height, depth,

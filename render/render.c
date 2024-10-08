@@ -33,6 +33,7 @@
 
 #include "dix/cursor_priv.h"
 #include "dix/dix_priv.h"
+#include "include/dix_pixmap.h"
 #include "miext/extinit_priv.h"
 #include "os/osdep.h"
 
@@ -1120,11 +1121,9 @@ ProcRenderAddGlyphs(ClientPtr client)
                     goto bail;
                 }
 
-                pDstPix = (pScreen->CreatePixmap) (pScreen,
-                                                   width, height, depth,
-                                                   CREATE_PIXMAP_USAGE_GLYPH_PICTURE);
-
-                if (!pDstPix) {
+                if (!(pDstPix = dixPixmapCreate(pScreen,
+                                                width, height, depth,
+                                                CREATE_PIXMAP_USAGE_GLYPH_PICTURE))) {
                     err = BadAlloc;
                     goto bail;
                 }
@@ -1137,7 +1136,7 @@ ProcRenderAddGlyphs(ClientPtr client)
 
                 /* The picture takes a reference to the pixmap, so we
                    drop ours. */
-                dixDestroyPixmap(pDstPix, 0);
+                dixPixmapPut(pDstPix);
                 pDstPix = NULL;
 
                 if (!pDst) {
@@ -1526,9 +1525,9 @@ ProcRenderCreateCursor(ClientPtr client)
             free(mskbits);
             return BadImplementation;
         }
-        pPixmap = (*pScreen->CreatePixmap) (pScreen, width, height, 32,
-                                            CREATE_PIXMAP_USAGE_SCRATCH);
-        if (!pPixmap) {
+
+        if (!(pPixmap = dixPixmapCreate(pScreen, width, height, 32,
+                                        CREATE_PIXMAP_USAGE_SCRATCH))) {
             free(argbbits);
             free(srcbits);
             free(mskbits);
@@ -1542,7 +1541,7 @@ ProcRenderCreateCursor(ClientPtr client)
             free(mskbits);
             return error;
         }
-        dixDestroyPixmap(pPixmap, 0);
+        dixPixmapPut(pPixmap);
         CompositePicture(PictOpSrc,
                          pSrc, 0, pPicture, 0, 0, 0, 0, 0, 0, width, height);
         (*pScreen->GetImage) (pPicture->pDrawable,

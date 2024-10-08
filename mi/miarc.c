@@ -51,6 +51,10 @@ SOFTWARE.
 #include <math.h>
 #include <X11/X.h>
 #include <X11/Xprotostr.h>
+#include <X11/Xfuncproto.h>
+
+#include "include/dix_pixmap.h"
+
 #include "misc.h"
 #include "gcstruct.h"
 #include "scrnintstr.h"
@@ -59,7 +63,6 @@ SOFTWARE.
 #include "mifpoly.h"
 #include "mi.h"
 #include "mifillarc.h"
-#include <X11/Xfuncproto.h>
 
 #define EPSILON	0.000001
 #define ISEQUAL(a,b) (fabs((a) - (b)) <= EPSILON)
@@ -992,9 +995,9 @@ miWideArc(DrawablePtr pDraw, GCPtr pGC, int narcs, xArc * parcs)
         }
 
         /* allocate a bitmap of the appropriate size, and validate it */
-        pDrawTo = (DrawablePtr) (*pDraw->pScreen->CreatePixmap)
-            (pDraw->pScreen, pixmapWidth, pixmapHeight, 1,
-             CREATE_PIXMAP_USAGE_SCRATCH);
+        pDrawTo = (DrawablePtr) dixPixmapCreate(pDraw->pScreen, pixmapWidth,
+                                                pixmapHeight, 1,
+                                                CREATE_PIXMAP_USAGE_SCRATCH);
         if (!pDrawTo) {
             FreeScratchGC(pGCTo);
             return;
@@ -1110,7 +1113,7 @@ miWideArc(DrawablePtr pDraw, GCPtr pGC, int narcs, xArc * parcs)
 
 out:
     if (fTricky) {
-        dixDestroyPixmap((PixmapPtr) pDrawTo, 0);
+        dixPixmapPut((PixmapPtr) pDrawTo);
         FreeScratchGC(pGCTo);
     }
 }

@@ -1478,7 +1478,6 @@ dixDestroyPixmap(void *value, XID pid)
 int
 ProcCreatePixmap(ClientPtr client)
 {
-    PixmapPtr pMap;
     DrawablePtr pDraw;
 
     REQUEST(xCreatePixmapReq);
@@ -1522,9 +1521,9 @@ ProcCreatePixmap(ClientPtr client)
         client->errorValue = stuff->depth;
         return BadValue;
     }
- CreatePmap:
-    pMap = (PixmapPtr) (*pDraw->pScreen->CreatePixmap)
-        (pDraw->pScreen, stuff->width, stuff->height, stuff->depth, 0);
+ CreatePmap:;
+    PixmapPtr pMap = dixPixmapCreate(pDraw->pScreen, stuff->width,
+                                     stuff->height, stuff->depth, 0);
     if (pMap) {
         pMap->drawable.serialNumber = NEXT_SERIAL_NUMBER;
         pMap->drawable.id = stuff->pid;

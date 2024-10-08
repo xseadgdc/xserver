@@ -19,6 +19,9 @@
  * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
  * OF THIS SOFTWARE.
  */
+#include <dix-config.h>
+
+#include "include/dix_pixmap.h"
 
 #include "present_priv.h"
 #include <misync.h>
@@ -274,7 +277,7 @@ present_flip_idle(ScreenPtr screen)
                             screen_priv->flip_serial, screen_priv->flip_idle_fence);
         if (screen_priv->flip_idle_fence)
             present_fence_destroy(screen_priv->flip_idle_fence);
-        dixDestroyPixmap(screen_priv->flip_pixmap, screen_priv->flip_pixmap->drawable.id);
+        dixPixmapPut(screen_priv->flip_pixmap);
         screen_priv->flip_crtc = NULL;
         screen_priv->flip_window = NULL;
         screen_priv->flip_serial = 0;

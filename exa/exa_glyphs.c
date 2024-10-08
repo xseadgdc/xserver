@@ -44,6 +44,8 @@
 
 #include <stdlib.h>
 
+#include "include/dix_pixmap.h"
+
 #include "exa_priv.h"
 #include "glyphstr_priv.h"
 #include "mipict.h"
@@ -194,7 +196,7 @@ exaRealizeGlyphCaches(ScreenPtr pScreen, unsigned int format)
                              CPComponentAlpha, &component_alpha, serverClient,
                              &error);
 
-    dixDestroyPixmap(pPixmap, 0); /* picture holds a refcount */
+    dixPixmapPut(pPixmap); /* picture holds a refcount */
 
     if (!pPicture)
         return FALSE;
@@ -728,7 +730,7 @@ exaGlyphs(CARD8 op,
         {
             PictFormatPtr argbFormat;
 
-            dixDestroyPixmap(pMaskPixmap, 0);
+            dixPixmapPut(pMaskPixmap);
 
             if (!pMask)
                 return;
@@ -751,7 +753,7 @@ exaGlyphs(CARD8 op,
             pMask = CreatePicture(0, &pMaskPixmap->drawable, maskFormat, 0, 0,
                                   serverClient, &error);
             if (!pMask) {
-                dixDestroyPixmap(pMaskPixmap, 0);
+                dixPixmapPut(pMaskPixmap);
                 return;
             }
         }
@@ -832,6 +834,6 @@ exaGlyphs(CARD8 op,
                          xSrc + x - first_xOff,
                          ySrc + y - first_yOff, 0, 0, x, y, width, height);
         FreePicture((void *) pMask, (XID) 0);
-        dixDestroyPixmap(pMaskPixmap, 0);
+        dixPixmapPut(pMaskPixmap);
     }
 }

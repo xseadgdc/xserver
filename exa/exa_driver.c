@@ -26,6 +26,8 @@
 
 #include <string.h>
 
+#include "include/dix_pixmap.h"
+
 #include "exa_priv.h"
 #include "exa.h"
 
@@ -98,7 +100,7 @@ exaCreatePixmap_driver(ScreenPtr pScreen, int w, int h, int depth,
     }
 
     if (!pExaPixmap->driverPriv) {
-        dixDestroyPixmap(pPixmap, 0);
+        dixPixmapPut(pPixmap);
         return NULL;
     }
 

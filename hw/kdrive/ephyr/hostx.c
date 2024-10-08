@@ -38,6 +38,7 @@
 #include <sys/mman.h>
 
 #include "dix/input_priv.h"
+#include "include/dix_pixmap.h"
 
 #include "hostx.h"
 
@@ -1655,14 +1656,13 @@ ephyr_glamor_create_screen_resources(ScreenPtr pScreen)
      * Thus, delete the current screen pixmap, and put a fresh one in.
      */
     old_screen_pixmap = pScreen->GetScreenPixmap(pScreen);
-    dixDestroyPixmap(old_screen_pixmap, 0);
+    dixPixmapPut(old_screen_pixmap);
 
-    screen_pixmap = pScreen->CreatePixmap(pScreen,
+    if (!(screen_pixmap = dixPixmapCreate(pScreen,
                                           pScreen->width,
                                           pScreen->height,
                                           pScreen->rootDepth,
-                                          GLAMOR_CREATE_NO_LARGE);
-    if (!screen_pixmap)
+                                          GLAMOR_CREATE_NO_LARGE)))
         return FALSE;
 
     pScreen->SetScreenPixmap(screen_pixmap);

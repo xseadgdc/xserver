@@ -29,6 +29,10 @@ from The Open Group.
 #include <dix-config.h>
 
 #include <X11/X.h>
+#include <X11/extensions/render.h>
+
+#include "include/dix_pixmap.h"
+
 #include "scrnintstr.h"
 #include "mi.h"
 #include "misc.h"
@@ -38,7 +42,6 @@ from The Open Group.
 #include "dixstruct.h"
 #include "gcstruct.h"
 #include "servermd.h"
-#include "X11/extensions/render.h"
 #include "picturestr.h"
 #include "randrstr.h"
 /*
@@ -61,7 +64,7 @@ GetScratchPixmapHeader(ScreenPtr pScreen, int width, int height, int depth,
         if ((*pScreen->ModifyPixmapHeader) (pPixmap, width, height, depth,
                                             bitsPerPixel, devKind, pPixData))
             return pPixmap;
-        dixDestroyPixmap(pPixmap, 0);
+        dixPixmapPut(pPixmap);
     }
     return NullPixmap;
 }
@@ -72,7 +75,7 @@ FreeScratchPixmapHeader(PixmapPtr pPixmap)
 {
     if (pPixmap) {
         pPixmap->devPrivate.ptr = NULL; /* help catch/avoid heap-use-after-free */
-        dixDestroyPixmap(pPixmap, 0);
+        dixPixmapPut(pPixmap);
     }
 }
 
@@ -148,7 +151,7 @@ PixmapPtr PixmapShareToSecondary(PixmapPtr pixmap, ScreenPtr secondary)
 
     ret = secondary->SetSharedPixmapBacking(spix, handle);
     if (ret == FALSE) {
-        dixDestroyPixmap(spix, 0);
+        dixPixmapPut(spix);
         return NULL;
     }
 

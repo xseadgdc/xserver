@@ -39,6 +39,8 @@
 #include <xf86drm.h>
 #define EGL_DISPLAY_NO_X_MESA
 
+#include "include/dix_pixmap.h"
+
 #include <gbm.h>
 #include <drm_fourcc.h>
 
@@ -337,7 +339,7 @@ glamor_make_pixmap_exportable(PixmapPtr pixmap, Bool modifiers_ok)
         return FALSE;
     }
 
-    exported = screen->CreatePixmap(screen, 0, 0, pixmap->drawable.depth, 0);
+    exported = dixPixmapCreate(screen, 0, 0, pixmap->drawable.depth, 0);
     screen->ModifyPixmapHeader(exported, width, height, 0, 0,
                                gbm_bo_get_stride(bo), NULL);
     if (!glamor_egl_create_textured_pixmap_from_gbm_bo(exported, bo,
@@ -345,7 +347,7 @@ glamor_make_pixmap_exportable(PixmapPtr pixmap, Bool modifiers_ok)
         xf86DrvMsg(scrn->scrnIndex, X_ERROR,
                    "Failed to make %dx%dx%dbpp pixmap from GBM bo\n",
                    width, height, pixmap->drawable.bitsPerPixel);
-        dixDestroyPixmap(exported, 0);
+        dixPixmapPut(exported);
         gbm_bo_destroy(bo);
         return FALSE;
     }
@@ -366,7 +368,7 @@ glamor_make_pixmap_exportable(PixmapPtr pixmap, Bool modifiers_ok)
     /* Swap the devKind into the original pixmap, reflecting the bo's stride */
     screen->ModifyPixmapHeader(pixmap, 0, 0, 0, 0, exported->devKind, NULL);
 
-    dixDestroyPixmap(exported, 0);
+    dixPixmapPut(exported);
 
     return TRUE;
 }
@@ -584,14 +586,13 @@ glamor_pixmap_from_fds(ScreenPtr screen,
                        CARD8 depth, CARD8 bpp,
                        uint64_t modifier)
 {
-    PixmapPtr pixmap;
     struct glamor_egl_screen_private *glamor_egl;
     Bool ret = FALSE;
     int i;
 
     glamor_egl = glamor_egl_get_screen_private(xf86ScreenToScrn(screen));
 
-    pixmap = screen->CreatePixmap(screen, 0, 0, depth, 0);
+    PixmapPtr pixmap = dixPixmapCreate(screen, 0, 0, depth, 0);
 
 #ifdef GBM_BO_WITH_MODIFIERS
     if (glamor_egl->dmabuf_capable && modifier != DRM_FORMAT_MOD_INVALID) {
@@ -624,7 +625,7 @@ glamor_pixmap_from_fds(ScreenPtr screen,
     }
 
     if (ret == FALSE) {
-        dixDestroyPixmap(pixmap, 0);
+        dixPixmapPut(pixmap);
         return NULL;
     }
     return pixmap;
@@ -637,16 +638,15 @@ glamor_pixmap_from_fd(ScreenPtr screen,
                       CARD16 height,
                       CARD16 stride, CARD8 depth, CARD8 bpp)
 {
-    PixmapPtr pixmap;
     Bool ret;
 
-    pixmap = screen->CreatePixmap(screen, 0, 0, depth, 0);
+    PixmapPtr pixmap = dixPixmapCreate(screen, 0, 0, depth, 0);
 
     ret = glamor_back_pixmap_from_fd(pixmap, fd, width, height,
                                      stride, depth, bpp);
 
     if (ret == FALSE) {
-        dixDestroyPixmap(pixmap, 0);
+        dixPixmapPut(pixmap);
         return NULL;
     }
     return pixmap;

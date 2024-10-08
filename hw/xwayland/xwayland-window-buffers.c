@@ -26,6 +26,8 @@
 
 #include <xwayland-config.h>
 
+#include "include/dix_pixmap.h"
+
 #include "gcstruct.h"
 
 #include "xwayland-window.h"
@@ -98,7 +100,7 @@ static void
 xwl_window_buffer_destroy_pixmap(struct xwl_window_buffer *xwl_window_buffer)
 {
     xwl_pixmap_del_buffer_release_cb(xwl_window_buffer->pixmap);
-    dixDestroyPixmap(xwl_window_buffer->pixmap, 0);
+    dixPixmapPut(xwl_window_buffer->pixmap);
     xwl_window_buffer->pixmap = NullPixmap;
 }
 
@@ -361,7 +363,7 @@ xwl_window_realloc_pixmap(struct xwl_window *xwl_window)
                      window_pixmap->drawable.width,
                      window_pixmap->drawable.height);
     xwl_window_set_pixmap(xwl_window->surface_window, new_window_pixmap);
-    dixDestroyPixmap(window_pixmap, 0);
+    dixPixmapPut(window_pixmap);
 }
 
 static Bool

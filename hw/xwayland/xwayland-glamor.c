@@ -25,6 +25,8 @@
 
 #include <xwayland-config.h>
 
+#include "include/dix_pixmap.h"
+
 #define MESA_EGL_NO_X11_HEADERS
 #define EGL_NO_X11
 #include <glamor_egl.h>
@@ -156,7 +158,7 @@ xwl_glamor_create_screen_resources(ScreenPtr screen)
             fbCreatePixmap(screen, 0, 0, screen->rootDepth, 0);
     }
     else {
-        screen->devPrivate = screen->CreatePixmap(
+        screen->devPrivate = dixPixmapCreate(
             screen, screen->width, screen->height, screen->rootDepth,
             CREATE_PIXMAP_USAGE_BACKING_PIXMAP);
     }

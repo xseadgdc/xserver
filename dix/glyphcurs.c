@@ -46,10 +46,12 @@ SOFTWARE.
 
 #include <dix-config.h>
 
+#include <X11/fonts/fontstruct.h>
+
 #include "dix/cursor_priv.h"
+#include "include/dix_pixmap.h"
 
 #include "misc.h"
-#include <X11/fonts/fontstruct.h>
 #include "dixfontstr.h"
 #include "scrnintstr.h"
 #include "gcstruct.h"
@@ -77,7 +79,6 @@ ServerBitsFromGlyph(FontPtr pfont, unsigned ch, CursorMetricPtr cm,
     ScreenPtr pScreen;
     GCPtr pGC;
     xRectangle rect;
-    PixmapPtr ppix;
     char *pbits;
     ChangeGCVal gcval[3];
     unsigned char char2b[2];
@@ -91,12 +92,11 @@ ServerBitsFromGlyph(FontPtr pfont, unsigned ch, CursorMetricPtr cm,
     if (!pbits)
         return BadAlloc;
 
-    ppix = (PixmapPtr) (*pScreen->CreatePixmap) (pScreen, cm->width,
-                                                 cm->height, 1,
-                                                 CREATE_PIXMAP_USAGE_SCRATCH);
+    PixmapPtr ppix = dixPixmapCreate(pScreen, cm->width, cm->height, 1,
+                                     CREATE_PIXMAP_USAGE_SCRATCH);
     pGC = GetScratchGC(1, pScreen);
     if (!ppix || !pGC) {
-        dixDestroyPixmap(ppix, 0);
+        dixPixmapPut(ppix);
         if (pGC)
             FreeScratchGC(pGC);
         free(pbits);
@@ -126,7 +126,7 @@ ServerBitsFromGlyph(FontPtr pfont, unsigned ch, CursorMetricPtr cm,
                           XYPixmap, 1, pbits);
     *ppbits = (unsigned char *) pbits;
     FreeScratchGC(pGC);
-    dixDestroyPixmap(ppix, 0);
+    dixPixmapPut(ppix);
     return Success;
 }
 

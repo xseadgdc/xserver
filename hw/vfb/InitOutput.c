@@ -39,6 +39,7 @@ from The Open Group.
 #include "dix/colormap_priv.h"
 #include "dix/dix_priv.h"
 #include "dix/screenint_priv.h"
+#include "include/dix_pixmap.h"
 #include "os/cmdline.h"
 #include "os/ddx_priv.h"
 #include "os/osdep.h"
@@ -729,7 +730,7 @@ vfbCloseScreen(ScreenPtr pScreen)
     /*
      * fb overwrites miCloseScreen, so do this here
      */
-    dixDestroyPixmap(pScreen->devPrivate, 0);
+    dixPixmapPut(pScreen->devPrivate);
     pScreen->devPrivate = NULL;
 
     return pScreen->CloseScreen(pScreen);

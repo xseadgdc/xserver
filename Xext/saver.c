@@ -36,6 +36,7 @@ in this Software without prior written authorization from the X Consortium.
 #include "dix/colormap_priv.h"
 #include "dix/cursor_priv.h"
 #include "dix/dix_priv.h"
+#include "include/dix_pixmap.h"
 #include "miext/extinit_priv.h"
 #include "os/osdep.h"
 #include "os/screensaver.h"
@@ -279,8 +280,8 @@ FreeAttrs(ScreenSaverAttrPtr pAttr)
 {
     CursorPtr pCursor;
 
-    dixDestroyPixmap(pAttr->pBackgroundPixmap, 0);
-    dixDestroyPixmap(pAttr->pBorderPixmap, 0);
+    dixPixmapPut(pAttr->pBackgroundPixmap);
+    dixPixmapPut(pAttr->pBorderPixmap);
     if ((pCursor = pAttr->pCursor) != 0)
         FreeCursor(pCursor, (Cursor) 0);
 }

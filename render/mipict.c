@@ -23,6 +23,7 @@
 
 #include <dix-config.h>
 
+#include "include/dix_pixmap.h"
 #include "os/osdep.h"
 
 #include "scrnintstr.h"
@@ -67,7 +68,7 @@ miChangePictureClip(PicturePtr pPicture, int type, void *value, int n)
         clientClip = BitmapToRegion(pScreen, (PixmapPtr) value);
         if (!clientClip)
             return BadAlloc;
-        dixDestroyPixmap((PixmapPtr) value, 0);
+        dixPixmapPut((PixmapPtr) value);
         break;
     case CT_REGION:
         clientClip = value;

@@ -26,6 +26,8 @@
 
 #include <string.h>
 
+#include "include/dix_pixmap.h"
+
 #include "exa_priv.h"
 #include "exa.h"
 
@@ -96,7 +98,7 @@ exaCreatePixmap_classic(ScreenPtr pScreen, int w, int h, int depth,
     pExaPixmap->fb_size = pExaPixmap->fb_pitch * h;
 
     if (pExaPixmap->fb_pitch > 131071) {
-        dixDestroyPixmap(pPixmap, 0);
+        dixPixmapPut(pPixmap);
         return NULL;
     }
 
@@ -106,7 +108,7 @@ exaCreatePixmap_classic(ScreenPtr pScreen, int w, int h, int depth,
                                        pScreen, pPixmap);
 
     if (pExaPixmap->pDamage == NULL) {
-        dixDestroyPixmap(pPixmap, 0);
+        dixPixmapPut(pPixmap);
         return NULL;
     }
 

@@ -43,6 +43,7 @@ in this Software without prior written authorization from The Open Group.
 #include <X11/Xfuncproto.h>
 
 #include "dix/dix_priv.h"
+#include "include/dix_pixmap.h"
 #include "miext/extinit_priv.h"
 #include "os/auth.h"
 #include "os/busfault.h"
@@ -476,8 +477,8 @@ doShmPutImage(DrawablePtr dst, GCPtr pGC,
         if (!putGC)
             return;
 
-        pPixmap = (*dst->pScreen->CreatePixmap) (dst->pScreen, sw, sh, depth,
-                                                 CREATE_PIXMAP_USAGE_SCRATCH);
+        pPixmap = dixPixmapCreate(dst->pScreen, sw, sh, depth,
+                                  CREATE_PIXMAP_USAGE_SCRATCH);
         if (!pPixmap) {
             FreeScratchGC(putGC);
             return;
@@ -494,7 +495,7 @@ doShmPutImage(DrawablePtr dst, GCPtr pGC,
         else
             (void) (*pGC->ops->CopyArea) (&pPixmap->drawable, dst, pGC, 0, 0,
                                           sw, sh, dx, dy);
-        dixDestroyPixmap(pPixmap, 0);
+        dixPixmapPut(pPixmap);
     }
 }
 
@@ -1003,7 +1004,7 @@ ProcShmCreatePixmap(ClientPtr client)
             result = XaceHookResourceAccess(client, stuff->pid,
                               X11_RESTYPE_PIXMAP, pMap, X11_RESTYPE_NONE, NULL, DixCreateAccess);
             if (result != Success) {
-                dixDestroyPixmap(pMap, 0);
+                dixPixmapPut(pMap);
                 break;
             }
             dixSetPrivate(&pMap->devPrivates, shmPixmapPrivateKey, shmdesc);
@@ -1039,9 +1040,7 @@ static PixmapPtr
 fbShmCreatePixmap(ScreenPtr pScreen,
                   int width, int height, int depth, char *addr)
 {
-    PixmapPtr pPixmap;
-
-    pPixmap = (*pScreen->CreatePixmap) (pScreen, 0, 0, pScreen->rootDepth, 0);
+    PixmapPtr pPixmap = dixPixmapCreate(pScreen, 0, 0, pScreen->rootDepth, 0);
     if (!pPixmap)
         return NullPixmap;
 
@@ -1049,7 +1048,7 @@ fbShmCreatePixmap(ScreenPtr pScreen,
                                          BitsPerPixel(depth),
                                          PixmapBytePad(width, depth),
                                          (void *) addr)) {
-        dixDestroyPixmap(pPixmap, 0);
+        dixPixmapPut(pPixmap);
         return NullPixmap;
     }
     return pPixmap;
@@ -1117,7 +1116,7 @@ ShmCreatePixmap(ClientPtr client, xShmCreatePixmapReq *stuff)
         rc = XaceHookResourceAccess(client, stuff->pid, X11_RESTYPE_PIXMAP,
                       pMap, X11_RESTYPE_NONE, NULL, DixCreateAccess);
         if (rc != Success) {
-            dixDestroyPixmap(pMap, 0);
+            dixPixmapPut(pMap);
             return rc;
         }
         dixSetPrivate(&pMap->devPrivates, shmPixmapPrivateKey, shmdesc);

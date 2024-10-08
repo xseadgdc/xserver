@@ -18,15 +18,17 @@ is" without express or implied warranty.
 #include <X11/X.h>
 #include <X11/Xdefs.h>
 #include <X11/Xproto.h>
+#include <X11/fonts/fontstruct.h>
 
 #include <xcb/xcb.h>
 #include <xcb/xcb_aux.h>
+
+#include "include/dix_pixmap.h"
 
 #include "gcstruct.h"
 #include "windowstr.h"
 #include "pixmapstr.h"
 #include "scrnintstr.h"
-#include <X11/fonts/fontstruct.h>
 #include "mistruct.h"
 #include "region.h"
 
@@ -262,7 +264,7 @@ xnestChangeClip(GCPtr pGC, int type, void *pValue, int nRects)
          * current pixmap contents.
          */
         pGC->clientClip = (*pGC->pScreen->BitmapToRegion) ((PixmapPtr) pValue);
-        dixDestroyPixmap((PixmapPtr) pValue, 0);
+        dixPixmapPut((PixmapPtr) pValue);
         pValue = pGC->clientClip;
         break;
 

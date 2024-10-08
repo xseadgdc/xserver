@@ -34,8 +34,12 @@
 
 #include <dix-config.h>
 
+#include <stdio.h>
 #include <X11/X.h>
 #include <X11/Xproto.h>
+
+#include "include/dix_pixmap.h"
+
 #include "misc.h"
 #include "os.h"
 #include "windowstr.h"
@@ -51,8 +55,6 @@
 #include "inputstr.h"
 #include "midbe.h"
 #include "xace.h"
-
-#include <stdio.h>
 
 
 /******************************************************************************
@@ -150,19 +152,20 @@ miDbeAllocBackBufferName(WindowPtr pWin, XID bufId, int swapAction)
         pDbeScreenPriv = DBE_SCREEN_PRIV(pScreen);
 
         /* Get a front pixmap. */
-        if (!(pDbeWindowPriv->pFrontBuffer =
-              (*pScreen->CreatePixmap) (pScreen, pDbeWindowPriv->width,
-                                        pDbeWindowPriv->height,
-                                        pWin->drawable.depth, 0))) {
+        if (!(pDbeWindowPriv->pFrontBuffer = dixPixmapCreate(
+                pScreen,
+                pDbeWindowPriv->width,
+                pDbeWindowPriv->height,
+                pWin->drawable.depth,
+                0)))
             return BadAlloc;
-        }
 
         /* Get a back pixmap. */
         if (!(pDbeWindowPriv->pBackBuffer =
-              (*pScreen->CreatePixmap) (pScreen, pDbeWindowPriv->width,
-                                        pDbeWindowPriv->height,
-                                        pWin->drawable.depth, 0))) {
-            dixDestroyPixmap(pDbeWindowPriv->pFrontBuffer, 0);
+              dixPixmapCreate(pScreen, pDbeWindowPriv->width,
+                              pDbeWindowPriv->height,
+                              pWin->drawable.depth, 0))) {
+            dixPixmapPut(pDbeWindowPriv->pFrontBuffer);
             return BadAlloc;
         }
 
@@ -426,10 +429,10 @@ miDbeWinPrivDelete(DbeWindowPrivPtr pDbeWindowPriv, XID bufId)
 
     /* Destroy the front and back pixmaps. */
     if (pDbeWindowPriv->pFrontBuffer)
-         dixDestroyPixmap(pDbeWindowPriv->pFrontBuffer, 0);
+         dixPixmapPut(pDbeWindowPriv->pFrontBuffer);
 
     if (pDbeWindowPriv->pBackBuffer)
-        dixDestroyPixmap(pDbeWindowPriv->pBackBuffer, 0);
+        dixPixmapPut(pDbeWindowPriv->pBackBuffer);
 }                               /* miDbeWinPrivDelete() */
 
 /******************************************************************************
@@ -534,17 +537,17 @@ void miDbeWindowPosition(ScreenPtr pScreen, WindowPtr pWin, void *arg, int32_t x
     }
 
     /* Create DBE buffer pixmaps equal to size of resized window. */
-    pFrontBuffer = (*pScreen->CreatePixmap) (pScreen, width, height,
-                                             pWin->drawable.depth, 0);
+    pFrontBuffer = dixPixmapCreate(pScreen, width, height,
+                                   pWin->drawable.depth, 0);
 
-    pBackBuffer = (*pScreen->CreatePixmap) (pScreen, width, height,
-                                            pWin->drawable.depth, 0);
+    pBackBuffer = dixPixmapCreate(pScreen, width, height,
+                                  pWin->drawable.depth, 0);
 
     if (!pFrontBuffer || !pBackBuffer) {
         /* We failed at creating 1 or 2 of the pixmaps. */
 
-        dixDestroyPixmap(pFrontBuffer, 0);
-        dixDestroyPixmap(pBackBuffer, 0);
+        dixPixmapPut(pFrontBuffer);
+        dixPixmapPut(pBackBuffer);
 
         /* Destroy all buffers for this window. */
         while (pDbeWindowPriv) {
@@ -595,8 +598,8 @@ void miDbeWindowPosition(ScreenPtr pScreen, WindowPtr pWin, void *arg, int32_t x
          * pixmaps.
          */
 
-        dixDestroyPixmap(pDbeWindowPriv->pFrontBuffer, 0);
-        dixDestroyPixmap(pDbeWindowPriv->pBackBuffer, 0);
+        dixPixmapPut(pDbeWindowPriv->pFrontBuffer);
+        dixPixmapPut(pDbeWindowPriv->pBackBuffer);
 
         pDbeWindowPriv->pFrontBuffer = pFrontBuffer;
         pDbeWindowPriv->pBackBuffer = pBackBuffer;

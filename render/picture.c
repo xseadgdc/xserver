@@ -25,6 +25,7 @@
 #include <dix-config.h>
 
 #include "dix/colormap_priv.h"
+#include "include/dix_pixmap.h"
 #include "os/osdep.h"
 
 #include "misc.h"
@@ -1402,7 +1403,7 @@ FreePicture(void *value, XID pid)
                 }
             }
             else if (pPicture->pDrawable->type == DRAWABLE_PIXMAP) {
-                dixDestroyPixmap((PixmapPtr) pPicture->pDrawable, 0);
+                dixPixmapPut((PixmapPtr) pPicture->pDrawable);
             }
         }
         dixFreeObjectWithPrivates(pPicture, PRIVATE_PICTURE);

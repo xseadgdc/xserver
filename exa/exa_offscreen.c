@@ -25,12 +25,15 @@
  * When allocating, the contiguous block of areas with the minimum eviction
  * cost is found and evicted in order to make room for the new allocation.
  */
-
-#include "exa_priv.h"
+#include <dix-config.h>
 
 #include <limits.h>
 #include <assert.h>
 #include <stdlib.h>
+
+#include "include/dix_pixmap.h"
+
+#include "exa_priv.h"
 
 #if DEBUG_OFFSCREEN
 #define DBG_OFFSCREEN(a) ErrorF a
@@ -478,10 +481,9 @@ ExaOffscreenDefragment(ScreenPtr pScreen)
     ExaScreenPriv(pScreen);
     ExaOffscreenArea *area, *largest_available = NULL;
     int largest_size = 0;
-    PixmapPtr pDstPix;
     ExaPixmapPrivPtr pExaDstPix;
 
-    pDstPix = (*pScreen->CreatePixmap) (pScreen, 0, 0, 0, 0);
+    PixmapPtr pDstPix = dixPixmapCreate(pScreen, 0, 0, 0, 0);
 
     if (!pDstPix)
         return NULL;
@@ -614,7 +616,7 @@ ExaOffscreenDefragment(ScreenPtr pScreen)
     pDstPix->drawable.depth = 0;
     pDstPix->drawable.bitsPerPixel = 0;
 
-    dixDestroyPixmap(pDstPix, 0);
+    dixPixmapPut(pDstPix);
 
     if (area->state == ExaOffscreenAvail && area->size > largest_size)
         return area;

@@ -50,6 +50,7 @@
 #include "dix/dix_priv.h"
 #include "dix/eventconvert.h"
 #include "dix/exevents_priv.h"
+#include "include/dix_pixmap.h"
 
 #include "xf86.h"
 #include "xf86str.h"
@@ -372,7 +373,7 @@ xf86SetDGAMode(ScrnInfoPtr pScrn, int num, DGADevicePtr devRet)
                 if (oldPix->drawable.id)
                     FreeResource(oldPix->drawable.id, X11_RESTYPE_NONE);
                 else
-                    dixDestroyPixmap(oldPix, 0);
+                    dixPixmapPut(oldPix);
             }
             free(pScreenPriv->current);
             pScreenPriv->current = NULL;
@@ -434,14 +435,14 @@ xf86SetDGAMode(ScrnInfoPtr pScrn, int num, DGADevicePtr devRet)
             if (oldPix->drawable.id)
                 FreeResource(oldPix->drawable.id, X11_RESTYPE_NONE);
             else
-                dixDestroyPixmap(oldPix, 0);
+                dixPixmapPut(oldPix);
         }
         free(pScreenPriv->current);
         pScreenPriv->current = NULL;
     }
 
     if (pMode->flags & DGA_PIXMAP_AVAILABLE) {
-        if ((pPix = (*pScreen->CreatePixmap) (pScreen, 0, 0, pMode->depth, 0))) {
+        if ((pPix = dixPixmapCreate(pScreen, 0, 0, pMode->depth, 0))) {
             (*pScreen->ModifyPixmapHeader) (pPix,
                                             pMode->pixmapWidth,
                                             pMode->pixmapHeight, pMode->depth,

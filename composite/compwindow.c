@@ -44,6 +44,7 @@
 #include <dix-config.h>
 
 #include "dix/dix_priv.h"
+#include "include/dix_pixmap.h"
 #include "os/osdep.h"
 
 #include "compint.h"
@@ -180,7 +181,7 @@ compCheckRedirect(WindowPtr pWin)
 
             compSetParentPixmap(pWin);
             compRestoreWindow(pWin, pPixmap);
-            dixDestroyPixmap(pPixmap, 0);
+            dixPixmapPut(pPixmap);
         }
     }
     else if (should) {
@@ -370,7 +371,7 @@ compFreeOldPixmap(WindowPtr pWin)
         CompWindowPtr cw = GetCompWindow(pWin);
 
         if (cw->pOldPixmap) {
-            dixDestroyPixmap(cw->pOldPixmap, 0);
+            dixPixmapPut(cw->pOldPixmap);
             cw->pOldPixmap = NullPixmap;
         }
     }
@@ -599,7 +600,7 @@ void compWindowDestroy(ScreenPtr pScreen, WindowPtr pWin, void *arg)
         PixmapPtr pPixmap = (*pScreen->GetWindowPixmap) (pWin);
 
         compSetParentPixmap(pWin);
-        dixDestroyPixmap(pPixmap, 0);
+        dixPixmapPut(pPixmap);
     }
 
     /* Did we just destroy the overlay window? */

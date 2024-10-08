@@ -20,12 +20,15 @@
  * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
  * OF THIS SOFTWARE.
  */
+#include <dix-config.h>
+
+#include <X11/Xatom.h>
+
+#include "include/dix_pixmap.h"
 
 #include "randrstr_priv.h"
 #include "swaprep.h"
 #include "mipointer.h"
-
-#include <X11/Xatom.h>
 
 RESTYPE RRCrtcType = 0;
 
@@ -382,11 +385,11 @@ rrDestroySharedPixmap(RRCrtcPtr crtc, PixmapPtr pPixmap) {
          */
         PixmapUnshareSecondaryPixmap(pPixmap);
 
-        dixDestroyPixmap(pPixmap->primary_pixmap, 0);
-        dixDestroyPixmap(pPixmap->primary_pixmap, 0);
+        dixPixmapPut(pPixmap->primary_pixmap);
+        dixPixmapPut(pPixmap->primary_pixmap);
     }
 
-    dixDestroyPixmap(pPixmap, 0);
+    dixPixmapPut(pPixmap);
 }
 
 void
@@ -431,16 +434,14 @@ rrCreateSharedPixmap(RRCrtcPtr crtc, ScreenPtr primary,
                      int width, int height, int depth,
                      int x, int y, Rotation rotation)
 {
-    PixmapPtr mpix, spix;
-
-    mpix = primary->CreatePixmap(primary, width, height, depth,
-                                CREATE_PIXMAP_USAGE_SHARED);
+    PixmapPtr mpix = dixPixmapCreate(primary, width, height, depth,
+                                     CREATE_PIXMAP_USAGE_SHARED);
     if (!mpix)
         return NULL;
 
-    spix = PixmapShareToSecondary(mpix, crtc->pScreen);
+    PixmapPtr spix = PixmapShareToSecondary(mpix, crtc->pScreen);
     if (spix == NULL) {
-        dixDestroyPixmap(mpix, 0);
+        dixPixmapPut(mpix);
         return NULL;
     }
 

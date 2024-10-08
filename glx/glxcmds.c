@@ -36,6 +36,7 @@
 #include <X11/extensions/presenttokens.h>
 
 #include "dix/dix_priv.h"
+#include "include/dix_pixmap.h"
 
 #include "glxserver.h"
 #include <unpack.h>
@@ -1391,7 +1392,7 @@ DoCreatePbuffer(ClientPtr client, int screenNum, XID fbconfigId,
     err = XaceHookResourceAccess(client, glxDrawableId, X11_RESTYPE_PIXMAP,
                    pPixmap, X11_RESTYPE_NONE, NULL, DixCreateAccess);
     if (err != Success) {
-        dixDestroyPixmap(pPixmap, 0);
+        dixPixmapPut(pPixmap);
         return err;
     }
 

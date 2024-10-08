@@ -30,6 +30,7 @@ from The Open Group.
 
 #include <X11/X.h>
 
+#include "include/dix_pixmap.h"
 #include "mi/mi_priv.h"
 
 #include "servermd.h"
@@ -124,7 +125,7 @@ miModifyPixmapHeader(PixmapPtr pPixmap, int width, int height, int depth,
 static Bool
 miCloseScreen(ScreenPtr pScreen)
 {
-    dixDestroyPixmap((PixmapPtr) pScreen->devPrivate, 0);
+    dixPixmapPut((PixmapPtr) pScreen->devPrivate);
     return TRUE;
 }
 
@@ -165,9 +166,7 @@ miCreateScreenResources(ScreenPtr pScreen)
         /* create a pixmap with no data, then redirect it to point to
          * the screen
          */
-        pPixmap =
-            (*pScreen->CreatePixmap) (pScreen, 0, 0, pScreen->rootDepth, 0);
-        if (!pPixmap)
+        if (!(pPixmap = dixPixmapCreate(pScreen, 0, 0, pScreen->rootDepth, 0)))
             return FALSE;
 
         if (!(*pScreen->ModifyPixmapHeader) (pPixmap, pScrInitParms->xsize,

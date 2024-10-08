@@ -46,12 +46,16 @@ SOFTWARE.
 
 #include <dix-config.h>
 
-#include	<X11/X.h>
-#include	<X11/Xmd.h>
-#include	<X11/Xproto.h>
+#include <stdlib.h>
+#include <X11/X.h>
+#include <X11/Xmd.h>
+#include <X11/Xproto.h>
+#include <X11/fonts/fontstruct.h>
+#include <X11/fonts/libxfont2.h>
+
+#include "include/dix_pixmap.h"
+
 #include	"misc.h"
-#include	<X11/fonts/fontstruct.h>
-#include        <X11/fonts/libxfont2.h>
 #include	"dixfontstr.h"
 #include	"gcstruct.h"
 #include	"windowstr.h"
@@ -84,7 +88,6 @@ miPolyGlyphBlt(DrawablePtr pDrawable, GCPtr pGC, int x, int y, unsigned int ngly
     )
 {
     int width, height;
-    PixmapPtr pPixmap;
     int nbyLine;                /* bytes per line of padded pixmap */
     FontPtr pfont;
     GCPtr pGCtmp;
@@ -110,15 +113,14 @@ miPolyGlyphBlt(DrawablePtr pDrawable, GCPtr pGC, int x, int y, unsigned int ngly
         FONTMINBOUNDS(pfont, leftSideBearing);
     height = FONTMAXBOUNDS(pfont, ascent) + FONTMAXBOUNDS(pfont, descent);
 
-    pPixmap = (*pDrawable->pScreen->CreatePixmap) (pDrawable->pScreen,
-                                                   width, height, 1,
-                                                   CREATE_PIXMAP_USAGE_SCRATCH);
+    PixmapPtr pPixmap = dixPixmapCreate(pDrawable->pScreen, width, height, 1,
+                                        CREATE_PIXMAP_USAGE_SCRATCH);
     if (!pPixmap)
         return;
 
     pGCtmp = GetScratchGC(1, pDrawable->pScreen);
     if (!pGCtmp) {
-        dixDestroyPixmap(pPixmap, 0);
+        dixPixmapPut(pPixmap);
         return;
     }
 
@@ -132,7 +134,7 @@ miPolyGlyphBlt(DrawablePtr pDrawable, GCPtr pGC, int x, int y, unsigned int ngly
     nbyLine = BitmapBytePad(width);
     pbits = xallocarray(height, nbyLine);
     if (!pbits) {
-        dixDestroyPixmap(pPixmap, 0);
+        dixPixmapPut(pPixmap);
         FreeScratchGC(pGCtmp);
         return;
     }
@@ -174,7 +176,7 @@ miPolyGlyphBlt(DrawablePtr pDrawable, GCPtr pGC, int x, int y, unsigned int ngly
         }
         x += pci->metrics.characterWidth;
     }
-    dixDestroyPixmap(pPixmap, 0);
+    dixPixmapPut(pPixmap);
     free(pbits);
     FreeScratchGC(pGCtmp);
 }

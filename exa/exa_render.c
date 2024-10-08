@@ -26,6 +26,8 @@
 
 #include <stdlib.h>
 
+#include "include/dix_pixmap.h"
+
 #include "exa_priv.h"
 
 #include "mipict.h"
@@ -1082,7 +1084,7 @@ exaCreateAlphaPicture(ScreenPtr pScreen,
         return 0;
     pGC = GetScratchGC(pPixmap->drawable.depth, pScreen);
     if (!pGC) {
-        dixDestroyPixmap(pPixmap, 0);
+        dixPixmapPut(pPixmap);
         return 0;
     }
     ValidateGC(&pPixmap->drawable, pGC);
@@ -1095,7 +1097,7 @@ exaCreateAlphaPicture(ScreenPtr pScreen,
     FreeScratchGC(pGC);
     pPicture = CreatePicture(0, &pPixmap->drawable, pPictFormat,
                              0, 0, serverClient, &error);
-    dixDestroyPixmap(pPixmap, 0);
+    dixPixmapPut(pPixmap);
     return pPicture;
 }
 

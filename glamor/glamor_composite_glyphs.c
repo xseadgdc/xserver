@@ -19,9 +19,13 @@
  * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
  * OF THIS SOFTWARE.
  */
-#include <stdlib.h>
-#include "Xprintf.h"
+#include <dix-config.h>
 
+#include <stdlib.h>
+
+#include "include/dix_pixmap.h"
+
+#include "Xprintf.h"
 #include "glamor_priv.h"
 #include "glamor_transform.h"
 #include "glamor_transfer.h"
@@ -436,7 +440,7 @@ glamor_composite_glyphs(CARD8 op,
                                 glyphs_queued = 0;
                             }
                             if (glyph_atlas->atlas) {
-                                dixDestroyPixmap(glyph_atlas->atlas, 0);
+                                dixPixmapPut(glyph_atlas->atlas);
                                 glyph_atlas->atlas = NULL;
                             }
                         }
@@ -571,7 +575,7 @@ glamor_free_glyph_atlas(struct glamor_glyph_atlas *atlas)
 {
     if (!atlas)
         return;
-    dixDestroyPixmap(atlas->atlas, 0);
+    dixPixmapPut(atlas->atlas);
     free (atlas);
 }
 

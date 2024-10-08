@@ -33,6 +33,9 @@
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include <unistd.h>
+
+#include "include/dix_pixmap.h"
+
 #include "dumb_bo.h"
 #include "inputstr.h"
 #include "xf86str.h"
@@ -1570,7 +1573,7 @@ drmmode_copy_fb(ScrnInfoPtr pScrn, drmmode_ptr drmmode)
 
     pScreen->canDoBGNoneRoot = TRUE;
 
-    dixDestroyPixmap(drmmode->fbcon_pixmap, 0);
+    dixPixmapPut(drmmode->fbcon_pixmap);
     drmmode->fbcon_pixmap = NULL;
 #endif
 }
@@ -2150,7 +2153,7 @@ drmmode_create_pixmap_header(ScreenPtr pScreen, int width, int height,
         if ((*pScreen->ModifyPixmapHeader)(pixmap, width, height, depth,
                                            bitsPerPixel, devKind, pPixData))
             return pixmap;
-        dixDestroyPixmap(pixmap, 0);
+        dixPixmapPut(pixmap);
     }
     return NullPixmap;
 }
@@ -2222,7 +2225,7 @@ drmmode_shadow_fb_destroy(xf86CrtcPtr crtc, PixmapPtr pixmap,
     drmmode_crtc_private_ptr drmmode_crtc = crtc->driver_private;
     drmmode_ptr drmmode = drmmode_crtc->drmmode;
 
-    dixDestroyPixmap(pixmap, 0);
+    dixPixmapPut(pixmap);
 
     if (data) {
         drmModeRmFB(drmmode->fd, *fb_id);

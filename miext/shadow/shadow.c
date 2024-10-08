@@ -23,8 +23,10 @@
 #include <dix-config.h>
 
 #include <stdlib.h>
+#include <X11/X.h>
 
-#include    <X11/X.h>
+#include "include/dix_pixmap.h"
+
 #include    "scrnintstr.h"
 #include    "windowstr.h"
 #include    "dixfontstr.h"
@@ -103,7 +105,7 @@ shadowCloseScreen(ScreenPtr pScreen)
     unwrap(pBuf, pScreen, BlockHandler);
     shadowRemove(pScreen, pBuf->pPixmap);
     DamageDestroy(pBuf->pDamage);
-    dixDestroyPixmap(pBuf->pPixmap, 0);
+    dixPixmapPut(pBuf->pPixmap);
     free(pBuf);
     return pScreen->CloseScreen(pScreen);
 }

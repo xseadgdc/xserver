@@ -35,6 +35,8 @@
 #include <sys/eventfd.h>
 #endif /* DRI3 */
 
+#include "include/dix_pixmap.h"
+
 #include "xwayland-present.h"
 #include "xwayland-screen.h"
 #include "xwayland-shm.h"
@@ -315,7 +317,7 @@ xwl_present_release_pixmap(struct xwl_present_event *event)
         return;
 
     xwl_pixmap_del_buffer_release_cb(event->pixmap);
-    dixDestroyPixmap(event->pixmap, event->pixmap->drawable.id);
+    dixPixmapPut(event->pixmap);
     event->pixmap = NULL;
 }
 
@@ -1122,7 +1124,7 @@ retry:
                     screen->SetScreenPixmap(vblank->pixmap);
 
                 vblank->pixmap->refcnt++;
-                dixDestroyPixmap(old_pixmap, old_pixmap->drawable.id);
+                dixPixmapPut(old_pixmap);
 
                 /* Report damage, let damage_report ignore it though */
                 xwl_screen->ignore_damage = TRUE;

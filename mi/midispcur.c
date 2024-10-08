@@ -31,10 +31,11 @@ in this Software without prior written authorization from The Open Group.
 
 #include <dix-config.h>
 
-#include   <X11/X.h>
+#include <X11/X.h>
 
-#include   "dix/dix_priv.h"
-#include   "dix/gc_priv.h"
+#include "dix/dix_priv.h"
+#include "dix/gc_priv.h"
+#include "include/dix_pixmap.h"
 
 #include   "misc.h"
 #include   "input.h"
@@ -119,11 +120,11 @@ miDCSwitchScreenCursor(ScreenPtr pScreen, CursorPtr pCursor, PixmapPtr sourceBit
 {
     miDCScreenPtr pScreenPriv = dixLookupPrivate(&pScreen->devPrivates, miDCScreenKey);
 
-    dixDestroyPixmap(pScreenPriv->sourceBits, 0);
+    dixPixmapPut(pScreenPriv->sourceBits);
     pScreenPriv->sourceBits = sourceBits;
 
     if (pScreenPriv->maskBits)
-    dixDestroyPixmap(pScreenPriv->maskBits, 0);
+    dixPixmapPut(pScreenPriv->maskBits);
     pScreenPriv->maskBits = maskBits;
 
     if (pScreenPriv->pPicture)
@@ -194,15 +195,15 @@ miDCRealize(ScreenPtr pScreen, CursorPtr pCursor)
         if (!pFormat)
             return FALSE;
 
-        pPixmap = (*pScreen->CreatePixmap) (pScreen, pCursor->bits->width,
-                                            pCursor->bits->height, 32,
-                                            CREATE_PIXMAP_USAGE_SCRATCH);
+        pPixmap = dixPixmapCreate(pScreen, pCursor->bits->width,
+                                  pCursor->bits->height, 32,
+                                  CREATE_PIXMAP_USAGE_SCRATCH);
         if (!pPixmap)
             return FALSE;
 
         pGC = GetScratchGC(32, pScreen);
         if (!pGC) {
-            dixDestroyPixmap(pPixmap, 0);
+            dixPixmapPut(pPixmap);
             return FALSE;
         }
         ValidateGC(&pPixmap->drawable, pGC);
@@ -213,7 +214,7 @@ miDCRealize(ScreenPtr pScreen, CursorPtr pCursor)
         FreeScratchGC(pGC);
         pPicture = CreatePicture(0, &pPixmap->drawable,
                                  pFormat, 0, 0, serverClient, &error);
-        dixDestroyPixmap(pPixmap, 0);
+        dixPixmapPut(pPixmap);
         if (!pPicture)
             return FALSE;
 
@@ -221,15 +222,15 @@ miDCRealize(ScreenPtr pScreen, CursorPtr pCursor)
         return TRUE;
     }
 
-    sourceBits = (*pScreen->CreatePixmap) (pScreen, pCursor->bits->width,
-                                           pCursor->bits->height, 1, 0);
+    sourceBits = dixPixmapCreate(pScreen, pCursor->bits->width,
+                                 pCursor->bits->height, 1, 0);
     if (!sourceBits)
         return FALSE;
 
-    maskBits = (*pScreen->CreatePixmap) (pScreen, pCursor->bits->width,
-                                         pCursor->bits->height, 1, 0);
+    maskBits = dixPixmapCreate(pScreen, pCursor->bits->width,
+                               pCursor->bits->height, 1, 0);
     if (!maskBits) {
-        dixDestroyPixmap(sourceBits, 0);
+        dixPixmapPut(sourceBits);
         return FALSE;
     }
 
@@ -237,8 +238,8 @@ miDCRealize(ScreenPtr pScreen, CursorPtr pCursor)
 
     pGC = GetScratchGC(1, pScreen);
     if (!pGC) {
-        dixDestroyPixmap(sourceBits, 0);
-        dixDestroyPixmap(maskBits, 0);
+        dixPixmapPut(sourceBits);
+        dixPixmapPut(maskBits);
         return FALSE;
     }
 
@@ -394,9 +395,9 @@ miDCSaveUnderCursor(DeviceIntPtr pDev, ScreenPtr pScreen,
     pSave = pBuffer->pSave;
     pWin = pScreen->root;
     if (!pSave || pSave->drawable.width < w || pSave->drawable.height < h) {
-        dixDestroyPixmap(pSave, 0);
+        dixPixmapPut(pSave);
         pBuffer->pSave = pSave =
-            (*pScreen->CreatePixmap) (pScreen, w, h, pScreen->rootDepth, 0);
+            dixPixmapCreate(pScreen, w, h, pScreen->rootDepth, 0);
         if (!pSave)
             return FALSE;
     }
@@ -511,7 +512,7 @@ miDCDeviceCleanup(DeviceIntPtr pDev, ScreenPtr pScreen)
                  * is freed when that root window is destroyed, so don't
                  * free it again here. */
 
-                dixDestroyPixmap(pBuffer->pSave, 0);
+                dixPixmapPut(pBuffer->pSave);
 
                 free(pBuffer);
                 dixSetScreenPrivate(&pDev->devPrivates, miDCDeviceKey, pScreen,

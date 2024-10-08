@@ -24,6 +24,7 @@
 
 #include <dix-config.h>
 
+#include "include/dix_pixmap.h"
 #include "os/xsha1.h"
 
 #include "misc.h"
@@ -598,17 +599,17 @@ miGlyphs(CARD8 op,
             return;
         width = extents.x2 - extents.x1;
         height = extents.y2 - extents.y1;
-        pMaskPixmap = (*pScreen->CreatePixmap) (pScreen, width, height,
-                                                maskFormat->depth,
-                                                CREATE_PIXMAP_USAGE_SCRATCH);
-        if (!pMaskPixmap)
+        if (!(pMaskPixmap = dixPixmapCreate(pScreen, width, height,
+                                            maskFormat->depth,
+                                            CREATE_PIXMAP_USAGE_SCRATCH)))
             return;
+
         component_alpha = NeedsComponent(maskFormat->format);
         pMask = CreatePicture(0, &pMaskPixmap->drawable,
                               maskFormat, CPComponentAlpha, &component_alpha,
                               serverClient, &error);
         if (!pMask) {
-            dixDestroyPixmap(pMaskPixmap, 0);
+            dixPixmapPut(pMaskPixmap);
             return;
         }
         pGC = GetScratchGC(pMaskPixmap->drawable.depth, pScreen);
@@ -676,7 +677,7 @@ miGlyphs(CARD8 op,
                          xSrc + x - xDst,
                          ySrc + y - yDst, 0, 0, x, y, width, height);
         FreePicture((void *) pMask, (XID) 0);
-        dixDestroyPixmap(pMaskPixmap, 0);
+        dixPixmapPut(pMaskPixmap);
     }
 }
 

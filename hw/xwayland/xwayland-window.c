@@ -34,6 +34,7 @@
 
 #include "dix/dix_priv.h"
 #include "dix/property_priv.h"
+#include "include/dix_pixmap.h"
 #include "os/log_priv.h"
 
 #include "compositeext.h"
@@ -318,7 +319,7 @@ damage_report(DamagePtr pDamage, RegionPtr pRegion, void *data)
 
     window_pixmap = xwl_screen->screen->GetWindowPixmap(xwl_window->surface_window);
     if (xwl_is_client_pixmap(window_pixmap))
-        dixDestroyPixmap(xwl_window_swap_pixmap(xwl_window, FALSE), 0);
+        dixPixmapPut(xwl_window_swap_pixmap(xwl_window, FALSE));
 }
 
 static void

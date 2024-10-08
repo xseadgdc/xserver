@@ -38,6 +38,9 @@
 #ifdef WITH_LIBDRM
 #include <xf86drm.h>
 #endif
+
+#include "include/dix_pixmap.h"
+
 #include "list.h"
 #include "scrnintstr.h"
 #include "windowstr.h"
@@ -433,8 +436,8 @@ DRI2DrawableGone(void *p, XID id)
     }
 
     if (pPriv->prime_secondary_pixmap) {
-        dixDestroyPixmap(pPriv->prime_secondary_pixmap->primary_pixmap, 0);
-        dixDestroyPixmap(pPriv->prime_secondary_pixmap, 0);
+        dixPixmapPut(pPriv->prime_secondary_pixmap->primary_pixmap);
+        dixPixmapPut(pPriv->prime_secondary_pixmap);
     }
 
     if (pPriv->buffers != NULL) {
@@ -446,7 +449,7 @@ DRI2DrawableGone(void *p, XID id)
 
     if (pPriv->redirectpixmap) {
         (*pDraw->pScreen->ReplaceScanoutPixmap)(pDraw, pPriv->redirectpixmap, FALSE);
-        dixDestroyPixmap(pPriv->redirectpixmap, 0);
+        dixPixmapPut(pPriv->redirectpixmap);
     }
 
     dri2WakeAll(CLIENT_SIGNAL_ANY, pPriv, WAKE_SWAP);
@@ -837,14 +840,14 @@ DrawablePtr DRI2UpdatePrime(DrawablePtr pDraw, DRI2BufferPtr pDest)
                 mpix = pPriv->redirectpixmap;
             } else {
                 if (primary->ReplaceScanoutPixmap) {
-                    mpix = (*primary->CreatePixmap)(primary, pDraw->width, pDraw->height,
-                                                   pDraw->depth, CREATE_PIXMAP_USAGE_SHARED);
+                    mpix = dixPixmapCreate(primary, pDraw->width, pDraw->height,
+                                           pDraw->depth, CREATE_PIXMAP_USAGE_SHARED);
                     if (!mpix)
                         return NULL;
 
                     ret = (*primary->ReplaceScanoutPixmap)(pDraw, mpix, TRUE);
                     if (ret == FALSE) {
-                        dixDestroyPixmap(mpix, 0);
+                        dixPixmapPut(mpix);
                         return NULL;
                     }
                     pPriv->redirectpixmap = mpix;
@@ -853,7 +856,7 @@ DrawablePtr DRI2UpdatePrime(DrawablePtr pDraw, DRI2BufferPtr pDest)
             }
         } else if (pPriv->redirectpixmap) {
             (*primary->ReplaceScanoutPixmap)(pDraw, pPriv->redirectpixmap, FALSE);
-            dixDestroyPixmap(pPriv->redirectpixmap, 0);
+            dixPixmapPut(pPriv->redirectpixmap);
             pPriv->redirectpixmap = NULL;
         }
     }
@@ -866,8 +869,8 @@ DrawablePtr DRI2UpdatePrime(DrawablePtr pDraw, DRI2BufferPtr pDest)
             return &pPriv->prime_secondary_pixmap->drawable;
         else {
             PixmapUnshareSecondaryPixmap(pPriv->prime_secondary_pixmap);
-            dixDestroyPixmap(pPriv->prime_secondary_pixmap->primary_pixmap, 0);
-            dixDestroyPixmap(pPriv->prime_secondary_pixmap, 0);
+            dixPixmapPut(pPriv->prime_secondary_pixmap->primary_pixmap);
+            dixPixmapPut(pPriv->prime_secondary_pixmap);
             pPriv->prime_secondary_pixmap = NULL;
         }
     }

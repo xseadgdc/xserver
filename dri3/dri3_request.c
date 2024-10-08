@@ -24,6 +24,7 @@
 #include <unistd.h>
 
 #include "dix/dix_priv.h"
+#include "include/dix_pixmap.h"
 
 #include "dri3_priv.h"
 #include <syncsrv.h>
@@ -243,7 +244,7 @@ proc_dri3_pixmap_from_buffer(ClientPtr client)
                   pixmap, X11_RESTYPE_NONE, NULL, DixCreateAccess);
 
     if (rc != Success) {
-        dixDestroyPixmap(pixmap, 0);
+        dixPixmapPut(pixmap);
         return rc;
     }
     if (!AddResource(stuff->pixmap, X11_RESTYPE_PIXMAP, (void *) pixmap))
@@ -506,7 +507,7 @@ proc_dri3_pixmap_from_buffers(ClientPtr client)
                   pixmap, X11_RESTYPE_NONE, NULL, DixCreateAccess);
 
     if (rc != Success) {
-        dixDestroyPixmap(pixmap, 0);
+        dixPixmapPut(pixmap);
         return rc;
     }
     if (!AddResource(stuff->pixmap, X11_RESTYPE_PIXMAP, (void *) pixmap))

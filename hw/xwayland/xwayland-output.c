@@ -31,6 +31,7 @@
 
 #include "dix/dix_priv.h"
 #include "dix/input_priv.h"
+#include "include/dix_pixmap.h"
 #include "randr/randrstr_priv.h"
 #include "os/log_priv.h"
 
@@ -171,17 +172,16 @@ update_backing_pixmaps(struct xwl_screen *xwl_screen, int width, int height)
 {
     ScreenPtr pScreen = xwl_screen->screen;
     WindowPtr pRoot = pScreen->root;
-    PixmapPtr old_pixmap, new_pixmap;
 
-    old_pixmap = pScreen->GetScreenPixmap(pScreen);
-    new_pixmap = pScreen->CreatePixmap(pScreen, width, height,
-                                       pScreen->rootDepth,
-                                       CREATE_PIXMAP_USAGE_BACKING_PIXMAP);
+    PixmapPtr old_pixmap = pScreen->GetScreenPixmap(pScreen);
+    PixmapPtr new_pixmap = dixPixmapCreate(pScreen, width, height,
+                                           pScreen->rootDepth,
+                                           CREATE_PIXMAP_USAGE_BACKING_PIXMAP);
     pScreen->SetScreenPixmap(new_pixmap);
 
     if (old_pixmap) {
         TraverseTree(pRoot, xwl_set_pixmap_visit_window, old_pixmap);
-        dixDestroyPixmap(old_pixmap, 0);
+        dixPixmapPut(old_pixmap);
     }
 
     pScreen->ResizeWindow(pRoot, 0, 0, width, height, NULL);

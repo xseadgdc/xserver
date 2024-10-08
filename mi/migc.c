@@ -28,6 +28,8 @@ from The Open Group.
 
 #include <dix-config.h>
 
+#include "include/dix_pixmap.h"
+
 #include "scrnintstr.h"
 #include "gcstruct.h"
 #include "pixmapstr.h"
@@ -63,7 +65,7 @@ miChangeClip(GCPtr pGC, int type, void *pvalue, int nrects)
     if (type == CT_PIXMAP) {
         /* convert the pixmap to a region */
         pGC->clientClip = BitmapToRegion(pGC->pScreen, (PixmapPtr) pvalue);
-        dixDestroyPixmap(pvalue, 0);
+        dixPixmapPut(pvalue);
     }
     else if (type == CT_REGION) {
         /* stuff the region in the GC */

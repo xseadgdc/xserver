@@ -19,9 +19,13 @@
  * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
  * OF THIS SOFTWARE.
  */
+#include <dix-config.h>
+
+#include <unistd.h>
+
+#include "include/dix_pixmap.h"
 
 #include "present_priv.h"
-#include <unistd.h>
 
 void
 present_vblank_notify(present_vblank_ptr vblank, CARD8 kind, CARD8 mode, uint64_t ust, uint64_t crtc_msc)
@@ -230,7 +234,7 @@ present_vblank_scrap(present_vblank_ptr vblank)
         present_pixmap_idle(vblank->pixmap, vblank->window, vblank->serial, vblank->idle_fence);
 
     present_fence_destroy(vblank->idle_fence);
-    dixDestroyPixmap(vblank->pixmap, vblank->pixmap->drawable.id);
+    dixPixmapPut(vblank->pixmap);
 
     vblank->pixmap = NULL;
     vblank->idle_fence = NULL;
@@ -252,7 +256,7 @@ present_vblank_destroy(present_vblank_ptr vblank)
 
     /* Drop pixmap reference */
     if (vblank->pixmap)
-        dixDestroyPixmap(vblank->pixmap, vblank->pixmap->drawable.id);
+        dixPixmapPut(vblank->pixmap);
 
     /* Free regions */
     if (vblank->valid)

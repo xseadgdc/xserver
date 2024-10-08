@@ -105,6 +105,7 @@ Equipment Corporation.
 #include "dix/input_priv.h"
 #include "dix/property_priv.h"
 #include "dix/selection_priv.h"
+#include "include/dix_pixmap.h"
 #include "os/auth.h"
 #include "os/client_priv.h"
 #include "os/screensaver.h"
@@ -1007,9 +1008,9 @@ FreeWindowResources(WindowPtr pWin)
     if (wInputShape(pWin))
         RegionDestroy(wInputShape(pWin));
     if (pWin->borderIsPixel == FALSE)
-        dixDestroyPixmap(pWin->border.pixmap, 0);
+        dixPixmapPut(pWin->border.pixmap);
     if (pWin->backgroundState == BackgroundPixmap)
-        dixDestroyPixmap(pWin->background.pixmap, 0);
+        dixPixmapPut(pWin->background.pixmap);
 
     DeleteAllWindowProperties(pWin);
 
@@ -1189,7 +1190,7 @@ ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID *vlist, ClientPtr client)
                 borderRelative = TRUE;
             if (pixID == None) {
                 if (pWin->backgroundState == BackgroundPixmap)
-                    dixDestroyPixmap(pWin->background.pixmap, 0);
+                    dixPixmapPut(pWin->background.pixmap);
                 if (!pWin->parent)
                     SetRootWindowBackground(pWin, pScreen, &index2);
                 else {
@@ -1204,7 +1205,7 @@ ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID *vlist, ClientPtr client)
                     goto PatchUp;
                 }
                 if (pWin->backgroundState == BackgroundPixmap)
-                    dixDestroyPixmap(pWin->background.pixmap, 0);
+                    dixPixmapPut(pWin->background.pixmap);
                 if (!pWin->parent)
                     SetRootWindowBackground(pWin, pScreen, &index2);
                 else
@@ -1223,7 +1224,7 @@ ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID *vlist, ClientPtr client)
                         goto PatchUp;
                     }
                     if (pWin->backgroundState == BackgroundPixmap)
-                        dixDestroyPixmap(pWin->background.pixmap, 0);
+                        dixPixmapPut(pWin->background.pixmap);
                     pWin->backgroundState = BackgroundPixmap;
                     pWin->background.pixmap = pPixmap;
                     pPixmap->refcnt++;
@@ -1239,7 +1240,7 @@ ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID *vlist, ClientPtr client)
             if (pWin->backgroundState == ParentRelative)
                 borderRelative = TRUE;
             if (pWin->backgroundState == BackgroundPixmap)
-                dixDestroyPixmap(pWin->background.pixmap, 0);
+                dixPixmapPut(pWin->background.pixmap);
             pWin->backgroundState = BackgroundPixel;
             pWin->background.pixel = (CARD32) *pVlist;
             /* background pixel overrides background pixmap,
@@ -1258,7 +1259,7 @@ ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID *vlist, ClientPtr client)
                 }
                 if (pWin->parent->borderIsPixel == TRUE) {
                     if (pWin->borderIsPixel == FALSE)
-                        dixDestroyPixmap(pWin->border.pixmap, 0);
+                        dixPixmapPut(pWin->border.pixmap);
                     pWin->border = pWin->parent->border;
                     pWin->borderIsPixel = TRUE;
                     index2 = CWBorderPixel;
@@ -1277,7 +1278,7 @@ ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID *vlist, ClientPtr client)
                     goto PatchUp;
                 }
                 if (pWin->borderIsPixel == FALSE)
-                    dixDestroyPixmap(pWin->border.pixmap, 0);
+                    dixPixmapPut(pWin->border.pixmap);
                 pWin->borderIsPixel = FALSE;
                 pWin->border.pixmap = pPixmap;
                 pPixmap->refcnt++;
@@ -1290,7 +1291,7 @@ ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID *vlist, ClientPtr client)
             break;
         case CWBorderPixel:
             if (pWin->borderIsPixel == FALSE)
-                dixDestroyPixmap(pWin->border.pixmap, 0);
+                dixPixmapPut(pWin->border.pixmap);
             pWin->borderIsPixel = TRUE;
             pWin->border.pixel = (CARD32) *pVlist;
             /* border pixel overrides border pixmap,
