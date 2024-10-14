@@ -22,10 +22,6 @@
  *
  * Author: Daniel Stone <daniel@fooishbar.org>
  */
-
-#ifdef HAVE_DIX_CONFIG_H
-#include <dix-config.h>
-#endif
 #include "input.h"
 #include "list.h"
 
