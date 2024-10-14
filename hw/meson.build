@@ -14,6 +14,10 @@ if build_xorg
     subdir('xfree86')
 endif
 
+if build_xorg_sdk
+    subdir('xfree86/sdk')
+endif
+
 if build_xquartz
     subdir('xquartz')
 endif
