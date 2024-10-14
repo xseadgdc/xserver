@@ -5,12 +5,6 @@ srcs_xorg_os_support = [
     'shared/vidmem.c',
 ]
 
-hdrs_xorg_os_support = [
-    'bus/xf86Pci.h',
-    'xf86_OSlib.h',
-    'xf86_OSproc.h'
-]
-
 os_dep = []
 os_c_args = []
 
@@ -164,5 +158,3 @@ xorg_os_support = static_library('xorg_os_support',
     ],
     c_args: xorg_c_args + os_c_args,
 )
-
-install_data(hdrs_xorg_os_support, install_dir: xorgsdkdir)

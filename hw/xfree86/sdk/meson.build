@@ -19,6 +19,9 @@ xorg_sdk_headers = [
     '../common/xf86platformBus.h',
     '../common/xf86MatchDrivers.h',
     '../common/xaarop.h',
+    '../os-support/bus/xf86Pci.h',
+    '../os-support/xf86_OSlib.h',
+    '../os-support/xf86_OSproc.h',
 ]
 
 if build_dga
