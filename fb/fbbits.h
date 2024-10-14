@@ -27,10 +27,6 @@
 
 #define isClipped(c,ul,lr)  (((c) | ((c) - (ul)) | ((lr) - (c))) & 0x80008000)
 
-#ifdef HAVE_DIX_CONFIG_H
-#include <dix-config.h>
-#endif
-
 #ifdef BITSSTORE
 #define STORE(b,x)  BITSSTORE(b,x)
 #else

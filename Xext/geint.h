@@ -22,10 +22,6 @@
  *
  * Author: Peter Hutterer, University of South Australia, NICTA
  */
-#ifdef HAVE_DIX_CONFIG_H
-#include <dix-config.h>
-#endif
-
 #ifndef _GEINT_H_
 #define _GEINT_H_
 

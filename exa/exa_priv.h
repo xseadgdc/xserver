@@ -26,10 +26,6 @@
 #ifndef EXAPRIV_H
 #define EXAPRIV_H
 
-#ifdef HAVE_DIX_CONFIG_H
-#include <dix-config.h>
-#endif
-
 #include "exa.h"
 
 #include <X11/X.h>
