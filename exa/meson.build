@@ -19,6 +19,6 @@ libxserver_exa = static_library('libxserver_exa',
     c_args: '-DHAVE_XORG_CONFIG_H'
 )
 
-if build_xorg
+if build_xorg_sdk
     install_data('exa.h', install_dir: xorgsdkdir)
 endif

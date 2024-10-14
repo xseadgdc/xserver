@@ -333,7 +333,7 @@ configure_file(output : 'dix-config.h',
 configure_file(output : 'xorg-server.h',
                input : 'xorg-server.h.meson.in',
                configuration : conf_data,
-               install: build_xorg,
+               install: build_xorg_sdk,
                install_dir: xorgsdkdir)
 
 version_data = configuration_data()
@@ -438,7 +438,7 @@ if with_dtrace
     dtrace_hdr += dtrace_header.process(dtrace_tmpl)
 endif
 
-if build_xorg
+if build_xorg_sdk
     install_data(
         [
             'Xprintf.h',

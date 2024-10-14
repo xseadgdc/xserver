@@ -13,6 +13,6 @@ libxserver_miext_damage = static_library('libxserver_miext_damage',
 	dependencies: common_dep,
 )
 
-if build_xorg
+if build_xorg_sdk
     install_data(hdrs_miext_damage, install_dir: xorgsdkdir)
 endif

@@ -17,6 +17,6 @@ if build_dri3
         )
 endif
 
-if build_xorg
+if build_xorg_sdk
     install_data(hdrs_dri3, install_dir: xorgsdkdir)
 endif

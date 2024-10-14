@@ -51,6 +51,6 @@ glamor = static_library('glamor',
     ],
 )
 
-if build_xorg
+if build_xorg_sdk
     install_data('glamor.h', install_dir: xorgsdkdir)
 endif

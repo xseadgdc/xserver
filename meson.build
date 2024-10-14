@@ -212,6 +212,11 @@ endif
 xorgsdkdir = join_paths(get_option('prefix'), get_option('includedir'), 'xorg')
 libxcvt_dep = dependency('libxcvt', fallback: ['libxcvt', 'libxcvt_dep'], required: build_xorg)
 
+build_xorg_sdk = get_option('xorg_sdk') == 'true'
+if get_option('xorg_sdk') == 'auto'
+    build_xorg_sdk = build_xorg
+endif
+
 build_xwayland = false
 if (host_machine.system() != 'darwin' and
     host_machine.system() != 'windows' and
@@ -824,7 +829,7 @@ if host_machine.system() != 'windows'
     subdir('test')
 endif
 
-if build_xorg
+if build_xorg_sdk
     sdkconfig = configuration_data()
     awk = find_program('awk')
 

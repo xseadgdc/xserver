@@ -26,6 +26,6 @@ libxserver_present = static_library('libxserver_present',
     ],
 )
 
-if build_xorg
+if build_xorg_sdk
     install_data(hdrs_present, install_dir: xorgsdkdir)
 endif
