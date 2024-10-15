@@ -34,6 +34,8 @@ endif
 
 if build_glamor
     xorg_sdk_headers += '../../../glamor/glamor.h'
+else
+    xorg_sdk_headers += '../../../glamor/glamor.h'
 endif
 
 if build_xorg_sdk
