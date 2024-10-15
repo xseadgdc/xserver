@@ -33,7 +33,7 @@ if build_xv
 endif
 
 if build_glamor
-    xorg_sdk_headers += '../glamor/glamor.h'
+    xorg_sdk_headers += '../../../glamor/glamor.h'
 endif
 
 if build_xorg_sdk
