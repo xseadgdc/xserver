@@ -32,6 +32,10 @@ if build_xv
     xorg_sdk_headers += ['../common/xf86xv.h', '../common/xf86xvmc.h', '../common/xf86xvpriv.h']
 endif
 
+if build_glamor
+    xorg_sdk_headers += '../glamor/glamor.h'
+endif
+
 if build_xorg_sdk
     install_data(xorg_sdk_headers, install_dir: xorgsdkdir)
 endif
