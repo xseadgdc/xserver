@@ -447,6 +447,7 @@ if build_xorg
             'closure.h',
             'colormap.h',
             'colormapst.h',
+            'compiler.h',
             'hotplug.h',
             'cursor.h',
             'cursorstr.h',
