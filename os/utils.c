@@ -75,7 +75,7 @@ __stdcall unsigned long GetTickCount(void);
 #define XSERV_t
 #define TRANS_SERVER
 #define TRANS_REOPEN
-#include <X11/Xtrans/Xtrans.h>
+#include "os/Xtrans.h"
 
 #include "os/audit.h"
 
