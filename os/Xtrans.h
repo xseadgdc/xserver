@@ -104,13 +104,6 @@ static const char *__xtransname = "_FontTrans";
 #endif
 #endif /* FONT_t */
 
-#ifdef ICE_t
-#define TRANS(func) _IceTrans##func
-#ifdef XTRANSDEBUG
-static const char *__xtransname = "_IceTrans";
-#endif
-#endif /* ICE_t */
-
 #if !defined(TRANS)
 #define TRANS(func) _XTrans##func
 #ifdef XTRANSDEBUG
@@ -394,20 +387,6 @@ int TRANS(ConvertAddress)(
 );
 
 #endif /* X11_t */
-
-#ifdef ICE_t
-
-char *
-TRANS(GetMyNetworkId)(
-    XtransConnInfo	/* ciptr */
-);
-
-char *
-TRANS(GetPeerNetworkId)(
-    XtransConnInfo	/* ciptr */
-);
-
-#endif /* ICE_t */
 
 int
 TRANS(GetHostname) (
