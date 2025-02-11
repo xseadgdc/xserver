@@ -253,7 +253,10 @@ ReadRequestFromClient(ClientPtr client)
     }
 
 #if XTRANS_SEND_FDS
-    /* Discard any unused file descriptors */
+    /* Discard any unused file descriptors:
+       those which are claimed to exist via SetReqFds(), but haven't been
+       consumed by the request handler via ReadFdFromClient()
+    */
     while (client->req_fds > 0) {
         int req_fd = ReadFdFromClient(client);
         if (req_fd >= 0)
