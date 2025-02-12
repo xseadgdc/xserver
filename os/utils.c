@@ -72,7 +72,6 @@ __stdcall unsigned long GetTickCount(void);
 #endif
 #include "misc.h"
 #include <X11/X.h>
-#define XSERV_t
 #include "os/Xtrans.h"
 
 #include "os/audit.h"

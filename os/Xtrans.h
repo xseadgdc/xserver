@@ -68,27 +68,11 @@ from The Open Group.
  * Set the functions names according to where this code is being compiled.
  */
 
-#ifdef X11_t
-#define TRANS(func) _X11Trans##func
-#ifdef XTRANSDEBUG
-static const char *__xtransname = "_X11Trans";
-#endif
-#endif /* X11_t */
-
-#ifdef XSERV_t
 #define TRANS(func) _XSERVTrans##func
 #ifdef XTRANSDEBUG
 static const char *__xtransname = "_XSERVTrans";
 #endif
 #define X11_t
-#endif /* XSERV_t */
-
-#if !defined(TRANS)
-#define TRANS(func) _XTrans##func
-#ifdef XTRANSDEBUG
-static const char *__xtransname = "_XTrans";
-#endif
-#endif /* !TRANS */
 
 #ifdef __clang__
 #pragma clang diagnostic pop
