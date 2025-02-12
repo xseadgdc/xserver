@@ -228,10 +228,8 @@ is_numeric (const char *str)
 #ifdef UNIXCONN
 
 
-#if defined(X11_t)
 #define UNIX_PATH "/tmp/.X11-unix/X"
 #define UNIX_DIR "/tmp/.X11-unix"
-#endif /* X11_t */
 
 #endif /* UNIXCONN */
 
@@ -390,7 +388,7 @@ TRANS(SocketOpen) (int i, int type)
                        Sockettrans2devtab[i].protocol);
 
 #ifndef WIN32
-#if (defined(X11_t) && !defined(USE_POLL))
+#if !defined(USE_POLL)
     if (ciptr->fd >= sysconf(_SC_OPEN_MAX))
     {
 	prmsg (2, "SocketOpen: socket() returned out of range fd %d\n",
@@ -771,13 +769,10 @@ TRANS(SocketINETCreateListener) (XtransConnInfo ciptr, const char *port,
 #endif
     struct servent *servp;
 
-#ifdef X11_t
     char	portbuf[PORTBUFSIZE];
-#endif
 
     prmsg (2, "SocketINETCreateListener(%s)\n", port);
 
-#ifdef X11_t
     /*
      * X has a well known port, that is transport dependent. It is easier
      * to handle it here, than try and come up with a transport independent
@@ -794,7 +789,6 @@ TRANS(SocketINETCreateListener) (XtransConnInfo ciptr, const char *port,
 	snprintf (portbuf, sizeof(portbuf), "%lu", tmpport);
 	port = portbuf;
     }
-#endif
 
     if (port && *port)
     {

@@ -306,15 +306,11 @@ int TRANS(MakeAllCOTSServerListeners)(
  * Function Prototypes for Utility Functions.
  */
 
-#ifdef X11_t
-
 int TRANS(ConvertAddress)(
     int *,		/* familyp */
     int *,		/* addrlenp */
     Xtransaddr **	/* addrp */
 );
-
-#endif /* X11_t */
 
 int
 TRANS(GetHostname) (
