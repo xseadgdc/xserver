@@ -181,14 +181,6 @@ void TRANS(FreeConnInfo) (
     XtransConnInfo 	/* ciptr */
 );
 
-#ifdef TRANS_CLIENT
-
-XtransConnInfo TRANS(OpenCOTSClient)(
-    const char *	/* address */
-);
-
-#endif /* TRANS_CLIENT */
-
 XtransConnInfo TRANS(OpenCOTSServer)(
     const char *	/* address */
 );
@@ -242,15 +234,6 @@ XtransConnInfo TRANS(Accept)(
     XtransConnInfo,	/* ciptr */
     int *		/* status */
 );
-
-#ifdef TRANS_CLIENT
-
-int TRANS(Connect)(
-    XtransConnInfo,	/* ciptr */
-    const char *	/* address */
-);
-
-#endif /* TRANS_CLIENT */
 
 int TRANS(BytesReadable)(
     XtransConnInfo,	/* ciptr */

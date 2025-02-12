@@ -134,18 +134,6 @@ struct _XtransConnInfo {
 typedef struct _Xtransport {
     const char	*TransName;
     int		flags;
-
-#ifdef TRANS_CLIENT
-
-    XtransConnInfo (*OpenCOTSClient)(
-	struct _Xtransport *,	/* transport */
-	const char *,		/* protocol */
-	const char *,		/* host */
-	const char *		/* port */
-    );
-
-#endif /* TRANS_CLIENT */
-
     const char **	nolisten;
     XtransConnInfo (*OpenCOTSServer)(
 	struct _Xtransport *,	/* transport */
@@ -183,16 +171,6 @@ typedef struct _Xtransport {
 	XtransConnInfo,		/* connection */
         int *			/* status */
     );
-
-#ifdef TRANS_CLIENT
-
-    int	(*Connect)(
-	XtransConnInfo,		/* connection */
-	const char *,		/* host */
-	const char *		/* port */
-    );
-
-#endif /* TRANS_CLIENT */
 
     int	(*BytesReadable)(
 	XtransConnInfo,		/* connection */
