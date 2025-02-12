@@ -118,8 +118,6 @@ TRANS(OpenFail)(XtransConnInfo ciptr _X_UNUSED, const char *port _X_UNUSED)
     return -1;
 }
 
-#ifdef TRANS_REOPEN
-
 static int
 TRANS(ReopenFail)(XtransConnInfo ciptr _X_UNUSED, int fd _X_UNUSED,
                   const char *port _X_UNUSED)
@@ -127,8 +125,6 @@ TRANS(ReopenFail)(XtransConnInfo ciptr _X_UNUSED, int fd _X_UNUSED,
 {
     return 0;
 }
-
-#endif /* TRANS_REOPEN */
 
 #if XTRANS_SEND_FDS
 static int
@@ -484,17 +480,6 @@ TRANS(NAMEDAccept)(XtransConnInfo ciptr, XtransConnInfo newciptr, int *status)
 
 #endif /* LOCAL_TRANS_NAMED */
 
-
-
-
-
-
-
-
-
-
-#ifdef TRANS_REOPEN
-
 #ifdef LOCAL_TRANS_NAMED
 
 static int
@@ -536,12 +521,6 @@ TRANS(NAMEDReopenServer)(XtransConnInfo ciptr, int fd _X_UNUSED, const char *por
 
 #endif /* LOCAL_TRANS_NAMED */
 
-
-
-#endif /* TRANS_REOPEN */
-
-
-
 /*
  * This table contains all of the entry points for the different local
  * connection mechanisms.
@@ -574,8 +553,6 @@ typedef struct _LOCALtrans2dev {
 	XtransConnInfo, const char * /*port*/
 );
 
-#ifdef TRANS_REOPEN
-
     int	(*devcotsreopenserver)(
 	XtransConnInfo,
 	int, 	/* fd */
@@ -587,8 +564,6 @@ typedef struct _LOCALtrans2dev {
 	int, 	/* fd */
 	const char *	/* port */
 );
-
-#endif /* TRANS_REOPEN */
 
     int (*devreset)(
 	XtransConnInfo /* ciptr */
@@ -610,10 +585,8 @@ static LOCALtrans2dev LOCALtrans2devtab[] = {
      TRANS(OpenFail),
 #endif /* TRANS_CLIENT */
      TRANS(OpenFail),
-#ifdef TRANS_REOPEN
      TRANS(NAMEDReopenServer),
      TRANS(ReopenFail),
-#endif
      TRANS(NAMEDResetListener),
      TRANS(NAMEDAccept)
 },
@@ -627,10 +600,8 @@ static LOCALtrans2dev LOCALtrans2devtab[] = {
      TRANS(OpenFail),
 #endif /* TRANS_CLIENT */
      TRANS(OpenFail),
-#ifdef TRANS_REOPEN
      TRANS(NAMEDReopenServer),
      TRANS(ReopenFail),
-#endif
      TRANS(NAMEDResetListener),
      TRANS(NAMEDAccept)
 },
@@ -645,10 +616,8 @@ static LOCALtrans2dev LOCALtrans2devtab[] = {
      TRANS(OpenFail),
 #endif /* TRANS_CLIENT */
      TRANS(OpenFail),
-#ifdef TRANS_REOPEN
      TRANS(NAMEDReopenServer),
      TRANS(ReopenFail),
-#endif
      TRANS(NAMEDResetListener),
      TRANS(NAMEDAccept)
 },
@@ -662,10 +631,8 @@ static LOCALtrans2dev LOCALtrans2devtab[] = {
      TRANS(OpenFail),
 #endif /* TRANS_CLIENT */
      TRANS(OpenFail),
-#ifdef TRANS_REOPEN
      TRANS(NAMEDReopenServer),
      TRANS(ReopenFail),
-#endif
      TRANS(NAMEDResetListener),
      TRANS(NAMEDAccept)
 },
@@ -933,8 +900,6 @@ TRANS(LocalOpenServer)(int type, const char *protocol,
     return NULL;
 }
 
-#ifdef TRANS_REOPEN
-
 static XtransConnInfo
 TRANS(LocalReopenServer)(int type, int index, int fd, const char *port)
 
@@ -974,10 +939,6 @@ TRANS(LocalReopenServer)(int type, int index, int fd, const char *port)
     return NULL;
 }
 
-#endif /* TRANS_REOPEN */
-
-
-
 /*
  * This is the Local implementation of the X Transport service layer
  */
@@ -1041,8 +1002,6 @@ TRANS(LocalOpenCOTSServer)(Xtransport *thistrans, const char *protocol,
     return TRANS(LocalOpenServer)(XTRANS_OPEN_COTS_SERVER, protocol, host, port);
 }
 
-#ifdef TRANS_REOPEN
-
 static XtransConnInfo
 TRANS(LocalReopenCOTSServer)(Xtransport *thistrans, int fd, const char *port)
 
@@ -1066,10 +1025,6 @@ TRANS(LocalReopenCOTSServer)(Xtransport *thistrans, int fd, const char *port)
     return TRANS(LocalReopenServer)(XTRANS_OPEN_COTS_SERVER,
 	index, fd, port);
 }
-
-#endif /* TRANS_REOPEN */
-
-
 
 static int
 TRANS(LocalSetOption)(XtransConnInfo ciptr, int option, int arg)
@@ -1273,9 +1228,7 @@ static Xtransport	TRANS(LocalFuncs) = {
 #endif /* TRANS_CLIENT */
 	local_aliases,
 	TRANS(LocalOpenCOTSServer),
-#ifdef TRANS_REOPEN
 	TRANS(LocalReopenCOTSServer),
-#endif
 	TRANS(LocalSetOption),
 	TRANS(LocalCreateListener),
 	TRANS(LocalResetListener),
@@ -1309,9 +1262,7 @@ static Xtransport	TRANS(NAMEDFuncs) = {
 #endif /* TRANS_CLIENT */
 	NULL,
 	TRANS(LocalOpenCOTSServer),
-#ifdef TRANS_REOPEN
 	TRANS(LocalReopenCOTSServer),
-#endif
 	TRANS(LocalSetOption),
 	TRANS(LocalCreateListener),
 	TRANS(LocalResetListener),
@@ -1342,9 +1293,7 @@ static Xtransport	TRANS(PIPEFuncs) = {
 #endif /* TRANS_CLIENT */
 	NULL,
 	TRANS(LocalOpenCOTSServer),
-#ifdef TRANS_REOPEN
 	TRANS(LocalReopenCOTSServer),
-#endif
 	TRANS(LocalSetOption),
 	TRANS(LocalCreateListener),
 	TRANS(LocalResetListener),
@@ -1366,5 +1315,3 @@ static Xtransport	TRANS(PIPEFuncs) = {
 	TRANS(LocalCloseForCloning),
 };
 #endif /* LOCAL_TRANS_NAMED */
-
-
