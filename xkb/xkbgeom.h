@@ -29,10 +29,6 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 #include "xkbstr.h"
 
-#define	XkbFreeGeomOutlines		SrvXkbFreeGeomOutlines
-#define XkbFreeGeomShapes		SrvXkbFreeGeomShapes
-#define XkbFreeGeometry			SrvXkbFreeGeometry
-
 typedef struct _XkbProperty {
     char *name;
     char *value;
