@@ -285,6 +285,10 @@ AddInputDevice(ClientPtr client, DeviceProc deviceProc, Bool autoStart)
     dev->deviceGrab.ActivateGrab = ActivateKeyboardGrab;
     dev->deviceGrab.DeactivateGrab = DeactivateKeyboardGrab;
     dev->deviceGrab.sync.event = calloc(1, sizeof(InternalEvent));
+    if (!(dev->deviceGrab.sync.event)) {
+        free(dev);
+        return NULL;
+    }
 
     dev->sendEventsProc = XTestDeviceSendEvents;
 
@@ -1704,6 +1708,8 @@ InitTouchClassDeviceStruct(DeviceIntPtr device, unsigned int max_touches,
 
     device->touch = touch;
     device->last.touches = calloc(max_touches, sizeof(*device->last.touches));
+    if (!(device->last.touches))
+        goto err;
     device->last.num_touches = touch->num_touches;
     for (i = 0; i < touch->num_touches; i++)
         TouchInitDDXTouchPoint(device, &device->last.touches[i]);
@@ -2800,8 +2806,8 @@ AllocDevicePair(ClientPtr client, const char *name,
                 DeviceIntPtr *keybd,
                 DeviceProc ptr_proc, DeviceProc keybd_proc, Bool master)
 {
-    DeviceIntPtr pointer;
-    DeviceIntPtr keyboard;
+    DeviceIntPtr pointer = NULL;
+    DeviceIntPtr keyboard = NULL;
     char *dev_name;
 
     *ptr = *keybd = NULL;
@@ -2809,15 +2815,12 @@ AllocDevicePair(ClientPtr client, const char *name,
     XkbInitPrivates();
 
     pointer = AddInputDevice(client, ptr_proc, TRUE);
-
     if (!pointer)
-        return BadAlloc;
+        goto badalloc;
 
-    if (asprintf(&dev_name, "%s pointer", name) == -1) {
-        RemoveDevice(pointer, FALSE);
+    if (asprintf(&dev_name, "%s pointer", name) == -1)
+        goto badalloc;
 
-        return BadAlloc;
-    }
     pointer->name = dev_name;
 
     pointer->public.processInputProc = ProcessOtherEvent;
@@ -2833,18 +2836,12 @@ AllocDevicePair(ClientPtr client, const char *name,
     pointer->type = (master) ? MASTER_POINTER : SLAVE;
 
     keyboard = AddInputDevice(client, keybd_proc, TRUE);
-    if (!keyboard) {
-        RemoveDevice(pointer, FALSE);
+    if (!keyboard)
+        goto badalloc;
 
-        return BadAlloc;
-    }
+    if (asprintf(&dev_name, "%s keyboard", name) == -1)
+        goto badalloc;
 
-    if (asprintf(&dev_name, "%s keyboard", name) == -1) {
-        RemoveDevice(keyboard, FALSE);
-        RemoveDevice(pointer, FALSE);
-
-        return BadAlloc;
-    }
     keyboard->name = dev_name;
 
     keyboard->public.processInputProc = ProcessOtherEvent;
@@ -2863,6 +2860,8 @@ AllocDevicePair(ClientPtr client, const char *name,
     if (IsMaster(pointer)) {
         pointer->unused_classes = calloc(1, sizeof(ClassesRec));
         keyboard->unused_classes = calloc(1, sizeof(ClassesRec));
+        if (!pointer->unused_classes || !keyboard->unused_classes)
+            goto badalloc;
     }
 
     *ptr = pointer;
@@ -2870,6 +2869,12 @@ AllocDevicePair(ClientPtr client, const char *name,
     *keybd = keyboard;
 
     return Success;
+
+badalloc:
+    // safe to call them even with NULL pointer
+    RemoveDevice(keyboard, FALSE);
+    RemoveDevice(pointer, FALSE);
+    return BadAlloc;
 }
 
 /**
