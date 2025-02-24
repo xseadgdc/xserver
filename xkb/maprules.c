@@ -896,11 +896,15 @@ XkbRF_AddRule(XkbRF_RulesPtr rules)
         rules->sz_rules = 16;
         rules->num_rules = 0;
         rules->rules = calloc(rules->sz_rules, sizeof(XkbRF_RuleRec));
+        if (!(rules->rules))
+            return NULL;
     }
     else if (rules->num_rules >= rules->sz_rules) {
         rules->sz_rules *= 2;
         rules->rules = reallocarray(rules->rules,
                                     rules->sz_rules, sizeof(XkbRF_RuleRec));
+        if (!(rules->rules))
+            return NULL;
     }
     if (!rules->rules) {
         rules->sz_rules = rules->num_rules = 0;
@@ -918,11 +922,15 @@ XkbRF_AddGroup(XkbRF_RulesPtr rules)
         rules->sz_groups = 16;
         rules->num_groups = 0;
         rules->groups = calloc(rules->sz_groups, sizeof(XkbRF_GroupRec));
+        if (!(rules->groups))
+            return NULL;
     }
     else if (rules->num_groups >= rules->sz_groups) {
         rules->sz_groups *= 2;
         rules->groups = reallocarray(rules->groups,
                                      rules->sz_groups, sizeof(XkbRF_GroupRec));
+        if (!(rules->groups))
+            return NULL;
     }
     if (!rules->groups) {
         rules->sz_groups = rules->num_groups = 0;
