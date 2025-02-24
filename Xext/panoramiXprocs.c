@@ -1374,7 +1374,6 @@ PanoramiXPolyPoint(ClientPtr client)
 {
     PanoramiXRes *gc, *draw;
     int result, npoint, j;
-    xPoint *origPts;
     Bool isRoot;
 
     REQUEST(xPolyPointReq);
@@ -1397,7 +1396,10 @@ PanoramiXPolyPoint(ClientPtr client)
     isRoot = (draw->type == XRT_WINDOW) && draw->u.win.root;
     npoint = bytes_to_int32((client->req_len << 2) - sizeof(xPolyPointReq));
     if (npoint > 0) {
-        origPts = calloc(npoint, sizeof(xPoint));
+        xPoint *origPts = calloc(npoint, sizeof(xPoint));
+        if (!origPts)
+            return BadAlloc;
+
         memcpy((char *) origPts, (char *) &stuff[1], npoint * sizeof(xPoint));
         FOR_NSCREENS_FORWARD(j) {
 
@@ -1439,7 +1441,6 @@ PanoramiXPolyLine(ClientPtr client)
 {
     PanoramiXRes *gc, *draw;
     int result, npoint, j;
-    xPoint *origPts;
     Bool isRoot;
 
     REQUEST(xPolyLineReq);
@@ -1462,7 +1463,9 @@ PanoramiXPolyLine(ClientPtr client)
     isRoot = IS_ROOT_DRAWABLE(draw);
     npoint = bytes_to_int32((client->req_len << 2) - sizeof(xPolyLineReq));
     if (npoint > 0) {
-        origPts = calloc(npoint, sizeof(xPoint));
+        xPoint *origPts = calloc(npoint, sizeof(xPoint));
+        if (!origPts)
+            return BadAlloc;
         memcpy((char *) origPts, (char *) &stuff[1], npoint * sizeof(xPoint));
         FOR_NSCREENS_FORWARD(j) {
 
@@ -1504,7 +1507,6 @@ PanoramiXPolySegment(ClientPtr client)
 {
     int result, nsegs, i, j;
     PanoramiXRes *gc, *draw;
-    xSegment *origSegs;
     Bool isRoot;
 
     REQUEST(xPolySegmentReq);
@@ -1531,7 +1533,9 @@ PanoramiXPolySegment(ClientPtr client)
         return BadLength;
     nsegs >>= 3;
     if (nsegs > 0) {
-        origSegs = calloc(nsegs, sizeof(xSegment));
+        xSegment *origSegs = calloc(nsegs, sizeof(xSegment));
+        if (!origSegs)
+            return BadAlloc;
         memcpy((char *) origSegs, (char *) &stuff[1], nsegs * sizeof(xSegment));
         FOR_NSCREENS_FORWARD(j) {
 
@@ -1573,7 +1577,6 @@ PanoramiXPolyRectangle(ClientPtr client)
     int result, nrects, i, j;
     PanoramiXRes *gc, *draw;
     Bool isRoot;
-    xRectangle *origRecs;
 
     REQUEST(xPolyRectangleReq);
 
@@ -1599,7 +1602,9 @@ PanoramiXPolyRectangle(ClientPtr client)
         return BadLength;
     nrects >>= 3;
     if (nrects > 0) {
-        origRecs = calloc(nrects, sizeof(xRectangle));
+        xRectangle *origRecs = calloc(nrects, sizeof(xRectangle));
+        if (!origRecs)
+            return BadAlloc;
         memcpy((char *) origRecs, (char *) &stuff[1],
                nrects * sizeof(xRectangle));
         FOR_NSCREENS_FORWARD(j) {
@@ -1640,7 +1645,6 @@ PanoramiXPolyArc(ClientPtr client)
     int result, narcs, i, j;
     PanoramiXRes *gc, *draw;
     Bool isRoot;
-    xArc *origArcs;
 
     REQUEST(xPolyArcReq);
 
@@ -1666,7 +1670,9 @@ PanoramiXPolyArc(ClientPtr client)
         return BadLength;
     narcs /= sizeof(xArc);
     if (narcs > 0) {
-        origArcs = calloc(narcs, sizeof(xArc));
+        xArc *origArcs = calloc(narcs, sizeof(xArc));
+        if (!origArcs)
+            return BadAlloc;
         memcpy((char *) origArcs, (char *) &stuff[1], narcs * sizeof(xArc));
         FOR_NSCREENS_FORWARD(j) {
 
@@ -1705,7 +1711,6 @@ PanoramiXFillPoly(ClientPtr client)
     int result, count, j;
     PanoramiXRes *gc, *draw;
     Bool isRoot;
-    DDXPointPtr locPts;
 
     REQUEST(xFillPolyReq);
 
@@ -1728,7 +1733,9 @@ PanoramiXFillPoly(ClientPtr client)
 
     count = bytes_to_int32((client->req_len << 2) - sizeof(xFillPolyReq));
     if (count > 0) {
-        locPts = calloc(count, sizeof(DDXPointRec));
+        DDXPointPtr locPts = calloc(count, sizeof(DDXPointRec));
+        if (!locPts)
+            return BadAlloc;
         memcpy((char *) locPts, (char *) &stuff[1],
                count * sizeof(DDXPointRec));
         FOR_NSCREENS_FORWARD(j) {
@@ -1771,8 +1778,6 @@ PanoramiXPolyFillRectangle(ClientPtr client)
     int result, things, i, j;
     PanoramiXRes *gc, *draw;
     Bool isRoot;
-    xRectangle *origRects;
-
     REQUEST(xPolyFillRectangleReq);
 
     REQUEST_AT_LEAST_SIZE(xPolyFillRectangleReq);
@@ -1797,7 +1802,9 @@ PanoramiXPolyFillRectangle(ClientPtr client)
         return BadLength;
     things >>= 3;
     if (things > 0) {
-        origRects = calloc(things, sizeof(xRectangle));
+        xRectangle *origRects = calloc(things, sizeof(xRectangle));
+        if (!origRects)
+            return BadAlloc;
         memcpy((char *) origRects, (char *) &stuff[1],
                things * sizeof(xRectangle));
         FOR_NSCREENS_FORWARD(j) {
@@ -1838,7 +1845,6 @@ PanoramiXPolyFillArc(ClientPtr client)
     PanoramiXRes *gc, *draw;
     Bool isRoot;
     int result, narcs, i, j;
-    xArc *origArcs;
 
     REQUEST(xPolyFillArcReq);
 
@@ -1864,7 +1870,9 @@ PanoramiXPolyFillArc(ClientPtr client)
         return BadLength;
     narcs /= sizeof(xArc);
     if (narcs > 0) {
-        origArcs = calloc(narcs, sizeof(xArc));
+        xArc *origArcs = calloc(narcs, sizeof(xArc));
+        if (!origArcs)
+            return BadAlloc;
         memcpy((char *) origArcs, (char *) &stuff[1], narcs * sizeof(xArc));
         FOR_NSCREENS_FORWARD(j) {
 
