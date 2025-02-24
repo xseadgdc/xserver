@@ -149,8 +149,8 @@ ProcRotateProperties(ClientPtr client)
         return rc;
 
     atoms = (Atom *) &stuff[1];
-    props = xallocarray(stuff->nAtoms, sizeof(PropertyPtr));
-    saved = xallocarray(stuff->nAtoms, sizeof(PropertyRec));
+    props = calloc(stuff->nAtoms, sizeof(PropertyPtr));
+    saved = calloc(stuff->nAtoms, sizeof(PropertyRec));
     if (!props || !saved) {
         rc = BadAlloc;
         goto out;
@@ -331,7 +331,7 @@ dixChangeWindowProperty(ClientPtr pClient, WindowPtr pWin, Atom property,
             /* do nothing */
         }
         else if (mode == PropModeAppend) {
-            data = xallocarray(pProp->size + len, sizeInBytes);
+            data = calloc(pProp->size + len, sizeInBytes);
             if (!data)
                 return BadAlloc;
             memcpy(data, pProp->data, pProp->size * sizeInBytes);
@@ -340,7 +340,7 @@ dixChangeWindowProperty(ClientPtr pClient, WindowPtr pWin, Atom property,
             pProp->size += len;
         }
         else if (mode == PropModePrepend) {
-            data = xallocarray(len + pProp->size, sizeInBytes);
+            data = calloc(len + pProp->size, sizeInBytes);
             if (!data)
                 return BadAlloc;
             memcpy(data + totalSize, pProp->data, pProp->size * sizeInBytes);
@@ -592,7 +592,7 @@ ProcListProperties(ClientPtr client)
         numProps++;
 
     if (numProps) {
-        pAtoms = xallocarray(numProps, sizeof(Atom));
+        pAtoms = calloc(numProps, sizeof(Atom));
         if (!pAtoms)
             return BadAlloc;
 
