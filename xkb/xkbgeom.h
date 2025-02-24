@@ -29,7 +29,6 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 #include "xkbstr.h"
 
-#define XkbAddGeomKeyAlias 		SrvXkbAddGeomKeyAlias
 #define XkbAddGeomColor 		SrvXkbAddGeomColor
 #define XkbAddGeomDoodad		SrvXkbAddGeomDoodad
 #define XkbAddGeomKey			SrvXkbAddGeomKey
@@ -317,10 +316,9 @@ extern XkbPropertyPtr XkbAddGeomProperty(XkbGeometryPtr /* geom */ ,
                                          char * /* value */
     );
 
-extern XkbKeyAliasPtr XkbAddGeomKeyAlias(XkbGeometryPtr /* geom */ ,
-                                         char * /* alias */ ,
-                                         char * /* real */
-    );
+XkbKeyAliasPtr SrvXkbAddGeomKeyAlias(XkbGeometryPtr geom,
+                                     char *alias,
+                                     char *real);
 
 extern XkbColorPtr XkbAddGeomColor(XkbGeometryPtr /* geom */ ,
                                    char * /* spec */ ,

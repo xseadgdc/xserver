@@ -5599,7 +5599,7 @@ _CheckSetGeom(XkbGeometryPtr geom, xkbSetGeometryReq * req, ClientPtr client)
         if (!_XkbCheckRequestBounds(client, req, wire, wire + XkbKeyNameLength))
                 return BadLength;
 
-        if (XkbAddGeomKeyAlias(geom, &wire[XkbKeyNameLength], wire) == NULL)
+        if (SrvXkbAddGeomKeyAlias(geom, &wire[XkbKeyNameLength], wire) == NULL)
             return BadAlloc;
         wire += 2 * XkbKeyNameLength;
     }
