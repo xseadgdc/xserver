@@ -165,6 +165,8 @@ xnestOpenScreen(ScreenPtr pScreen, int argc, char *argv[])
         return FALSE;
 
     visuals = calloc(xnestNumVisuals, sizeof(VisualRec));
+    if (!visuals)
+        return FALSE;
     numVisuals = 0;
 
     depths = (DepthPtr) malloc(MAXDEPTH * sizeof(DepthRec));
