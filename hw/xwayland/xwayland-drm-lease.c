@@ -125,7 +125,6 @@ xwl_randr_request_lease(ClientPtr client, ScreenPtr screen, RRLeasePtr rrLease)
 {
     struct xwl_screen *xwl_screen;
     struct wp_drm_lease_request_v1 *req;
-    struct xwl_drm_lease *lease_private;
     struct xwl_drm_lease_device *lease_device = NULL;
     struct xwl_drm_lease_device *device_data;
     struct xwl_output *output;
@@ -165,7 +164,9 @@ xwl_randr_request_lease(ClientPtr client, ScreenPtr screen, RRLeasePtr rrLease)
 
     req = wp_drm_lease_device_v1_create_lease_request(
             lease_device->drm_lease_device);
-    lease_private = calloc(1, sizeof(struct xwl_drm_lease));
+    struct xwl_drm_lease *lease_private = calloc(1, sizeof(struct xwl_drm_lease));
+    if (!lease_private)
+        return BadAlloc;
     for (i = 0; i < rrLease->numOutputs; ++i) {
         output = rrLease->outputs[i]->devPrivate;
         output->lease = lease_private;
