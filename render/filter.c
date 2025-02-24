@@ -378,7 +378,7 @@ SetPicturePictFilter(PicturePtr pPicture, PictFilterPtr pFilter,
         return BadMatch;
 
     if (nparams != pPicture->filter_nparams) {
-        xFixed *new_params = xallocarray(nparams, sizeof(xFixed));
+        xFixed *new_params = calloc(nparams, sizeof(xFixed));
 
         if (!new_params && nparams)
             return BadAlloc;
