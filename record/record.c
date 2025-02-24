@@ -2689,7 +2689,6 @@ RecordAClientStateChange(CallbackListPtr *pcbl, void *nulldata,
     NewClientInfoRec *pci = (NewClientInfoRec *) calldata;
     int i;
     ClientPtr pClient = pci->client;
-    RecordContextPtr *ppAllContextsCopy = NULL;
     int numContextsCopy = 0;
 
     switch (pClient->clientState) {
@@ -2714,8 +2713,9 @@ RecordAClientStateChange(CallbackListPtr *pcbl, void *nulldata,
         /* RecordDisableContext modifies contents of ppAllContexts. */
         if (!(numContextsCopy = numContexts))
             break;
-        ppAllContextsCopy = calloc(numContextsCopy, sizeof(RecordContextPtr));
-        assert(ppAllContextsCopy);
+        RecordContextPtr *ppAllContextsCopy = calloc(numContextsCopy, sizeof(RecordContextPtr));
+        if (!ppAllContextsCopy)
+            return;
         memcpy(ppAllContextsCopy, ppAllContexts,
                numContextsCopy * sizeof(RecordContextPtr));
 
