@@ -2837,7 +2837,7 @@ XkbSendCompatMap(ClientPtr client,
     int size;
 
     if (rep->length > 0) {
-        data = xallocarray(rep->length, 4);
+        data = calloc(rep->length, 4);
         if (data) {
             register unsigned i, bit;
             xkbModsWireDesc *grp;
@@ -3224,7 +3224,7 @@ XkbSendIndicatorMap(ClientPtr client,
     if (rep->length > 0) {
         CARD8 *to;
 
-        to = map = xallocarray(rep->length, 4);
+        to = map = calloc(rep->length, 4);
         if (map) {
             xkbIndicatorMapWireDesc *wire = (xkbIndicatorMapWireDesc *) to;
 
@@ -5036,7 +5036,7 @@ XkbSendGeometry(ClientPtr client,
     int len;
 
     if (geom != NULL) {
-        start = desc = xallocarray(rep->length, 4);
+        start = desc = calloc(rep->length, 4);
         if (!start)
             return BadAlloc;
         len = rep->length * 4;
