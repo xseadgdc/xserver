@@ -108,6 +108,8 @@ Equipment Corporation.
 #include "os/auth.h"
 #include "os/client_priv.h"
 #include "os/screensaver.h"
+#include "Xext/panoramiX.h"
+#include "Xext/panoramiXsrv.h"
 
 #include "misc.h"
 #include "scrnintstr.h"
@@ -123,10 +125,6 @@ Equipment Corporation.
 #include "gcstruct.h"
 #include "servermd.h"
 #include "mivalidate.h"
-#ifdef XINERAMA
-#include "panoramiX.h"
-#include "panoramiXsrv.h"
-#endif /* XINERAMA */
 #include "dixevents.h"
 #include "globals.h"
 #ifdef COMPOSITE
