@@ -43,6 +43,8 @@
 
 #include <dix-config.h>
 
+#include "Xext/panoramiXsrv.h"
+
 #include "compint.h"
 #include "xace.h"
 #include "protocol-versions.h"
@@ -570,7 +572,6 @@ CompositeExtensionInit(void)
 }
 
 #ifdef XINERAMA
-#include "panoramiXsrv.h"
 
 int (*PanoramiXSaveCompositeVector[CompositeNumberRequests]) (ClientPtr);
 
