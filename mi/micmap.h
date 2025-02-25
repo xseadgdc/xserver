@@ -4,9 +4,6 @@
 #ifndef _MICMAP_H_
 #define _MICMAP_H_
 
-#define GetInstalledmiColormap(s) \
-    ((ColormapPtr) dixLookupPrivate(&(s)->devPrivates, micmapScrPrivateKey))
-
 extern _X_EXPORT DevPrivateKeyRec micmapScrPrivateKeyRec;
 
 #define micmapScrPrivateKey (&micmapScrPrivateKeyRec)
