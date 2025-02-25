@@ -34,9 +34,14 @@ and Jim Haggerty of Metheus.
 
 #include <dix-config.h>
 
+#include <stdio.h>
+#include <assert.h>
+
 #include "dix/cursor_priv.h"
 #include "dix/eventconvert.h"
 #include "os/client_priv.h"
+#include "Xext/panoramiX.h"
+#include "Xext/panoramiXsrv.h"
 
 #include "dixstruct.h"
 #include "extnsionst.h"
@@ -46,16 +51,8 @@ and Jim Haggerty of Metheus.
 #include "swaprep.h"
 #include "inputstr.h"
 #include "scrnintstr.h"
-
-#include <stdio.h>
-#include <assert.h>
-
-#ifdef XINERAMA
 #include "globals.h"
-#include "panoramiX.h"
-#include "panoramiXsrv.h"
 #include "cursor.h"
-#endif /* XINERAMA */
 
 #include "protocol-versions.h"
 
