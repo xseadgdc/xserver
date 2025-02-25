@@ -127,6 +127,8 @@ Equipment Corporation.
 #include "os/bug_priv.h"
 #include "os/client_priv.h"
 #include "os/fmt.h"
+#include "Xext/panoramiX.h"
+#include "Xext/panoramiXsrv.h"
 #include "xkb/xkbsrv_priv.h"
 
 #include "misc.h"
@@ -137,10 +139,6 @@ Equipment Corporation.
 #include "scrnintstr.h"
 #include "cursorstr.h"
 #include "dixstruct.h"
-#ifdef XINERAMA
-#include "panoramiX.h"
-#include "panoramiXsrv.h"
-#endif /* XINERAMA */
 #include "globals.h"
 #include "xace.h"
 #include "probes.h"
