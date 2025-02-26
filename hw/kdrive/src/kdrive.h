@@ -54,8 +54,6 @@
 #define KD_DPMS_POWERDOWN   3
 #define KD_DPMS_MAX	    KD_DPMS_POWERDOWN
 
-#define Status int
-
 typedef struct _KdCardInfo {
     struct _KdCardFuncs *cfuncs;
     void *closure;
