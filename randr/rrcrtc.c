@@ -1826,11 +1826,16 @@ ProcRRGetCrtcTransform(ClientPtr client)
     nextra = (transform_filter_length(pending) +
               transform_filter_length(current));
 
-    reply = calloc(1, sizeof(xRRGetCrtcTransformReply) + nextra);
+    reply = calloc(1, sizeof(xRRGetCrtcTransformReply));
     if (!reply)
         return BadAlloc;
 
-    extra = (char *) (reply + 1);
+    extra = calloc(1, nextra);
+    if (!extra) {
+        free(reply);
+        return BadAlloc;
+    }
+
     reply->type = X_Reply;
     reply->sequenceNumber = client->sequence;
     reply->length = bytes_to_int32(CrtcTransformExtra + nextra);
@@ -1851,8 +1856,10 @@ ProcRRGetCrtcTransform(ClientPtr client)
         swaps(&reply->sequenceNumber);
         swapl(&reply->length);
     }
-    WriteToClient(client, sizeof(xRRGetCrtcTransformReply) + nextra, reply);
+    WriteToClient(client, sizeof(xRRGetCrtcTransformReply), reply);
+    WriteToClient(client, nextra, extra);
     free(reply);
+    free(extra);
     return Success;
 }
 
