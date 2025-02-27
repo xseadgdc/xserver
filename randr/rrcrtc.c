@@ -1811,7 +1811,6 @@ int
 ProcRRGetCrtcTransform(ClientPtr client)
 {
     REQUEST(xRRGetCrtcTransformReq);
-    xRRGetCrtcTransformReply *reply;
     RRCrtcPtr crtc;
     int nextra;
     RRTransformPtr current, pending;
@@ -1826,39 +1825,33 @@ ProcRRGetCrtcTransform(ClientPtr client)
     nextra = (transform_filter_length(pending) +
               transform_filter_length(current));
 
-    reply = calloc(1, sizeof(xRRGetCrtcTransformReply));
-    if (!reply)
-        return BadAlloc;
-
     extra = calloc(1, nextra);
-    if (!extra) {
-        free(reply);
+    if (!extra)
         return BadAlloc;
-    }
 
-    reply->type = X_Reply;
-    reply->sequenceNumber = client->sequence;
-    reply->length = bytes_to_int32(CrtcTransformExtra + nextra);
+    xRRGetCrtcTransformReply rep = {
+        .type = X_Reply,
+        .sequenceNumber = client->sequence,
+        .length = bytes_to_int32(CrtcTransformExtra + nextra),
+        .hasTransforms = crtc->transforms,
+    };
 
-    reply->hasTransforms = crtc->transforms;
-
-    transform_encode(client, &reply->pendingTransform, &pending->transform);
+    transform_encode(client, &rep.pendingTransform, &pending->transform);
     extra += transform_filter_encode(client, extra,
-                                     &reply->pendingNbytesFilter,
-                                     &reply->pendingNparamsFilter, pending);
+                                     &rep.pendingNbytesFilter,
+                                     &rep.pendingNparamsFilter, pending);
 
-    transform_encode(client, &reply->currentTransform, &current->transform);
+    transform_encode(client, &rep.currentTransform, &current->transform);
     extra += transform_filter_encode(client, extra,
-                                     &reply->currentNbytesFilter,
-                                     &reply->currentNparamsFilter, current);
+                                     &rep.currentNbytesFilter,
+                                     &rep.currentNparamsFilter, current);
 
     if (client->swapped) {
-        swaps(&reply->sequenceNumber);
-        swapl(&reply->length);
+        swaps(&rep.sequenceNumber);
+        swapl(&rep.length);
     }
-    WriteToClient(client, sizeof(xRRGetCrtcTransformReply), reply);
+    WriteToClient(client, sizeof(xRRGetCrtcTransformReply), &rep);
     WriteToClient(client, nextra, extra);
-    free(reply);
     free(extra);
     return Success;
 }
