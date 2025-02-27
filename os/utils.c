@@ -112,6 +112,7 @@ __stdcall unsigned long GetTickCount(void);
 #include "os/ddx_priv.h"
 #include "os/osdep.h"
 #include "os/serverlock.h"
+#include "Xext/xf86bigfontsrv.h"
 
 #include "dixstruct.h"
 #include "xkbsrv.h"
