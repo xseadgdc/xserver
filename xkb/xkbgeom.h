@@ -29,7 +29,6 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 #include "xkbstr.h"
 
-#define XkbFreeGeomDoodads		SrvXkbFreeGeomDoodads
 #define XkbFreeGeomProperties		SrvXkbFreeGeomProperties
 #define	XkbFreeGeomKeys			SrvXkbFreeGeomKeys
 #define	XkbFreeGeomRows			SrvXkbFreeGeomRows
@@ -340,12 +339,6 @@ XkbOverlayKeyPtr SrvXkbAddGeomOverlayKey(XkbOverlayPtr overlay,
 XkbDoodadPtr SrvXkbAddGeomDoodad(XkbGeometryPtr geom,
                                  XkbSectionPtr section,
                                  Atom name);
-
-extern void
- XkbFreeGeomDoodads(XkbDoodadPtr /* doodads */ ,
-                    int /* nDoodads */ ,
-                    Bool        /* freeAll */
-    );
 
 extern void
  XkbFreeGeomProperties(XkbGeometryPtr /* geom */ ,
