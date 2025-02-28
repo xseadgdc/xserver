@@ -29,7 +29,6 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 #include "xkbstr.h"
 
-#define XkbAddGeomOverlayRow		SrvXkbAddGeomOverlayRow
 #define	XkbAddGeomOverlayKey		SrvXkbAddGeomOverlayKey
 #define XkbAddGeomProperty		SrvXkbAddGeomProperty
 #define XkbAddGeomRow			SrvXkbAddGeomRow
@@ -343,10 +342,9 @@ XkbOverlayPtr SrvXkbAddGeomOverlay(XkbSectionPtr section,
                                    Atom name,
                                    int sz_rows);
 
-extern XkbOverlayRowPtr XkbAddGeomOverlayRow(XkbOverlayPtr /* overlay */ ,
-                                             int /* row_under */ ,
-                                             int        /* sz_keys */
-    );
+XkbOverlayRowPtr SrvXkbAddGeomOverlayRow(XkbOverlayPtr overlay,
+                                         int row_under,
+                                         int sz_keys);
 
 extern XkbOverlayKeyPtr XkbAddGeomOverlayKey(XkbOverlayPtr /* overlay */ ,
                                              XkbOverlayRowPtr /* row */ ,

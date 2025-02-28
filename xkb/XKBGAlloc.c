@@ -819,7 +819,7 @@ XkbAddGeomOverlayKey(XkbOverlayPtr overlay,
 }
 
 XkbOverlayRowPtr
-XkbAddGeomOverlayRow(XkbOverlayPtr overlay, int row_under, int sz_keys)
+SrvXkbAddGeomOverlayRow(XkbOverlayPtr overlay, int row_under, int sz_keys)
 {
     register int i;
     XkbOverlayRowPtr row;
