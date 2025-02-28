@@ -29,7 +29,6 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 #include "xkbstr.h"
 
-#define XkbAddGeomProperty		SrvXkbAddGeomProperty
 #define XkbAddGeomRow			SrvXkbAddGeomRow
 #define XkbAddGeomSection		SrvXkbAddGeomSection
 #define XkbAddGeomShape			SrvXkbAddGeomShape
@@ -304,10 +303,9 @@ typedef enum {
     XKB_GEOM_CLEAR_ALL          /* Clear all items after reallocation.       */
 } XkbGeomClearance;
 
-extern XkbPropertyPtr XkbAddGeomProperty(XkbGeometryPtr /* geom */ ,
-                                         char * /* name */ ,
-                                         char * /* value */
-    );
+XkbPropertyPtr SrvXkbAddGeomProperty(XkbGeometryPtr geom,
+                                     char *name,
+                                     char *value);
 
 XkbKeyAliasPtr SrvXkbAddGeomKeyAlias(XkbGeometryPtr geom,
                                      char *alias,
