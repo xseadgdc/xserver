@@ -5627,7 +5627,7 @@ _XkbSetGeometry(ClientPtr client, DeviceIntPtr dev, xkbSetGeometryReq * stuff)
     sizes.num_sections = stuff->nSections;
     sizes.num_doodads = stuff->nDoodads;
     sizes.num_key_aliases = stuff->nKeyAliases;
-    if ((status = XkbAllocGeometry(xkb, &sizes)) != Success) {
+    if ((status = SrvXkbAllocGeometry(xkb, &sizes)) != Success) {
         xkb->geom = old;
         return status;
     }

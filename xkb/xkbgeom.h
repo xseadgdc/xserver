@@ -29,7 +29,6 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 #include "xkbstr.h"
 
-#define XkbAllocGeometry		SrvXkbAllocGeometry
 #define XkbFreeGeomKeyAliases		SrvXkbFreeGeomKeyAliases
 #define XkbFreeGeomColors		SrvXkbFreeGeomColors
 #define XkbFreeGeomDoodads		SrvXkbFreeGeomDoodads
@@ -504,9 +503,7 @@ extern Status XkbAllocGeomKeys(XkbRowPtr /* row */ ,
                                int      /* nKeys */
     );
 
-extern Status XkbAllocGeometry(XkbDescPtr /* xkb */ ,
-                               XkbGeometrySizesPtr      /* sizes */
-    );
+Status SrvXkbAllocGeometry(XkbDescPtr xkb, XkbGeometrySizesPtr sizes);
 
 extern Bool
  XkbComputeShapeTop(XkbShapePtr /* shape */ ,
