@@ -29,7 +29,6 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 #include "xkbstr.h"
 
-#define	XkbFreeGeomRows			SrvXkbFreeGeomRows
 #define XkbFreeGeomSections		SrvXkbFreeGeomSections
 #define	XkbFreeGeomPoints		SrvXkbFreeGeomPoints
 #define	XkbFreeGeomOutlines		SrvXkbFreeGeomOutlines
@@ -357,13 +356,6 @@ extern void
                      int /* first */ ,
                      int /* count */ ,
                      Bool       /* freeAll */
-    );
-
-extern void
- XkbFreeGeomRows(XkbSectionPtr /* section */ ,
-                 int /* first */ ,
-                 int /* count */ ,
-                 Bool           /* freeAll */
     );
 
 extern void
