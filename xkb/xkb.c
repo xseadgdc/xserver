@@ -5392,7 +5392,7 @@ _CheckSetSections(XkbGeometryPtr geom,
                 if (!_XkbCheckRequestBounds(client, req, kWire, kWire + 1))
                     return BadLength;
 
-                key = XkbAddGeomKey(row);
+                key = SrvXkbAddGeomKey(row);
                 if (!key)
                     return BadAlloc;
                 memcpy(key->name.name, kWire->name, XkbKeyNameLength);
