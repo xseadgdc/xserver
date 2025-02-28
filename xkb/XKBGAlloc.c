@@ -139,8 +139,8 @@ _XkbClearProperty(char *prop_in)
     return;
 }
 
-void
-XkbFreeGeomProperties(XkbGeometryPtr geom, int first, int count, Bool freeAll)
+static void
+SrvXkbFreeGeomProperties(XkbGeometryPtr geom, int first, int count, Bool freeAll)
 {
     _XkbFreeGeomNonLeafElems(freeAll, first, count,
                              &geom->num_properties, &geom->sz_properties,
@@ -356,7 +356,7 @@ XkbFreeGeometry(XkbGeometryPtr geom, unsigned which, Bool freeMap)
     if (freeMap)
         which = XkbGeomAllMask;
     if ((which & XkbGeomPropertiesMask) && (geom->properties != NULL))
-        XkbFreeGeomProperties(geom, 0, geom->num_properties, TRUE);
+        SrvXkbFreeGeomProperties(geom, 0, geom->num_properties, TRUE);
     if ((which & XkbGeomColorsMask) && (geom->colors != NULL))
         SrvXkbFreeGeomColors(geom, 0, geom->num_colors, TRUE);
     if ((which & XkbGeomShapesMask) && (geom->shapes != NULL))
