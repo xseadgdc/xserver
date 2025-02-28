@@ -5379,7 +5379,7 @@ _CheckSetSections(XkbGeometryPtr geom,
                 swaps(&rWire->top);
                 swaps(&rWire->left);
             }
-            row = XkbAddGeomRow(section, rWire->nKeys);
+            row = SrvXkbAddGeomRow(section, rWire->nKeys);
             if (!row)
                 return BadAlloc;
             row->top = rWire->top;
