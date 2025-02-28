@@ -133,10 +133,4 @@ typedef struct {
     VidModeGetGammaRampSizeProcPtr    GetGammaRampSize;
 } VidModeRec, *VidModePtr;
 
-#ifdef XF86VIDMODE
-void VidModeAddExtension(Bool allow_non_local);
-VidModePtr VidModeGetPtr(ScreenPtr pScreen);
-VidModePtr VidModeInit(ScreenPtr pScreen);
-#endif /* XF86VIDMODE */
-
 #endif

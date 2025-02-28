@@ -11,7 +11,6 @@ srcs_xorg_common = [
     'xf86AutoConfig.c',
     'xf86Option.c',
     'xf86Init.c',
-    'xf86VidMode.c',
     'xf86fbman.c',
     'xf86cmap.c',
     'xf86Helper.c',

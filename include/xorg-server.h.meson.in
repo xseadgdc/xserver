@@ -105,9 +105,6 @@
 /* Build XFree86 BigFont extension */
 #mesondefine XF86BIGFONT
 
-/* Support XFree86 Video Mode extension */
-#mesondefine XF86VIDMODE
-
 /* Build XDGA support */
 #mesondefine XFreeXDGA
 

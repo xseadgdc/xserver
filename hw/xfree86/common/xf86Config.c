@@ -811,13 +811,6 @@ configServerFlags(XF86ConfFlagsPtr flagsconf, XF86OptionPtr layoutopts)
      * settings may be overridden later when the command line options are
      * checked.
      */
-#ifdef XF86VIDMODE
-    if (xf86GetOptValBool(FlagOptions, FLAG_DISABLEVIDMODE, &value))
-        xf86Info.vidModeEnabled = !value;
-    if (xf86GetOptValBool(FlagOptions, FLAG_ALLOWNONLOCAL, &value))
-        xf86Info.vidModeAllowNonLocal = value;
-#endif
-
     if (xf86GetOptValBool(FlagOptions, FLAG_ALLOWMOUSEOPENFAIL, &value))
         xf86Info.allowMouseOpenFail = value;
 
@@ -2464,13 +2457,6 @@ xf86HandleConfigFile(Bool autoconfig)
      * Handle some command line options that can override some of the
      * ServerFlags settings.
      */
-#ifdef XF86VIDMODE
-    if (xf86VidModeDisabled)
-        xf86Info.vidModeEnabled = FALSE;
-    if (xf86VidModeAllowNonLocal)
-        xf86Info.vidModeAllowNonLocal = TRUE;
-#endif
-
     if (xf86AllowMouseOpenFail)
         xf86Info.allowMouseOpenFail = TRUE;
 

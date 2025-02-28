@@ -46,11 +46,6 @@
 #include <X11/extensions/xf86dgaproto.h>
 #endif
 
-#ifdef XF86VIDMODE
-#include <X11/extensions/xf86vmproto.h>
-#include "vidmodestr.h"
-#endif
-
 Bool noXFree86VidModeExtension = FALSE;
 Bool noXFree86DGAExtension = FALSE;
 Bool noXFree86DRIExtension = FALSE;
@@ -60,13 +55,6 @@ Bool noDRI2Extension = FALSE;
  * DDX-specific extensions.
  */
 static const ExtensionModule extensionModules[] = {
-#ifdef XF86VIDMODE
-    {
-	XFree86VidModeExtensionInit,
-	XF86VIDMODENAME,
-	&noXFree86VidModeExtension
-    },
-#endif
 #ifdef XFreeXDGA
     {
 	XFree86DGAExtensionInit,

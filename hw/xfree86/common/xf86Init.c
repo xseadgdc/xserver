@@ -949,16 +949,6 @@ ddxProcessArgument(int argc, char **argv, int i)
         xf86FlipPixels = TRUE;
         return 1;
     }
-#ifdef XF86VIDMODE
-    if (!strcmp(argv[i], "-disableVidMode")) {
-        xf86VidModeDisabled = TRUE;
-        return 1;
-    }
-    if (!strcmp(argv[i], "-allowNonLocalXvidtune")) {
-        xf86VidModeAllowNonLocal = TRUE;
-        return 1;
-    }
-#endif
     if (!strcmp(argv[i], "-allowMouseOpenFail")) {
         xf86AllowMouseOpenFail = TRUE;
         return 1;
@@ -1229,11 +1219,6 @@ ddxUseMsg(void)
         ("-pointer name          specify the core pointer InputDevice name\n");
     ErrorF("-nosilk                disable Silken Mouse\n");
     ErrorF("-flipPixels            swap default black/white Pixel values\n");
-#ifdef XF86VIDMODE
-    ErrorF("-disableVidMode        disable mode adjustments with xvidtune\n");
-    ErrorF
-        ("-allowNonLocalXvidtune allow xvidtune to be run as a non-local client\n");
-#endif
     ErrorF
         ("-allowMouseOpenFail    start server even if the mouse can't be initialized\n");
     ErrorF("-ignoreABI             make module ABI mismatches non-fatal\n");

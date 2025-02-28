@@ -48,10 +48,6 @@ extern _X_EXPORT const char *xf86ConfigDir;
 extern _X_EXPORT Bool xf86AllowMouseOpenFail;
 extern _X_EXPORT Bool xf86AutoBindGPUDisabled;
 
-#ifdef XF86VIDMODE
-extern _X_EXPORT Bool xf86VidModeDisabled;
-extern _X_EXPORT Bool xf86VidModeAllowNonLocal;
-#endif
 extern _X_EXPORT Bool xf86fpFlag;
 extern _X_EXPORT Bool xf86sFlag;
 extern _X_EXPORT Bool xf86bsEnableFlag;

@@ -94,14 +94,6 @@ or initialised.  This is equivalent to the
 .B AllowMouseOpenFail
 xorg.conf(@filemansuffix@) file option.
 .TP 8
-.B \-allowNonLocalXvidtune
-Make the VidMode extension available to remote clients.  This allows
-the xvidtune client to connect from another host.  This is equivalent
-to the
-.B AllowNonLocalXvidtune
-xorg.conf(@filemansuffix@) file option.  By default non-local
-connections are not allowed.
-.TP 8
 .BI \-bgamma " value"
 Set the blue gamma correction.
 .I value

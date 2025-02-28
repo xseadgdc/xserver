@@ -282,10 +282,6 @@ xf86ServerIsResetting(void);
 extern _X_EXPORT Bool
 xf86ServerIsOnlyDetecting(void);
 extern _X_EXPORT Bool
-xf86GetVidModeAllowNonLocal(void);
-extern _X_EXPORT Bool
-xf86GetVidModeEnabled(void);
-extern _X_EXPORT Bool
 xf86GetModInDevAllowNonLocal(void);
 extern _X_EXPORT Bool
 xf86GetModInDevEnabled(void);

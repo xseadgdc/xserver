@@ -59,12 +59,6 @@
 #include "os/auth.h"
 
 #include "xwayland-screen.h"
-#include "xwayland-vidmode.h"
-
-#ifdef XF86VIDMODE
-#include <X11/extensions/xf86vmproto.h>
-Bool noXFree86VidModeExtension;
-#endif
 
 void
 ddxGiveUp(enum ExitCode error)
@@ -424,9 +418,6 @@ xwlExtensionInit(void)
 #endif
 
 static const ExtensionModule xwayland_extensions[] = {
-#ifdef XF86VIDMODE
-    { xwlVidModeExtensionInit, XF86VIDMODENAME, &noXFree86VidModeExtension },
-#endif
 #ifdef XWL_HAS_XWAYLAND_EXTENSION
     { xwlExtensionInit, XWAYLAND_EXTENSION_NAME, &noXwaylandExtension },
 #endif
