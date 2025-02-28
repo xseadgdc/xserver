@@ -747,7 +747,7 @@ XkbAddGeomSection(XkbGeometryPtr geom,
 }
 
 XkbDoodadPtr
-XkbAddGeomDoodad(XkbGeometryPtr geom, XkbSectionPtr section, Atom name)
+SrvXkbAddGeomDoodad(XkbGeometryPtr geom, XkbSectionPtr section, Atom name)
 {
     XkbDoodadPtr old, doodad;
     register int i, nDoodads;
