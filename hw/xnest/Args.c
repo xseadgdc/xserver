@@ -28,6 +28,7 @@ is" without express or implied warranty.
 #include "extinit.h"
 
 #include "xnest-xcb.h"
+#include "parse-geometry.h"
 
 #include "Display.h"
 #include "Args.h"

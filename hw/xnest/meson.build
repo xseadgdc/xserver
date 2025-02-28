@@ -10,6 +10,7 @@ srcs = [
     'Handlers.c',
     'Init.c',
     'Keyboard.c',
+    'parse-geometry.c',
     'Pixmap.c',
     'Pointer.c',
     'Screen.c',
