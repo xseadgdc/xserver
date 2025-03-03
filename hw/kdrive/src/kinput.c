@@ -311,8 +311,6 @@ KdPointerProc(DeviceIntPtr pDevice, int onoff)
             return BadImplementation;
         }
 
-        return Success;
-
     case DEVICE_OFF:
         if (pDev->on == FALSE) {
             return Success;
@@ -326,8 +324,6 @@ KdPointerProc(DeviceIntPtr pDevice, int onoff)
             pDev->on = FALSE;
             return Success;
         }
-
-        return Success;
 
     case DEVICE_CLOSE:
         if (pDev->on) {
