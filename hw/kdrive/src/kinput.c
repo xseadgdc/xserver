@@ -237,9 +237,8 @@ KdPointerProc(DeviceIntPtr pDevice, int onoff)
             return BadImplementation;
         }
 
-        if ((*pi->driver->Init) (pi) != Success) {
+        if (!(pi->driver->Init(pi)))
             return BadRequest;
-        }
 
         btn_labels = calloc(pi->nButtons, sizeof(Atom));
         if (!btn_labels)
@@ -303,7 +302,7 @@ KdPointerProc(DeviceIntPtr pDevice, int onoff)
             return BadImplementation;
         }
 
-        if ((*pi->driver->Enable) (pi) == Success) {
+        if (pi->driver->Enable(pi)) {
             pDev->on = TRUE;
             return Success;
         }

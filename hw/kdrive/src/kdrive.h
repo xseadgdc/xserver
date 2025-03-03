@@ -26,8 +26,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <X11/X.h>
+#include <X11/Xdefs.h>
 #include <X11/Xproto.h>
 #include <X11/Xos.h>
+
 #include "scrnintstr.h"
 #include "pixmapstr.h"
 #include "windowstr.h"
@@ -169,8 +171,8 @@ typedef struct _KdPointerInfo KdPointerInfo;
 
 typedef struct _KdPointerDriver {
     const char *name;
-     Status(*Init) (KdPointerInfo *);
-     Status(*Enable) (KdPointerInfo *);
+    Bool (*Init) (KdPointerInfo *);
+    Bool (*Enable) (KdPointerInfo *);
     void (*Disable) (KdPointerInfo *);
     void (*Fini) (KdPointerInfo *);
     struct _KdPointerDriver *next;
