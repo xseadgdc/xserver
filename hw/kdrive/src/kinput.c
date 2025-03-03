@@ -541,9 +541,8 @@ KdKeyboardProc(DeviceIntPtr pDevice, int onoff)
             return BadImplementation;
         }
 
-        if ((*ki->driver->Init) (ki) != Success) {
+        if (!(ki->driver->Init(ki)))
             return BadRequest;
-        }
 
         xiclass = AtomFromName(XI_KEYBOARD);
         AssignTypeAndName(pDevice, xiclass,
@@ -560,9 +559,8 @@ KdKeyboardProc(DeviceIntPtr pDevice, int onoff)
         if (!ki->driver->Enable)
             return BadImplementation;
 
-        if ((*ki->driver->Enable) (ki) != Success) {
+        if (!(ki->driver->Enable(ki)))
             return BadMatch;
-        }
 
         pDev->on = TRUE;
         return Success;

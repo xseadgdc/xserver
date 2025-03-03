@@ -26,6 +26,7 @@
 #include <dix-config.h>
 
 #include <xcb/xcb_keysyms.h>
+#include <X11/Xdefs.h>
 #include <X11/keysym.h>
 
 #include "mi/mipointer_priv.h"
@@ -1316,7 +1317,7 @@ KdPointerDriver EphyrMouseDriver = {
 
 /* Keyboard */
 
-static Status
+static Bool
 EphyrKeyboardInit(KdKeyboardInfo * ki)
 {
     KeySymsRec keySyms;
@@ -1344,15 +1345,14 @@ EphyrKeyboardInit(KdKeyboardInfo * ki)
 
     ki->name = strdup("Xephyr virtual keyboard");
     ephyrKbd = ki;
-    return Success;
+    return TRUE;
 }
 
-static Status
+static Bool
 EphyrKeyboardEnable(KdKeyboardInfo * ki)
 {
     ((EphyrKbdPrivate *) ki->driverPrivate)->enabled = TRUE;
-
-    return Success;
+    return TRUE;
 }
 
 static void
