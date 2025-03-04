@@ -43,6 +43,7 @@
 
 #include <dix-config.h>
 
+#include "dix/colormap_priv.h"
 #include "dix/dix_priv.h"
 #include "os/osdep.h"
 
