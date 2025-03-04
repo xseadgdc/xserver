@@ -38,9 +38,6 @@
 /* Support XDM-AUTH*-1 */
 #mesondefine HASXDMAUTH
 
-/* Define to 1 if you have the `reallocarray' function. */
-#mesondefine HAVE_REALLOCARRAY
-
 /* Define to 1 if you have the `strcasestr' function. */
 #mesondefine HAVE_STRCASESTR
 
