@@ -745,7 +745,7 @@ SecurityResource(CallbackListPtr *pcbl, void *unused, void *calldata)
 {
     XaceResourceAccessRec *rec = calldata;
     SecurityStateRec *subj, *obj;
-    int cid = CLIENT_ID(rec->id);
+    int cid = dixClientIdForXID(rec->id);
     Mask requested = rec->access_mode;
     Mask allowed = SecurityResourceMask;
 
