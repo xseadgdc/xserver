@@ -429,7 +429,7 @@ compFreeClientSubwindows(WindowPtr pWin, XID id)
         return;
     for (prev = &csw->clients; (ccw = *prev); prev = &ccw->next) {
         if (ccw->id == id) {
-            ClientPtr pClient = clients[dixClientIdForXID(id)];
+            ClientPtr pClient = dixClientForXID(id);
 
             *prev = ccw->next;
             if (ccw->update == CompositeRedirectManual) {
@@ -498,9 +498,8 @@ compRedirectOneSubwindow(WindowPtr pParent, WindowPtr pWin)
     if (!csw)
         return Success;
     for (ccw = csw->clients; ccw; ccw = ccw->next) {
-        int ret = compRedirectWindow(clients[dixClientIdForXID(ccw->id)],
+        int ret = compRedirectWindow(dixClientForXID(ccw->id),
                                      pWin, ccw->update);
-
         if (ret != Success)
             return ret;
     }
@@ -520,9 +519,8 @@ compUnredirectOneSubwindow(WindowPtr pParent, WindowPtr pWin)
     if (!csw)
         return Success;
     for (ccw = csw->clients; ccw; ccw = ccw->next) {
-        int ret = compUnredirectWindow(clients[dixClientIdForXID(ccw->id)],
+        int ret = compUnredirectWindow(dixClientForXID(ccw->id),
                                        pWin, ccw->update);
-
         if (ret != Success)
             return ret;
     }
