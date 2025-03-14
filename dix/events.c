@@ -124,6 +124,7 @@ Equipment Corporation.
 #include "dix/input_priv.h"
 #include "dix/eventconvert.h"
 #include "dix/exevents_priv.h"
+#include "dix/window_priv.h"
 #include "os/bug_priv.h"
 #include "os/client_priv.h"
 #include "os/fmt.h"
@@ -4554,7 +4555,7 @@ EventSelectForWindow(WindowPtr pWin, ClientPtr client, Mask mask)
             }
         }
         check = 0;
-        if (!pWin->optional && !MakeWindowOptional(pWin))
+        if (!MakeWindowOptional(pWin))
             return BadAlloc;
         others = malloc(sizeof(OtherClients));
         if (!others)
@@ -4613,7 +4614,7 @@ EventSuppressForWindow(WindowPtr pWin, ClientPtr client,
         }
     }
     else {
-        if (!pWin->optional && !MakeWindowOptional(pWin)) {
+        if (!MakeWindowOptional(pWin)) {
             if (pWin->dontPropagate)
                 DontPropagateRefCnts[pWin->dontPropagate]++;
             return BadAlloc;
