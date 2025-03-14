@@ -109,6 +109,7 @@ dixLookupProperty(PropertyPtr *result, WindowPtr pWin, Atom propertyName,
 }
 
 CallbackListPtr PropertyStateCallback;
+CallbackListPtr PropertyWriteFilterCallback;
 
 static void
 deliverPropertyNotifyEvent(WindowPtr pWin, int state, PropertyPtr pProp)
@@ -245,13 +246,24 @@ ProcChangeProperty(ClientPtr client)
         return BadAtom;
     }
 
-    err = dixChangeWindowProperty(client, pWin, stuff->property, stuff->type,
-                                  (int) format, (int) mode, len, &stuff[1],
-                                  TRUE);
-    if (err != Success)
-        return err;
-    else
-        return Success;
+    PropertyFilterParam p = {
+        .client = client,
+        .pWin = pWin,
+        .name = stuff->property,
+        .type = stuff->type,
+        .format = format,
+        .mode = mode,
+        .len = len,
+        .value = &stuff[1],
+        .sendevent = TRUE,
+    };
+
+    CallCallbacks(&PropertyWriteFilterCallback, &p);
+    if (p.skip)
+        return p.err;
+
+    return dixChangeWindowProperty(p.client, p.pWin, p.name, p.type, p.format,
+                                   p.mode, p.len, p.value, p.sendevent);
 }
 
 int

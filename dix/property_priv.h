@@ -63,7 +63,22 @@ typedef struct _PropertyStateRec {
     int state;
 } PropertyStateRec;
 
+typedef struct _PropertyFilterParam {
+    ClientPtr client;
+    WindowPtr pWin;
+    Atom name;
+    Atom type;
+    int format;
+    int mode;
+    unsigned long len;
+    const void *value;
+    Bool sendevent;
+    int err;
+    Bool skip;                 // TRUE if the call shouldn't be executed
+} PropertyFilterParam;
+
 extern CallbackListPtr PropertyStateCallback;
+extern CallbackListPtr PropertyWriteFilterCallback;
 
 int dixLookupProperty(PropertyPtr *result, WindowPtr pWin, Atom proprty,
                       ClientPtr pClient, Mask access_mode);
