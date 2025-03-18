@@ -308,7 +308,7 @@ ProcConvertSelection(ClientPtr client)
     REQUEST(xConvertSelectionReq);
     REQUEST_SIZE_MATCH(xConvertSelectionReq);
 
-    printf("client=%d selection=%d requestor=0x%0X property=0x%0X target=0x%0X\n",
+    printf("ProcConvertSelection client=%d selection=%d requestor=0x%0X property=0x%0X target=0x%0X\n",
         client->index, stuff->selection, stuff->requestor, stuff->property, stuff->target);
 
     /* allow extensions to intercept */
@@ -328,7 +328,7 @@ ProcConvertSelection(ClientPtr client)
         return param.status;
     }
 
-    printf("ProcConvertSelection 2\n");
+    printf("ProcConvertSelection using selection=%d\n", param.selection);
 
     rc = dixLookupWindow(&pWin, param.requestor, client, DixSetAttrAccess);
     if (rc != Success)
@@ -376,8 +376,8 @@ ProcConvertSelection(ClientPtr client)
             return evParam.status;
         }
 
-        printf(" --> sending SelectionRequest client=%d recvClient=%d owner=%d requestor=%d selection=%d target=%d property=%d\n",
-             param.client->index, param.recvClient->index, param.owner, param.requestor, param.selection, param.target, param.property);
+        printf(" --> sending SelectionRequest client=%d recvClient=%d owner=0x%0X requestor=0x%0X selection=%d target=0x%0X property=0x%0X\n",
+             evParam.client->index, evParam.recvClient->index, evParam.owner, evParam.requestor, evParam.selection, evParam.target, evParam.property);
         event.u.u.type = SelectionRequest;
         event.u.selectionRequest.owner = evParam.owner;
         event.u.selectionRequest.time = evParam.time;
