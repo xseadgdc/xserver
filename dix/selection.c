@@ -215,6 +215,8 @@ ProcSetSelectionOwner(ClientPtr client)
     if (CompareTimeStamps(time, pSel->lastTimeChanged) == EARLIER)
         return Success;
     if (pSel->client && (!pWin || (pSel->client != client))) {
+        printf("sending SelectionClear event\n");
+
         SelectionFilterParamRec eventParam = {
             .client = pSel->client,
             .owner = pSel->window,
@@ -231,6 +233,8 @@ ProcSetSelectionOwner(ClientPtr client)
             event.u.u.type = SelectionClear;
             WriteEventsToClient(eventParam.client, 1, &event);
         }
+    } else {
+        printf("not sending SelectionClear event\n");
     }
 
     pSel->lastTimeChanged = time;
@@ -299,6 +303,8 @@ ProcConvertSelection(ClientPtr client)
     Selection *pSel;
     int rc;
 
+    printf("ProcConvertSelection 1\n");
+
     REQUEST(xConvertSelectionReq);
     REQUEST_SIZE_MATCH(xConvertSelectionReq);
 
@@ -318,6 +324,8 @@ ProcConvertSelection(ClientPtr client)
             client->errorValue = stuff->selection;
         return param.status;
     }
+
+    printf("ProcConvertSelection 2\n");
 
     rc = dixLookupWindow(&pWin, param.requestor, client, DixSetAttrAccess);
     if (rc != Success)
@@ -356,6 +364,8 @@ ProcConvertSelection(ClientPtr client)
             .recvClient = pSel->client,
         };
 
+        printf("ProcConvertSelection 3\n");
+
         CallCallbacks(&SelectionFilterCallback, &evParam);
         if (evParam.skip) {
             if (evParam.status != Success)
@@ -374,6 +384,8 @@ ProcConvertSelection(ClientPtr client)
         return Success;
     }
 
+    printf("ProcConvertSelection 4\n");
+
     /* If no owner for the specified selection exists, the X server generates
        a SelectionNotify event to the requestor with property None. */
     param.property = None;
@@ -383,6 +395,8 @@ ProcConvertSelection(ClientPtr client)
             client->errorValue = stuff->selection;
         return param.status;
     }
+
+    printf("ProcConvertSelection 5\n");
 
     event.u.u.type = SelectionNotify;
     event.u.selectionNotify.time = param.time;
