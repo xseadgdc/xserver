@@ -59,6 +59,7 @@ XFixesSelectionCallback(CallbackListPtr *callbacks, void *data, void *args)
     int subtype;
     CARD32 eventMask;
 
+    printf("XFixesSelectionCallback()\n");
     switch (info->kind) {
     case SelectionSetOwner:
         subtype = XFixesSetSelectionOwnerNotify;
@@ -78,6 +79,7 @@ XFixesSelectionCallback(CallbackListPtr *callbacks, void *data, void *args)
     UpdateCurrentTimeIf();
     for (e = selectionEvents; e; e = e->next) {
         if (e->selection == selection && (e->eventMask & eventMask)) {
+            printf("sending XFixesSelectionNotifyEvent()\n");
             xXFixesSelectionNotifyEvent ev = {
                 .type = XFixesEventBase + XFixesSelectionNotify,
                 .subtype = subtype,

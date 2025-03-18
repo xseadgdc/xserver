@@ -29,7 +29,7 @@ void hookSend(CallbackListPtr *pcbl, void *unused, void *calldata)
     struct XnamespaceClientPriv *obj = XnsClientPriv(targetClient);
     if (clientAllowedOnClient(client, targetClient)) {
         XNS_HOOK_LOG("same namespace\n");
-        goto pass;
+//        goto pass;
     } else {
         XNS_HOOK_LOG("different namespaces --> recv is @ %s\n", obj->ns->id);
     }

@@ -308,7 +308,7 @@ ProcConvertSelection(ClientPtr client)
     REQUEST(xConvertSelectionReq);
     REQUEST_SIZE_MATCH(xConvertSelectionReq);
 
-    printf("client=%d selection=%d requestor=%d property=%d target=%d\n",
+    printf("client=%d selection=%d requestor=0x%0X property=0x%0X target=0x%0X\n",
         client->index, stuff->selection, stuff->requestor, stuff->property, stuff->target);
 
     /* allow extensions to intercept */
