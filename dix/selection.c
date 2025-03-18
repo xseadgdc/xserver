@@ -308,6 +308,9 @@ ProcConvertSelection(ClientPtr client)
     REQUEST(xConvertSelectionReq);
     REQUEST_SIZE_MATCH(xConvertSelectionReq);
 
+    printf("client=%d selection=%d requestor=%d property=%d target=%d\n",
+        client->index, stuff->selection, stuff->requestor, stuff->property, stuff->target);
+
     /* allow extensions to intercept */
     SelectionFilterParamRec param = {
         .client = client,
@@ -373,6 +376,8 @@ ProcConvertSelection(ClientPtr client)
             return evParam.status;
         }
 
+        printf(" --> sending SelectionRequest client=%d recvClient=%d owner=%d requestor=%d selection=%d target=%d property=%d\n",
+             param.client->index, param.recvClient->index, param.owner, param.requestor, param.selection, param.target, param.property);
         event.u.u.type = SelectionRequest;
         event.u.selectionRequest.owner = evParam.owner;
         event.u.selectionRequest.time = evParam.time;
@@ -396,7 +401,7 @@ ProcConvertSelection(ClientPtr client)
         return param.status;
     }
 
-    printf("ProcConvertSelection 5\n");
+    printf("ProcConvertSelection sending selection notify to caller\n");
 
     event.u.u.type = SelectionNotify;
     event.u.selectionNotify.time = param.time;

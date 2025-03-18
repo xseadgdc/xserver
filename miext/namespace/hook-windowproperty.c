@@ -16,6 +16,7 @@
 void hookWindowProperty(CallbackListPtr *pcbl, void *unused, void *calldata)
 {
     XNS_HOOK_HEAD(PropertyFilterParam);
+    return;
 
     ATOM name = param->name;
     const char* nameStr = NameForAtom(name);
