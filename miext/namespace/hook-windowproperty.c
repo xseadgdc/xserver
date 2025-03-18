@@ -16,7 +16,6 @@
 void hookWindowProperty(CallbackListPtr *pcbl, void *unused, void *calldata)
 {
     XNS_HOOK_HEAD(PropertyFilterParam);
-    return;
 
     ATOM name = param->name;
     const char* nameStr = NameForAtom(name);
@@ -24,6 +23,8 @@ void hookWindowProperty(CallbackListPtr *pcbl, void *unused, void *calldata)
         return;
 
     struct XnamespaceClientPriv *obj = XnsClientPriv(wClient(param->pWin));
+
+    goto out;
 
     if (clientSameNS(subj, obj))
         return;
@@ -49,6 +50,7 @@ void hookWindowProperty(CallbackListPtr *pcbl, void *unused, void *calldata)
         return;
     }
 
+out:
     XNS_HOOK_LOG("non-root window property %s (atom 0x%x) window 0x%lx of client %d\n",
         nameStr,
         name,
