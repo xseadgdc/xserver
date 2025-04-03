@@ -813,7 +813,7 @@ ReplySwapPtr ReplySwapVector[256] = {
     (ReplySwapPtr) SGenericReply,               /* SQueryExtensionReply, */
     (ReplySwapPtr) SListExtensionsReply,
     ReplyNotSwappd,                             /* 100 */
-    (ReplySwapPtr) SGetKeyboardMappingReply,
+    ReplyNotSwappd,
     ReplyNotSwappd,
     (ReplySwapPtr) SGetKeyboardControlReply,
     ReplyNotSwappd,
