@@ -743,7 +743,7 @@ ReplySwapPtr ReplySwapVector[256] = {
     ReplyNotSwappd,
     ReplyNotSwappd,
     ReplyNotSwappd,                             /* 30 */
-    (ReplySwapPtr) SGenericReply,               /* SGrabKeyboardReply, */
+    ReplyNotSwappd,
     ReplyNotSwappd,
     ReplyNotSwappd,
     ReplyNotSwappd,
