@@ -804,7 +804,7 @@ ReplySwapPtr ReplySwapVector[256] = {
     ReplyNotSwappd,
     ReplyNotSwappd,                             /* 90 */
     ReplyNotSwappd,
-    (ReplySwapPtr) SLookupColorReply,
+    ReplyNotSwappd,
     ReplyNotSwappd,
     ReplyNotSwappd,
     ReplyNotSwappd,                             /* 95 */
