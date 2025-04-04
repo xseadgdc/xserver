@@ -764,7 +764,7 @@ ReplySwapPtr ReplySwapVector[256] = {
     ReplyNotSwappd,
     ReplyNotSwappd,                             /* 50 */
     ReplyNotSwappd,
-    (ReplySwapPtr) SGetFontPathReply,
+    ReplyNotSwappd,
     ReplyNotSwappd,
     ReplyNotSwappd,
     ReplyNotSwappd,                             /* 55 */
