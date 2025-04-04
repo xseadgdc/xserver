@@ -257,13 +257,12 @@ ProcQueryExtension(ClientPtr client)
 int
 ProcListExtensions(ClientPtr client)
 {
-    xListExtensionsReply reply;
     char *bufptr, *buffer;
     int total_length = 0;
 
     REQUEST_SIZE_MATCH(xReq);
 
-    reply = (xListExtensionsReply) {
+    xListExtensionsReply rep = {
         .type = X_Reply,
         .nExtensions = 0,
         .sequenceNumber = client->sequence,
@@ -280,9 +279,9 @@ ProcListExtensions(ClientPtr client)
                 continue;
 
             total_length += strlen(extensions[i]->name) + 1;
-            reply.nExtensions += 1;
+            rep.nExtensions += 1;
         }
-        reply.length = bytes_to_int32(total_length);
+        rep.length = bytes_to_int32(total_length);
         buffer = bufptr = malloc(total_length);
         if (!buffer)
             return BadAlloc;
@@ -297,9 +296,13 @@ ProcListExtensions(ClientPtr client)
             bufptr += len;
         }
     }
-    WriteReplyToClient(client, sizeof(xListExtensionsReply), &reply);
-    if (reply.length)
-        WriteToClient(client, total_length, buffer);
+
+    if (client->swapped) {
+        swaps(&rep.sequenceNumber);
+        swapl(&rep.length);
+    }
+    WriteToClient(client, sizeof(rep), &rep);
+    WriteToClient(client, total_length, buffer);
 
     free(buffer);
     return Success;

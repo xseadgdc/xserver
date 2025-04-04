@@ -811,7 +811,7 @@ ReplySwapPtr ReplySwapVector[256] = {
     ReplyNotSwappd,
     ReplyNotSwappd,
     ReplyNotSwappd,
-    (ReplySwapPtr) SListExtensionsReply,
+    ReplyNotSwappd,
     ReplyNotSwappd,                             /* 100 */
     ReplyNotSwappd,
     ReplyNotSwappd,
