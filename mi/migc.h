@@ -29,6 +29,13 @@ from The Open Group.
 #ifndef _MIGC_H
 #define _MIGC_H
 
+/* temporary workaround for intel driver. will be removed once
+   the drivers had been fixed not to use "GC" anymore.
+
+   see: https://gitlab.freedesktop.org/xorg/xserver/-/merge_requests/1393
+*/
+typedef GCRec GC;
+
 extern _X_EXPORT void miChangeGC(GCPtr          pGC,
                                  unsigned long  mask);
 
