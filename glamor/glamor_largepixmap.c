@@ -1171,7 +1171,7 @@ glamor_composite_largepixmap_region(CARD8 op,
         && glamor_pixmap_priv_is_large(source_pixmap_priv)) {
         /* XXX self-copy... */
         need_free_source_pixmap_priv = source_pixmap_priv;
-        source_pixmap_priv = malloc(sizeof(*source_pixmap_priv));
+        source_pixmap_priv = calloc(1, sizeof(*source_pixmap_priv));
         *source_pixmap_priv = *need_free_source_pixmap_priv;
         need_free_source_pixmap_priv = source_pixmap_priv;
     }
