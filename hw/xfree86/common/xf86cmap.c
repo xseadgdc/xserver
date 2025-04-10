@@ -168,7 +168,7 @@ xf86HandleColormaps(ScreenPtr pScreen,
         return FALSE;
     }
 
-    if (!(pScreenPriv = malloc(sizeof(CMapScreenRec)))) {
+    if (!(pScreenPriv = calloc(1, sizeof(CMapScreenRec)))) {
         free(gamma);
         free(indices);
         return FALSE;
@@ -264,7 +264,6 @@ CMapAllocateColormapPrivate(ColormapPtr pmap)
         (CMapScreenPtr) dixLookupPrivate(&pmap->pScreen->devPrivates,
                                          CMapScreenKey);
     CMapColormapPtr pColPriv;
-    CMapLinkPtr pLink;
     int numColors;
     LOCO *colors;
 
@@ -276,7 +275,7 @@ CMapAllocateColormapPrivate(ColormapPtr pmap)
     if (!(colors = xallocarray(numColors, sizeof(LOCO))))
         return FALSE;
 
-    if (!(pColPriv = malloc(sizeof(CMapColormapRec)))) {
+    if (!(pColPriv = calloc(1, sizeof(CMapColormapRec)))) {
         free(colors);
         return FALSE;
     }
@@ -289,7 +288,7 @@ CMapAllocateColormapPrivate(ColormapPtr pmap)
     pColPriv->overscan = -1;
 
     /* add map to list */
-    pLink = malloc(sizeof(CMapLink));
+    CMapLinkPtr pLink = calloc(1, sizeof(CMapLink));
     if (pLink) {
         pLink->cmap = pmap;
         pLink->next = pScreenPriv->maps;

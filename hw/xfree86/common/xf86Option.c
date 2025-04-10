@@ -898,13 +898,13 @@ xf86NameCmp(const char *s1, const char *s2)
 char *
 xf86NormalizeName(const char *s)
 {
-    char *ret, *q;
+    char *q;
     const char *p;
 
     if (s == NULL)
         return NULL;
 
-    ret = malloc(strlen(s) + 1);
+    char *ret = calloc(1, strlen(s) + 1);
     for (p = s, q = ret; *p != 0; p++) {
         switch (*p) {
         case '_':

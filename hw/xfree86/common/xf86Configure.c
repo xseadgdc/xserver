@@ -339,9 +339,7 @@ configureLayoutSection(void)
     ptr->lay_identifier = "X.org Configured";
 
     {
-        XF86ConfInputrefPtr iptr;
-
-        iptr = malloc(sizeof(XF86ConfInputrefRec));
+        XF86ConfInputrefPtr iptr = calloc(1, sizeof(XF86ConfInputrefRec));
         iptr->list.next = NULL;
         iptr->iref_option_lst = NULL;
         iptr->iref_inputdev_str = XNFstrdup("Mouse0");
@@ -353,9 +351,7 @@ configureLayoutSection(void)
     }
 
     {
-        XF86ConfInputrefPtr iptr;
-
-        iptr = malloc(sizeof(XF86ConfInputrefRec));
+        XF86ConfInputrefPtr iptr = calloc(1, sizeof(XF86ConfInputrefRec));
         iptr->list.next = NULL;
         iptr->iref_option_lst = NULL;
         iptr->iref_inputdev_str = XNFstrdup("Keyboard0");
@@ -367,10 +363,9 @@ configureLayoutSection(void)
     }
 
     for (scrnum = 0; scrnum < nDevToConfig; scrnum++) {
-        XF86ConfAdjacencyPtr aptr;
         char *tmp;
 
-        aptr = malloc(sizeof(XF86ConfAdjacencyRec));
+        XF86ConfAdjacencyPtr aptr = calloc(1, sizeof(XF86ConfAdjacencyRec));
         aptr->list.next = NULL;
         aptr->adj_x = 0;
         aptr->adj_y = 0;
