@@ -334,8 +334,6 @@ compAddAlternateVisuals(ScreenPtr pScreen, CompScreenPtr cs)
 Bool
 compScreenInit(ScreenPtr pScreen)
 {
-    CompScreenPtr cs;
-
     if (!dixRegisterPrivateKey(&CompScreenPrivateKeyRec, PRIVATE_SCREEN, 0))
         return FALSE;
     if (!dixRegisterPrivateKey(&CompWindowPrivateKeyRec, PRIVATE_WINDOW, 0))
@@ -345,7 +343,7 @@ compScreenInit(ScreenPtr pScreen)
 
     if (GetCompScreen(pScreen))
         return TRUE;
-    cs = (CompScreenPtr) malloc(sizeof(CompScreenRec));
+    CompScreenPtr cs = calloc(1, sizeof(CompScreenRec));
     if (!cs)
         return FALSE;
 
