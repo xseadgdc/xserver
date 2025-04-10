@@ -75,8 +75,7 @@ get_image(struct test_setup *setup, xcb_drawable_t drawable)
     assert(reply->depth == 24);
     assert(len == 4 * setup->width * setup->height);
 
-    uint32_t *result = malloc(sizeof(uint32_t) *
-                              setup->width * setup->height);
+    uint32_t *result = calloc(setup->width * setup->height, sizeof(uint32_t));
     memcpy(result, data, len);
     free(reply);
 
