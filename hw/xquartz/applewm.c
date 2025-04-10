@@ -225,7 +225,7 @@ static int
 ProcAppleWMSelectInput(register ClientPtr client)
 {
     REQUEST(xAppleWMSelectInputReq);
-    WMEventPtr pEvent, pNewEvent, *pHead;
+    WMEventPtr pEvent, *pHead;
     XID clientResource;
     int i;
 
@@ -247,7 +247,7 @@ ProcAppleWMSelectInput(register ClientPtr client)
         }
 
         /* build the entry */
-        pNewEvent = (WMEventPtr)malloc(sizeof(WMEventRec));
+        WMEventPtr pNewEvent = calloc(1, sizeof(WMEventRec));
         if (!pNewEvent)
             return BadAlloc;
         pNewEvent->next = 0;
@@ -268,7 +268,7 @@ ProcAppleWMSelectInput(register ClientPtr client)
          * done through the resource database.
          */
         if (i != Success || !pHead) {
-            pHead = (WMEventPtr *)malloc(sizeof(WMEventPtr));
+            pHead = calloc(1, sizeof(WMEventPtr));
             if (!pHead ||
                 !AddResource(eventResource, EventType, (void *)pHead)) {
                 FreeResource(clientResource, X11_RESTYPE_NONE);
@@ -369,16 +369,15 @@ ProcAppleWMReenableUpdate(register ClientPtr client)
 static int
 ProcAppleWMSetWindowMenu(register ClientPtr client)
 {
-    const char *bytes, **items;
-    char *shortcuts;
+    const char *bytes;
     int max_len, nitems, i, j;
     REQUEST(xAppleWMSetWindowMenuReq);
 
     REQUEST_AT_LEAST_SIZE(xAppleWMSetWindowMenuReq);
 
     nitems = stuff->nitems;
-    items = malloc(sizeof(char *) * nitems);
-    shortcuts = malloc(sizeof(char) * nitems);
+    const char **items = calloc(nitems, sizeof(char *));
+    char *shortcuts = calloc(nitems, sizeof(char));
 
     if (!items || !shortcuts) {
         free(items);
