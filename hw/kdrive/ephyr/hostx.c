@@ -241,7 +241,6 @@ hostx_get_output_geometry(const char *output,
                           int *width, int *height)
 {
     int i, name_len = 0, output_found = FALSE;
-    char *name = NULL;
     xcb_generic_error_t *error;
     xcb_randr_query_version_cookie_t version_c;
     xcb_randr_query_version_reply_t *version_r;
@@ -300,7 +299,7 @@ hostx_get_output_geometry(const char *output,
 
         /* Get output name */
         name_len = xcb_randr_get_output_info_name_length(output_info_r);
-        name = malloc(name_len + 1);
+        char *name = calloc(1, name_len + 1);
         strncpy(name, (char*)xcb_randr_get_output_info_name(output_info_r), name_len);
         name[name_len] = '\0';
 
@@ -524,7 +523,6 @@ hostx_init(void)
     uint32_t pixel;
     int index;
     char *tmpstr;
-    char *class_hint;
     size_t class_len;
     xcb_screen_t *xscreen;
     xcb_rectangle_t rect = { 0, 0, 1, 1 };
@@ -649,7 +647,7 @@ hostx_init(void)
             if (tmpstr && (!ephyrResNameFromCmd))
                 ephyrResName = tmpstr;
             class_len = strlen(ephyrResName) + 1 + strlen("Xephyr") + 1;
-            class_hint = malloc(class_len);
+            char *class_hint = calloc(1, class_len);
             if (class_hint) {
                 strcpy(class_hint, ephyrResName);
                 strcpy(class_hint + strlen(ephyrResName) + 1, "Xephyr");

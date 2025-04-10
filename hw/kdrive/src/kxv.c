@@ -133,7 +133,7 @@ KdXVScreenInit(ScreenPtr pScreen, KdVideoAdaptorPtr adaptors, int num)
     KdXvScreenKey = XvGetScreenKey();
     PortResource = XvGetRTPort();
 
-    ScreenPriv = malloc(sizeof(KdXVScreenRec));
+    ScreenPriv = calloc(1, sizeof(KdXVScreenRec));
     dixSetPrivate(&pScreen->devPrivates, &KdXVScreenPrivateKey, ScreenPriv);
 
     if (!ScreenPriv)
@@ -721,7 +721,7 @@ KdXVEnlistPortInWindow(WindowPtr pWin, XvPortRecPrivatePtr portPriv)
     }
 
     if (!winPriv) {
-        winPriv = malloc(sizeof(KdXVWindowRec));
+        winPriv = calloc(1, sizeof(KdXVWindowRec));
         if (!winPriv)
             return BadAlloc;
         winPriv->PortRec = portPriv;
