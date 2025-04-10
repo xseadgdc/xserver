@@ -229,7 +229,6 @@ miInitIndexed(ScreenPtr pScreen, PictFormatPtr pFormat)
 {
     ColormapPtr pColormap = pFormat->index.pColormap;
     VisualPtr pVisual = pColormap->pVisual;
-    miIndexedPtr pIndexed;
     Pixel pixels[MI_MAX_INDEXED];
     xrgb rgb[MI_MAX_INDEXED];
     int num;
@@ -249,7 +248,7 @@ miInitIndexed(ScreenPtr pScreen, PictFormatPtr pFormat)
             pixels[p] = p;
     }
 
-    pIndexed = malloc(sizeof(miIndexedRec));
+    miIndexedPtr pIndexed = calloc(1, sizeof(miIndexedRec));
     if (!pIndexed)
         return FALSE;
 
