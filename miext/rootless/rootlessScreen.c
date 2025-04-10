@@ -89,7 +89,7 @@ RootlessUpdateScreenPixmap(ScreenPtr pScreen)
         free(s->pixmap_data);
 
         s->pixmap_data_size = rowbytes;
-        s->pixmap_data = malloc(s->pixmap_data_size);
+        s->pixmap_data = calloc(1, s->pixmap_data_size);
         if (s->pixmap_data == NULL)
             return;
 
@@ -617,8 +617,6 @@ RootlessWakeupHandler(void *data, int result)
 static Bool
 RootlessAllocatePrivates(ScreenPtr pScreen)
 {
-    RootlessScreenRec *s;
-
     if (!dixRegisterPrivateKey
         (&rootlessGCPrivateKeyRec, PRIVATE_GC, sizeof(RootlessGCRec)))
         return FALSE;
@@ -630,7 +628,7 @@ RootlessAllocatePrivates(ScreenPtr pScreen)
         (&rootlessWindowOldPixmapPrivateKeyRec, PRIVATE_WINDOW, 0))
         return FALSE;
 
-    s = malloc(sizeof(RootlessScreenRec));
+    RootlessScreenRec s = calloc(1, sizeof(RootlessScreenRec));
     if (!s)
         return FALSE;
     SETSCREENREC(pScreen, s);
