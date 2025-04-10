@@ -96,7 +96,7 @@ __stdcall unsigned long GetTickCount(void);
 #include <sys/stat.h>
 #include <ctype.h>              /* for isspace */
 #include <stdarg.h>
-#include <stdlib.h>             /* for malloc() */
+#include <stdlib.h>             /* for calloc() */
 
 #if defined(TCPCONN)
 #ifndef WIN32
@@ -856,7 +856,7 @@ set_font_authorizations(char **authorizations, int *authlen, void *client)
 #endif
 
         len = strlen(hnameptr) + 1;
-        result = malloc(len + sizeof(AUTHORIZATION_NAME) + 4);
+        result = calloc(1, len + sizeof(AUTHORIZATION_NAME) + 4);
 
         p = result;
         *p++ = sizeof(AUTHORIZATION_NAME) >> 8;
@@ -1067,7 +1067,7 @@ Popen(const char *command, const char *type)
     if ((*type != 'r' && *type != 'w') || type[1])
         return NULL;
 
-    if ((cur = malloc(sizeof(struct pid))) == NULL)
+    if ((cur = calloc(1, sizeof(struct pid))) == NULL)
         return NULL;
 
     if (pipe(pdes) < 0) {
