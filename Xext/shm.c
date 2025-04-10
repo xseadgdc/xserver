@@ -395,7 +395,7 @@ ProcShmAttach(ClientPtr client)
         shmdesc->refcnt++;
     }
     else {
-        shmdesc = malloc(sizeof(ShmDescRec));
+        shmdesc = calloc(1, sizeof(ShmDescRec));
         if (!shmdesc)
             return BadAlloc;
 #ifdef SHM_FD_PASSING
@@ -781,7 +781,6 @@ static int
 ProcPanoramiXShmGetImage(ClientPtr client)
 {
     PanoramiXRes *draw;
-    DrawablePtr *drawables;
     DrawablePtr pDraw;
     xShmGetImageReply xgi;
     ShmDescPtr shmdesc;
@@ -856,7 +855,7 @@ ProcPanoramiXShmGetImage(ClientPtr client)
 
     VERIFY_SHMSIZE(shmdesc, stuff->offset, length, client);
 
-    drawables = calloc(PanoramiXNumScreens, sizeof(DrawablePtr));
+    DrawablePtr *drawables = calloc(PanoramiXNumScreens, sizeof(DrawablePtr));
     if (!drawables)
         return BadAlloc;
 
@@ -976,7 +975,7 @@ ProcPanoramiXShmCreatePixmap(ClientPtr client)
 
     VERIFY_SHMSIZE(shmdesc, stuff->offset, size, client);
 
-    if (!(newPix = malloc(sizeof(PanoramiXRes))))
+    if (!(newPix = calloc(1, sizeof(PanoramiXRes))))
         return BadAlloc;
 
     newPix->type = XRT_PIXMAP;
@@ -1169,7 +1168,7 @@ ProcShmAttachFd(ClientPtr client)
         return BadMatch;
     }
 
-    shmdesc = malloc(sizeof(ShmDescRec));
+    shmdesc = calloc(1, sizeof(ShmDescRec));
     if (!shmdesc) {
         close(fd);
         return BadAlloc;
@@ -1286,7 +1285,7 @@ ProcShmCreateSegment(ClientPtr client)
         close(fd);
         return BadAlloc;
     }
-    shmdesc = malloc(sizeof(ShmDescRec));
+    shmdesc = calloc(1, sizeof(ShmDescRec));
     if (!shmdesc) {
         close(fd);
         return BadAlloc;
