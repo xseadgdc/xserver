@@ -137,7 +137,6 @@ compRedirectWindow(ClientPtr pClient, WindowPtr pWin, int update)
         return BadMatch;
 
     CompWindowPtr cw = GetCompWindow(pWin);
-    CompClientWindowPtr ccw;
     CompScreenPtr cs = GetCompScreen(pWin->drawable.pScreen);
     WindowPtr pLayerWin;
     Bool anyMarked = FALSE;
@@ -154,7 +153,7 @@ compRedirectWindow(ClientPtr pClient, WindowPtr pWin, int update)
      * Only one Manual update is allowed
      */
     if (cw && update == CompositeRedirectManual)
-        for (ccw = cw->clients; ccw; ccw = ccw->next)
+        for (CompClientWindowPtr ccw = cw->clients; ccw; ccw = ccw->next)
             if (ccw->update == CompositeRedirectManual)
                 return BadAccess;
 
@@ -163,7 +162,7 @@ compRedirectWindow(ClientPtr pClient, WindowPtr pWin, int update)
      * The client *could* allocate multiple, but while supported,
      * it is not expected to be common
      */
-    ccw = malloc(sizeof(CompClientWindowRec));
+    CompClientWindowPtr ccw = calloc(1, sizeof(CompClientWindowRec));
     if (!ccw)
         return BadAlloc;
     ccw->id = FakeClientID(pClient->index);
@@ -172,7 +171,7 @@ compRedirectWindow(ClientPtr pClient, WindowPtr pWin, int update)
      * Now make sure there's a per-window structure to hang this from
      */
     if (!cw) {
-        cw = malloc(sizeof(CompWindowRec));
+        cw = calloc(1, sizeof(CompWindowRec));
         if (!cw) {
             free(ccw);
             return BadAlloc;
@@ -345,14 +344,13 @@ int
 compRedirectSubwindows(ClientPtr pClient, WindowPtr pWin, int update)
 {
     CompSubwindowsPtr csw = GetCompSubwindows(pWin);
-    CompClientWindowPtr ccw;
     WindowPtr pChild;
 
     /*
      * Only one Manual update is allowed
      */
     if (csw && update == CompositeRedirectManual)
-        for (ccw = csw->clients; ccw; ccw = ccw->next)
+        for (CompClientWindowPtr ccw = csw->clients; ccw; ccw = ccw->next)
             if (ccw->update == CompositeRedirectManual)
                 return BadAccess;
     /*
@@ -360,7 +358,7 @@ compRedirectSubwindows(ClientPtr pClient, WindowPtr pWin, int update)
      * The client *could* allocate multiple, but while supported,
      * it is not expected to be common
      */
-    ccw = malloc(sizeof(CompClientWindowRec));
+    CompClientWindowPtr ccw = calloc(1, sizeof(CompClientWindowRec));
     if (!ccw)
         return BadAlloc;
     ccw->id = FakeClientID(pClient->index);
@@ -369,7 +367,7 @@ compRedirectSubwindows(ClientPtr pClient, WindowPtr pWin, int update)
      * Now make sure there's a per-window structure to hang this from
      */
     if (!csw) {
-        csw = malloc(sizeof(CompSubwindowsRec));
+        csw = calloc(1, sizeof(CompSubwindowsRec));
         if (!csw) {
             free(ccw);
             return BadAlloc;
