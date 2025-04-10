@@ -133,7 +133,7 @@ miPointerInitialize(ScreenPtr pScreen,
     if (!dixRegisterPrivateKey(&miPointerPrivKeyRec, PRIVATE_DEVICE, 0))
         return FALSE;
 
-    pScreenPriv = malloc(sizeof(miPointerScreenRec));
+    pScreenPriv = calloc(1, sizeof(miPointerScreenRec));
     if (!pScreenPriv)
         return FALSE;
     pScreenPriv->spriteFuncs = spriteFuncs;
@@ -325,11 +325,9 @@ miRecolorCursor(DeviceIntPtr pDev, ScreenPtr pScr,
 static Bool
 miPointerDeviceInitialize(DeviceIntPtr pDev, ScreenPtr pScreen)
 {
-    miPointerPtr pPointer;
-
     SetupScreen(pScreen);
 
-    pPointer = malloc(sizeof(miPointerRec));
+    miPointerPtr pPointer = calloc(1, sizeof(miPointerRec));
     if (!pPointer)
         return FALSE;
 
