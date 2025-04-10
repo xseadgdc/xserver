@@ -368,7 +368,7 @@ XineramaRegisterConnectionBlockCallback(void (*func) (void))
 {
     XineramaConnectionCallbackList *newlist;
 
-    if (!(newlist = malloc(sizeof(XineramaConnectionCallbackList))))
+    if (!(newlist = calloc(1, sizeof(XineramaConnectionCallbackList))))
         return FALSE;
 
     newlist->next = ConnectionCallbackList;
@@ -439,7 +439,6 @@ PanoramiXExtensionInit(void)
     Bool success = FALSE;
     ExtensionEntry *extEntry;
     ScreenPtr pScreen = screenInfo.screens[0];
-    PanoramiXScreenPtr pScreenPriv;
 
     if (noPanoramiXExtension)
         return;
@@ -476,7 +475,7 @@ PanoramiXExtensionInit(void)
 
         FOR_NSCREENS(i) {
             pScreen = screenInfo.screens[i];
-            pScreenPriv = malloc(sizeof(PanoramiXScreenRec));
+            PanoramiXScreenPtr pScreenPriv = calloc(1, sizeof(PanoramiXScreenRec));
             dixSetPrivate(&pScreen->devPrivates, PanoramiXScreenKey,
                           pScreenPriv);
             if (!pScreenPriv) {
@@ -806,7 +805,6 @@ extern void
 PanoramiXConsolidate(void)
 {
     int i;
-    PanoramiXRes *root, *defmap, *saver;
     ScreenPtr pScreen = screenInfo.screens[0];
     DepthPtr pDepth = pScreen->allowedDepths;
     VisualPtr pVisual = pScreen->visuals;
@@ -820,11 +818,11 @@ PanoramiXConsolidate(void)
     for (i = 0; i < pScreen->numVisuals; i++)
         PanoramiXMaybeAddVisual(pVisual++);
 
-    root = malloc(sizeof(PanoramiXRes));
+    PanoramiXRes *root = calloc(1, sizeof(PanoramiXRes));
     root->type = XRT_WINDOW;
-    defmap = malloc(sizeof(PanoramiXRes));
+    PanoramiXRes *defmap = calloc(1, sizeof(PanoramiXRes));
     defmap->type = XRT_COLORMAP;
-    saver = malloc(sizeof(PanoramiXRes));
+    PanoramiXRes *saver = calloc(1, sizeof(PanoramiXRes));
     saver->type = XRT_WINDOW;
 
     FOR_NSCREENS(i) {
