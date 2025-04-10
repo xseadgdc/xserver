@@ -611,7 +611,6 @@ FreePictFormat(void *pPictFormat, XID pid)
 Bool
 PictureInit(ScreenPtr pScreen, PictFormatPtr formats, int nformats)
 {
-    PictureScreenPtr ps;
     int n;
     CARD32 type, a, r, g, b;
 
@@ -674,7 +673,7 @@ PictureInit(ScreenPtr pScreen, PictFormatPtr formats, int nformats)
         }
         formats[n].format = PICT_FORMAT(0, type, a, r, g, b);
     }
-    ps = (PictureScreenPtr) malloc(sizeof(PictureScreenRec));
+    PictureScreenPtr ps = calloc(1, sizeof(PictureScreenRec));
     if (!ps) {
         free(formats);
         return FALSE;
@@ -870,7 +869,7 @@ CreateSolidPicture(Picture pid, xRenderColor * color, int *error)
     }
 
     pPicture->id = pid;
-    pPicture->pSourcePict = (SourcePictPtr) malloc(sizeof(SourcePict));
+    pPicture->pSourcePict = calloc(1, sizeof(SourcePict));
     if (!pPicture->pSourcePict) {
         *error = BadAlloc;
         free(pPicture);
@@ -901,7 +900,7 @@ CreateLinearGradientPicture(Picture pid, xPointFixed * p1, xPointFixed * p2,
     }
 
     pPicture->id = pid;
-    pPicture->pSourcePict = (SourcePictPtr) malloc(sizeof(SourcePict));
+    pPicture->pSourcePict = calloc(1, sizeof(SourcePict));
     if (!pPicture->pSourcePict) {
         *error = BadAlloc;
         free(pPicture);
@@ -941,7 +940,7 @@ CreateRadialGradientPicture(Picture pid, xPointFixed * inner,
     }
 
     pPicture->id = pid;
-    pPicture->pSourcePict = (SourcePictPtr) malloc(sizeof(SourcePict));
+    pPicture->pSourcePict = calloc(1, sizeof(SourcePict));
     if (!pPicture->pSourcePict) {
         *error = BadAlloc;
         free(pPicture);
@@ -984,7 +983,7 @@ CreateConicalGradientPicture(Picture pid, xPointFixed * center, xFixed angle,
     }
 
     pPicture->id = pid;
-    pPicture->pSourcePict = (SourcePictPtr) malloc(sizeof(SourcePict));
+    pPicture->pSourcePict = calloc(1, sizeof(SourcePict));
     if (!pPicture->pSourcePict) {
         *error = BadAlloc;
         free(pPicture);
@@ -1332,8 +1331,7 @@ SetPictureTransform(PicturePtr pPicture, PictTransform * transform)
 
     if (transform) {
         if (!pPicture->transform) {
-            pPicture->transform =
-                (PictTransform *) malloc(sizeof(PictTransform));
+            pPicture->transform = calloc(1, sizeof(PictTransform));
             if (!pPicture->transform)
                 return BadAlloc;
         }
