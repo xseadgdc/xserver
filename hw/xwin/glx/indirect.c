@@ -882,9 +882,7 @@ glxWinCreateDrawable(ClientPtr client,
                      DrawablePtr pDraw,
                      XID drawId, int type, XID glxDrawId, __GLXconfig * conf)
 {
-    __GLXWinDrawable *glxPriv;
-
-    glxPriv = malloc(sizeof *glxPriv);
+    __GLXWinDrawable *glxPriv = calloc(1, sizeof *glxPriv);
 
     if (glxPriv == NULL)
         return NULL;
@@ -2008,7 +2006,7 @@ glxWinCreateConfigs(HDC hdc, glxWinScreen * screen)
         n++;
 
         // allocate and save
-        work = malloc(sizeof(GLXWinConfig));
+        work = calloc(1, sizeof(GLXWinConfig));
         if (NULL == work) {
             ErrorF("Failed to allocate GLXWinConfig\n");
             break;
@@ -2422,7 +2420,7 @@ glxWinCreateConfigsExt(HDC hdc, glxWinScreen * screen, PixelFormatRejectStats * 
         n++;
 
         // allocate and save
-        work = malloc(sizeof(GLXWinConfig));
+        work = calloc(1, sizeof(GLXWinConfig));
         if (NULL == work) {
             ErrorF("Failed to allocate GLXWinConfig\n");
             break;
