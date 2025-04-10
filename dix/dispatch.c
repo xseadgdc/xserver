@@ -635,7 +635,7 @@ CreateConnectionBlock(void)
         pad_to_int32(setup.nbytesVendor) +
         (setup.numFormats * sizeof(xPixmapFormat)) +
         (setup.numRoots * sizeof(xWindowRoot));
-    ConnectionInfo = malloc(lenofblock);
+    ConnectionInfo = calloc(1, lenofblock);
     if (!ConnectionInfo)
         return FALSE;
 
@@ -2566,7 +2566,6 @@ ProcUninstallColormap(ClientPtr client)
 int
 ProcListInstalledColormaps(ClientPtr client)
 {
-    xListInstalledColormapsReply *preply;
     int nummaps, rc;
     WindowPtr pWin;
 
@@ -2581,7 +2580,8 @@ ProcListInstalledColormaps(ClientPtr client)
     if (rc != Success)
         return rc;
 
-    preply = malloc(sizeof(xListInstalledColormapsReply) +
+    xListInstalledColormapsReply *preply = calloc(1,
+                    sizeof(xListInstalledColormapsReply) +
                     pWin->drawable.pScreen->maxInstalledCmaps *
                     sizeof(Colormap));
     if (!preply)
@@ -2696,7 +2696,7 @@ ProcAllocColorCells(ClientPtr client)
     if (rc == Success) {
         int npixels, nmasks;
         long length;
-        Pixel *ppixels, *pmasks;
+        Pixel *pmasks;
 
         npixels = stuff->colors;
         if (!npixels) {
@@ -2709,7 +2709,7 @@ ProcAllocColorCells(ClientPtr client)
         }
         nmasks = stuff->planes;
         length = ((long) npixels + (long) nmasks) * sizeof(Pixel);
-        ppixels = malloc(length);
+        Pixel *ppixels = calloc(1, length);
         if (!ppixels)
             return BadAlloc;
         pmasks = ppixels + npixels;
@@ -2758,7 +2758,6 @@ ProcAllocColorPlanes(ClientPtr client)
         xAllocColorPlanesReply acpr;
         int npixels;
         long length;
-        Pixel *ppixels;
 
         npixels = stuff->colors;
         if (!npixels) {
@@ -2776,7 +2775,7 @@ ProcAllocColorPlanes(ClientPtr client)
         };
         length = (long) npixels *sizeof(Pixel);
 
-        ppixels = malloc(length);
+        Pixel *ppixels = calloc(1, length);
         if (!ppixels)
             return BadAlloc;
         if ((rc = AllocColorPlanes(client->index, pcmp, npixels,
@@ -2988,7 +2987,6 @@ ProcCreateCursor(ClientPtr client)
     PixmapPtr src;
     PixmapPtr msk;
     unsigned char *srcbits;
-    unsigned char *mskbits;
     unsigned short width, height;
     long n;
     CursorMetricRec cm;
@@ -3036,7 +3034,8 @@ ProcCreateCursor(ClientPtr client)
     if (!srcbits)
         return BadAlloc;
     n = BitmapBytePad(width) * height;
-    mskbits = malloc(n);
+
+    unsigned char *mskbits = calloc(1, n);
     if (!mskbits) {
         free(srcbits);
         return BadAlloc;
