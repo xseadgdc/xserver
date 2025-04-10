@@ -406,7 +406,6 @@ Bool
 xf86RandRInit(ScreenPtr pScreen)
 {
     rrScrPrivPtr rp;
-    XF86RandRInfoPtr randrp;
     ScrnInfoPtr scrp = xf86ScreenToScrn(pScreen);
 
 #ifdef XINERAMA
@@ -420,7 +419,7 @@ xf86RandRInit(ScreenPtr pScreen)
     if (!dixRegisterPrivateKey(&xf86RandRKeyRec, PRIVATE_SCREEN, 0))
         return FALSE;
 
-    randrp = malloc(sizeof(XF86RandRInfoRec));
+    XF86RandRInfoPtr randrp = calloc(1, sizeof(XF86RandRInfoRec));
     if (!randrp)
         return FALSE;
 

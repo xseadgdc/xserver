@@ -371,7 +371,7 @@ AllocateArea(FBManagerPtr offman,
         if (((boxp->y2 - boxp->y1) < h) || ((boxp->x2 - x) < w))
             continue;
 
-        link = malloc(sizeof(FBLink));
+        link = calloc(1, sizeof(FBLink));
         if (!link)
             return NULL;
 
@@ -829,7 +829,6 @@ AllocateLinear(FBManagerPtr offman, int size, int granularity, void *privData)
 {
     ScreenPtr pScreen = offman->pScreen;
     FBLinearLinkPtr linear = NULL;
-    FBLinearLinkPtr newlink = NULL;
     int offset, end;
 
     if (size <= 0)
@@ -857,7 +856,7 @@ AllocateLinear(FBManagerPtr offman, int size, int granularity, void *privData)
 
     /* break left */
     if (offset > linear->linear.offset) {
-        newlink = malloc(sizeof(FBLinearLink));
+        FBLinearLinkPtr newlink = calloc(1, sizeof(FBLinearLink));
         if (!newlink)
             return NULL;
         newlink->area = NULL;
@@ -873,7 +872,7 @@ AllocateLinear(FBManagerPtr offman, int size, int granularity, void *privData)
 
     /* break right */
     if (size < linear->linear.size) {
-        newlink = malloc(sizeof(FBLinearLink));
+        FBLinearLinkPtr newlink = calloc(1, sizeof(FBLinearLink));
         if (!newlink)
             return NULL;
         newlink->area = NULL;
@@ -923,7 +922,7 @@ localAllocateOffscreenLinear(ScreenPtr pScreen,
 
     DebugF("NOPE, ALLOCATING AREA\n");
 
-    if (!(link = malloc(sizeof(FBLinearLink))))
+    if (!(link = calloc(1, sizeof(FBLinearLink))))
         return NULL;
 
     /* No linear available, so try and pinch some from the XY areas */
@@ -1309,7 +1308,6 @@ xf86InitFBManagerArea(ScreenPtr pScreen, int PixelArea, int Verbosity)
 Bool
 xf86InitFBManagerRegion(ScreenPtr pScreen, RegionPtr FullRegion)
 {
-    FBManagerPtr offman;
 
     if (RegionNil(FullRegion))
         return FALSE;
@@ -1320,7 +1318,7 @@ xf86InitFBManagerRegion(ScreenPtr pScreen, RegionPtr FullRegion)
     if (!xf86RegisterOffscreenManager(pScreen, &xf86FBManFuncs))
         return FALSE;
 
-    offman = malloc(sizeof(FBManager));
+    FBManagerPtr offman = calloc(1, sizeof(FBManager));
     if (!offman)
         return FALSE;
 
@@ -1362,7 +1360,7 @@ xf86InitFBManagerLinear(ScreenPtr pScreen, int offset, int size)
 
     offman = (FBManagerPtr) dixLookupPrivate(&pScreen->devPrivates,
                                              xf86FBScreenKey);
-    offman->LinearAreas = malloc(sizeof(FBLinearLink));
+    offman->LinearAreas = calloc(1, sizeof(FBLinearLink));
     if (!offman->LinearAreas)
         return FALSE;
 
