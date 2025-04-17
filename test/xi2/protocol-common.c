@@ -330,7 +330,7 @@ WRAP_FUNCTION(dixLookupWindow, int,
 
 extern ClientRec client_window;
 
-WRAP_FUNCTION(dixLookupClient, int,
+WRAP_FUNCTION(dixLookupResourceOwner, int,
               ClientPtr *pClient, XID rid, ClientPtr client, Mask access)
 {
     if (rid == ROOT_WINDOW_ID)
@@ -341,5 +341,5 @@ WRAP_FUNCTION(dixLookupClient, int,
         return Success;
     }
 
-    return __real_dixLookupClient(pClient, rid, client, access);
+    return __real_dixLookupResourceOwner(pClient, rid, client, access);
 }
