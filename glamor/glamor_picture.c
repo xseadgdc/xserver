@@ -35,6 +35,7 @@
  * back to software (readback is more expensive than the upload we do
  * here, and you'd have to re-upload the fallback output anyway).
  */
+#include <dix-config.h>
 
 #include <stdlib.h>
 

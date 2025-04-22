@@ -25,6 +25,7 @@
  *    Zhigang Gong <zhigang.gong@linux.intel.com>
  *
  */
+#include <dix-config.h>
 
 #include "glamor_priv.h"
 #include "glamor_transform.h"

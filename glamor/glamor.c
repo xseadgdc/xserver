@@ -30,6 +30,7 @@
  * This file covers the initialization and teardown of glamor, and has various
  * functions not responsible for performing rendering.
  */
+#include <dix-config.h>
 
 #include <stdlib.h>
 #include <unistd.h>
