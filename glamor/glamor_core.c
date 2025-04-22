@@ -31,6 +31,8 @@
  * This file covers core X rendering in glamor.
  */
 
+#include <dix-config.h>
+
 #include <stdlib.h>
 
 #include "glamor_priv.h"

@@ -1,3 +1,5 @@
+#include <dix-config.h>
+
 #include <stdlib.h>
 #include <stdint.h> /* For INT16_MAX */
 
