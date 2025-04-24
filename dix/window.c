@@ -665,27 +665,38 @@ CreateRootWindow(ScreenPtr pScreen)
 void
 InitRootWindow(WindowPtr pWin)
 {
+    fprintf(stderr, "InitRootWindow() 001 ENTER\n");
     ScreenPtr pScreen = pWin->drawable.pScreen;
     int backFlag = CWBorderPixel | CWCursor | CWBackingStore;
 
+    fprintf(stderr, "InitRootWindow() 002\n");
     if (!(*pScreen->CreateWindow) (pWin))
         return;                 /* XXX */
 
+    fprintf(stderr, "InitRootWindow() 003\n");
+
     dixScreenRaiseWindowPosition(pWin, 0, 0);
+
+    fprintf(stderr, "InitRootWindow() 004\n");
 
     pWin->cursorIsNone = FALSE;
     pWin->optional->cursor = RefCursor(rootCursor);
 
+    fprintf(stderr, "InitRootWindow() 005\n");
+
     if (party_like_its_1989) {
+        fprintf(stderr, "InitRootWindow() 006a\n");
         MakeRootTile(pWin);
         backFlag |= CWBackPixmap;
     }
     else if (pScreen->canDoBGNoneRoot && bgNoneRoot) {
+        fprintf(stderr, "InitRootWindow() 006b\n");
         pWin->backgroundState = XaceBackgroundNoneState(pWin);
         pWin->background.pixel = pScreen->whitePixel;
         backFlag |= CWBackPixmap;
     }
     else {
+        fprintf(stderr, "InitRootWindow() 006c\n");
         pWin->backgroundState = BackgroundPixel;
         if (whiteRoot)
             pWin->background.pixel = pScreen->whitePixel;
@@ -694,11 +705,17 @@ InitRootWindow(WindowPtr pWin)
         backFlag |= CWBackPixel;
     }
 
+    fprintf(stderr, "InitRootWindow() 007\n");
+
     pWin->backingStore = NotUseful;
     /* We SHOULD check for an error value here XXX */
+    fprintf(stderr, "InitRootWindow() 008\n");
     (*pScreen->ChangeWindowAttributes) (pWin, backFlag);
 
+    fprintf(stderr, "InitRootWindow() 009\n");
+
     MapWindow(pWin, serverClient);
+    fprintf(stderr, "InitRootWindow() 010 FIN\n");
 }
 
 /* Set the region to the intersection of the rectangle and the

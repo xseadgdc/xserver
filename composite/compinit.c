@@ -370,6 +370,7 @@ compScreenInit(ScreenPtr pScreen)
         pScreen->backingStoreSupport = WhenMapped;
 
     dixScreenHookWindowDestroy(pScreen, compWindowDestroy);
+    fprintf(stderr, "compext: hooking WindowPosition\n");
     dixScreenHookWindowPosition(pScreen, compWindowPosition);
 
     cs->CopyWindow = pScreen->CopyWindow;

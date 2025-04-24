@@ -151,11 +151,13 @@ dix_main(int argc, char *argv[], char *envp[])
     alwaysCheckForInput[1] = 1;
     while (1) {
         serverGeneration++;
+	fprintf(stderr, "startup: 001 %ld\n", serverGeneration);
         ScreenSaverTime = defaultScreenSaverTime;
         ScreenSaverInterval = defaultScreenSaverInterval;
         ScreenSaverBlanking = defaultScreenSaverBlanking;
         ScreenSaverAllowExposures = defaultScreenSaverAllowExposures;
 
+	fprintf(stderr, "startup: 002 %ld\n", serverGeneration);
         InitBlockAndWakeupHandlers();
         /* Perform any operating system dependent initializations you'd like */
         OsInit();
@@ -173,21 +175,26 @@ dix_main(int argc, char *argv[], char *envp[])
         clients[0] = serverClient;
         currentMaxClients = 1;
 
+	fprintf(stderr, "startup: 003 %ld\n", serverGeneration);
         /* clear any existing selections */
         InitSelections();
 
+	fprintf(stderr, "startup: 004 %ld\n", serverGeneration);
         /* Initialize privates before first allocation */
         dixResetPrivates();
 
         /* Initialize server client devPrivates, to be reallocated as
          * more client privates are registered
          */
+	fprintf(stderr, "startup: 005 %ld\n", serverGeneration);
         if (!dixAllocatePrivates(&serverClient->devPrivates, PRIVATE_CLIENT))
             FatalError("failed to create server client privates");
 
+	fprintf(stderr, "startup: 006 %ld\n", serverGeneration);
         if (!InitClientResources(serverClient)) /* for root resources */
             FatalError("couldn't init server resources");
 
+	fprintf(stderr, "startup: 007 %ld\n", serverGeneration);
         SetInputCheck(&alwaysCheckForInput[0], &alwaysCheckForInput[1]);
         screenInfo.numScreens = 0;
 
@@ -196,12 +203,16 @@ dix_main(int argc, char *argv[], char *envp[])
         xfont2_init_glyph_caching();
         dixResetRegistry();
         InitFonts();
+	fprintf(stderr, "startup: 008 %ld calling InitCallbackManager\n", serverGeneration);
         InitCallbackManager();
+	fprintf(stderr, "startup: 009 %ld returned from InitCallbackManager\n", serverGeneration);
         InitOutput(&screenInfo, argc, argv);
 
+	fprintf(stderr, "startup: 010 %ld returned from InitOutput\n", serverGeneration);
         if (screenInfo.numScreens < 1)
             FatalError("no screens found");
         InitExtensions(argc, argv);
+	fprintf(stderr, "startup: 011 %ld returned from InitExtensions\n", serverGeneration);
 
         for (i = 0; i < screenInfo.numGPUScreens; i++) {
             ScreenPtr pScreen = screenInfo.gpuscreens[i];
@@ -211,6 +222,8 @@ dix_main(int argc, char *argv[], char *envp[])
                 !(*pScreen->CreateScreenResources) (pScreen))
                 FatalError("failed to create screen resources");
         }
+
+	fprintf(stderr, "startup: 012 %ld processed gpuscreens\n", serverGeneration);
 
         for (i = 0; i < screenInfo.numScreens; i++) {
             ScreenPtr pScreen = screenInfo.screens[i];
@@ -229,6 +242,7 @@ dix_main(int argc, char *argv[], char *envp[])
             CallCallbacks(&RootWindowFinalizeCallback, pScreen);
         }
 
+	fprintf(stderr, "startup: 013 %ld processed screens\n", serverGeneration);
         if (SetDefaultFontPath(defaultFontPath) != Success) {
             ErrorF("[dix] failed to set default font path '%s'",
                    defaultFontPath);
@@ -242,26 +256,41 @@ dix_main(int argc, char *argv[], char *envp[])
         }
 
         rootCursor = RefCursor(rootCursor);
+	fprintf(stderr, "startup: 014 %ld created root cursor\n", serverGeneration);
 
 #ifdef XINERAMA
         /*
          * Consolidate window and colourmap information for each screen
          */
-        if (!noPanoramiXExtension)
+        if (!noPanoramiXExtension) {
+		fprintf(stderr, "startup: 014B %ld consolidate panoramix\n", serverGeneration);
             PanoramiXConsolidate();
+	}
 #endif /* XINERAMA */
 
-        for (i = 0; i < screenInfo.numScreens; i++)
+        fflush(stderr);
+
+        for (i = 0; i < screenInfo.numScreens; i++) {
+            fprintf(stderr, "init root window on screen %d\n", i);
             InitRootWindow(screenInfo.screens[i]->root);
+            fprintf(stderr, "finished root window on screen %d\n", i);
+        }
+
+	fflush(stderr);
+	fprintf(stderr, "startup: 015 %ld initialized root windows\n", serverGeneration);
+	fflush(stderr);
 
         InitCoreDevices();
         InitInput(argc, argv);
         InitAndStartDevices();
         ReserveClientIds(serverClient);
+	fprintf(stderr, "startup: 016 %ld\n", serverGeneration);
 
         dixSaveScreens(serverClient, SCREEN_SAVER_FORCER, ScreenSaverReset);
 
         dixCloseRegistry();
+
+	fprintf(stderr, "startup: 017 %ld\n", serverGeneration);
 
 #ifdef XINERAMA
         if (!noPanoramiXExtension) {
@@ -277,22 +306,33 @@ dix_main(int argc, char *argv[], char *envp[])
             }
         }
 
+	fprintf(stderr, "startup: 018 %ld\n", serverGeneration);
+
         NotifyParentProcess();
+	fprintf(stderr, "startup: 019 %ld\n", serverGeneration);
 
         InputThreadInit();
+	fprintf(stderr, "startup: 020 %ld\n", serverGeneration);
 
         Dispatch();
 
+	fprintf(stderr, "shutdown: 001 %ld\n", serverGeneration);
         UnrefCursor(rootCursor);
 
+	fprintf(stderr, "shutdown: 002 %ld\n", serverGeneration);
         UndisplayDevices();
+	fprintf(stderr, "shutdown: 003 %ld\n", serverGeneration);
         DisableAllDevices();
+	fprintf(stderr, "shutdown: 004 %ld\n", serverGeneration);
 
         /* Now free up whatever must be freed */
         if (screenIsSaved == SCREEN_SAVER_ON)
             dixSaveScreens(serverClient, SCREEN_SAVER_OFF, ScreenSaverReset);
         FreeScreenSaverTimer();
+	fprintf(stderr, "shutdown: 005 %ld\n", serverGeneration);
+
         CloseDownExtensions();
+	fprintf(stderr, "shutdown: 006 %ld\n", serverGeneration);
 
 #ifdef XINERAMA
         {
@@ -305,43 +345,56 @@ dix_main(int argc, char *argv[], char *envp[])
 #else
         FreeAllResources();
 #endif /* XINERAMA */
+	fprintf(stderr, "shutdown: 007 %ld\n", serverGeneration);
 
         CloseInput();
+	fprintf(stderr, "shutdown: 008 %ld\n", serverGeneration);
 
         InputThreadFini();
+
+	fprintf(stderr, "shutdown: 009 %ld\n", serverGeneration);
 
         for (i = 0; i < screenInfo.numScreens; i++)
             screenInfo.screens[i]->root = NullWindow;
 
+	fprintf(stderr, "shutdown: 010 %ld\n", serverGeneration);
+
         CloseDownDevices();
 
         CloseDownEvents();
+	fprintf(stderr, "shutdown: 011 %ld\n", serverGeneration);
 
         for (i = screenInfo.numGPUScreens - 1; i >= 0; i--) {
             dixFreeScreen(screenInfo.gpuscreens[i]);
             screenInfo.numGPUScreens = i;
         }
         memset(&screenInfo.numGPUScreens, 0, sizeof(screenInfo.numGPUScreens));
+	fprintf(stderr, "shutdown: 012 %ld\n", serverGeneration);
 
         for (i = screenInfo.numScreens - 1; i >= 0; i--) {
             dixFreeScreen(screenInfo.screens[i]);
             screenInfo.numScreens = i;
         }
         memset(&screenInfo.screens, 0, sizeof(screenInfo.numGPUScreens));
+	fprintf(stderr, "shutdown: 013 %ld\n", serverGeneration);
 
         ReleaseClientIds(serverClient);
         dixFreePrivates(serverClient->devPrivates, PRIVATE_CLIENT);
         serverClient->devPrivates = NULL;
+	fprintf(stderr, "shutdown: 014 %ld\n", serverGeneration);
 
 	dixFreeRegistry();
 
         FreeFonts();
+	fprintf(stderr, "shutdown: 015 %ld\n", serverGeneration);
 
         FreeAllAtoms();
 
         FreeAuditTimer();
 
+	fprintf(stderr, "shutdown: calling DeleteCallbackManager\n");
         DeleteCallbackManager();
+	fprintf(stderr, "shutdown: returned from DeleteCallbackManager\n");
 
         ClearWorkQueue();
 
@@ -349,15 +402,19 @@ dix_main(int argc, char *argv[], char *envp[])
             CloseWellKnownConnections();
         }
 
+	fprintf(stderr, "shutdown: 001\n");
         OsCleanup((dispatchException & DE_TERMINATE) != 0);
 
+	fprintf(stderr, "shutdown: 002\n");
         if (dispatchException & DE_TERMINATE) {
             ddxGiveUp(EXIT_NO_ERROR);
             break;
         }
 
+	fprintf(stderr, "shutdown: 003\n");
         free(ConnectionInfo);
         ConnectionInfo = NULL;
+	fprintf(stderr, "shutdown: 004\n");
     }
     return 0;
 }

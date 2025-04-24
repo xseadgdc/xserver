@@ -34,7 +34,9 @@ int dixScreenRaiseWindowDestroy(WindowPtr pWin)
 
     ScreenPtr pScreen = pWin->drawable.pScreen;
 
+    fprintf(stderr, "calling hookWindowDestroy\n");
     CallCallbacks(&pScreen->hookWindowDestroy, pWin);
+    fprintf(stderr, "returned from hookWindowDestroy\n");
 
     return (pScreen->DestroyWindow ? pScreen->DestroyWindow(pWin) : Success);
 }
@@ -44,7 +46,15 @@ void dixScreenRaiseWindowPosition(WindowPtr pWin, uint32_t x, uint32_t y)
     if (!pWin)
         return;
 
+    fprintf(stderr, "dixScreenRaiseWindowPosition: pWin=%p\n", pWin);
+
     ScreenPtr pScreen = pWin->drawable.pScreen;
+
+    if (!pScreen) {
+        fprintf(stderr, "dixScreenRaiseWindowPosition: window has no screen ?!\n");
+    } else {
+        fprintf(stderr, "dixScreenRaiseWindowPosition: screen %p\n", pScreen);
+    }
 
     XorgScreenWindowPositionParamRec param = {
         .window = pWin,
@@ -52,10 +62,14 @@ void dixScreenRaiseWindowPosition(WindowPtr pWin, uint32_t x, uint32_t y)
         .y = y,
     };
 
+    fprintf(stderr, "dixScreenRaiseWindowPosition: param=%p .. window=%p calling it\n", &param, param.window);
+    fprintf(stderr, "dixScreenRaiseWindowPosition: hookWindowPosition=%p .. calling it\n", pScreen->hookWindowPosition);
     CallCallbacks(&pScreen->hookWindowPosition, &param);
 
+    fprintf(stderr, "dixScreenRaiseWindowPosition: calling PositionWindow screen proc\n");
     if (pScreen->PositionWindow)
         pScreen->PositionWindow(pWin, x, y);
+    fprintf(stderr, "dixScreenRaiseWindowPosition: FIN\n");
 }
 
 void dixScreenRaiseClose(ScreenPtr pScreen) {
