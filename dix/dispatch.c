@@ -4011,14 +4011,11 @@ AddScreen(Bool (*pfnInit) (ScreenPtr /*pScreen */ ,
        any of the strings pointed to by argv.  They may be passed to
        multiple screens.
      */
-    fprintf(stderr, "AddScreen() index=%d hook=%p\n", i, pScreen->hookWindowPosition);
-
     screenInfo.screens[i] = pScreen;
     screenInfo.numScreens++;
     if (!(*pfnInit) (pScreen, argc, argv)) {
         dixFreeScreenSpecificPrivates(pScreen);
         dixFreePrivates(pScreen->devPrivates, PRIVATE_SCREEN);
-        fprintf(stderr, "AddScreen() abort index=%d hook=%p\n", i, pScreen->hookWindowPosition);
         free(pScreen);
         screenInfo.numScreens--;
         return -1;
@@ -4026,7 +4023,6 @@ AddScreen(Bool (*pfnInit) (ScreenPtr /*pScreen */ ,
 
     update_desktop_dimensions();
 
-    fprintf(stderr, "AddScreen() OK index=%d hook=%p\n", i, pScreen->hookWindowPosition);
     return i;
 }
 
@@ -4044,8 +4040,6 @@ AddGPUScreen(Bool (*pfnInit) (ScreenPtr /*pScreen */ ,
     i = screenInfo.numGPUScreens;
     if (i == MAXGPUSCREENS)
         return -1;
-
-    fprintf(stderr, "AddGPUScreen() %d\n", i);
 
     pScreen = (ScreenPtr) calloc(1, sizeof(ScreenRec));
     if (!pScreen)

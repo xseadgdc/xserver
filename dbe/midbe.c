@@ -458,11 +458,9 @@ void miDbeWindowPosition(CallbackListPtr *pcbl, ScreenPtr pScreen, XorgScreenWin
     GCPtr pGC;
     xRectangle clearRect;
 
-    fprintf(stderr, "miDbeWindowPosition 001 param=%p\n", param);
     WindowPtr pWin = param->window;
     pDbeScreenPriv = DBE_SCREEN_PRIV(pScreen);
 
-    fprintf(stderr, "miDbeWindowPosition 002 pWin=%p\n", pWin);
     /*
      **************************************************************************
      ** 5. Do any work necessary after the member routine has been called.
@@ -472,13 +470,10 @@ void miDbeWindowPosition(CallbackListPtr *pcbl, ScreenPtr pScreen, XorgScreenWin
     if (!(pDbeWindowPriv = DBE_WINDOW_PRIV(pWin)))
         return;
 
-    fprintf(stderr, "miDbeWindowPosition 002b pWin=%p\n", pWin);
-
     if (pDbeWindowPriv->width == pWin->drawable.width &&
         pDbeWindowPriv->height == pWin->drawable.height)
         return;
 
-    fprintf(stderr, "miDbeWindowPosition 003\n");
     width = pWin->drawable.width;
     height = pWin->drawable.height;
 
@@ -489,7 +484,6 @@ void miDbeWindowPosition(CallbackListPtr *pcbl, ScreenPtr pScreen, XorgScreenWin
 
     GravityTranslate(0, 0, -dx, -dy, dw, dh, pWin->bitGravity, &destx, &desty);
 
-    fprintf(stderr, "miDbeWindowPosition 004\n");
     clear = ((pDbeWindowPriv->width < (unsigned short) width) ||
              (pDbeWindowPriv->height < (unsigned short) height) ||
              (pWin->bitGravity == ForgetGravity));
@@ -506,7 +500,6 @@ void miDbeWindowPosition(CallbackListPtr *pcbl, ScreenPtr pScreen, XorgScreenWin
         destx = 0;
     }
 
-    fprintf(stderr, "miDbeWindowPosition 005\n");
     if (destx + savewidth > width) {
         savewidth = width - destx;
     }
@@ -521,15 +514,12 @@ void miDbeWindowPosition(CallbackListPtr *pcbl, ScreenPtr pScreen, XorgScreenWin
         saveheight = height - desty;
     }
 
-    fprintf(stderr, "miDbeWindowPosition 006\n");
     pDbeWindowPriv->width = width;
     pDbeWindowPriv->height = height;
     pDbeWindowPriv->x = pWin->drawable.x;
     pDbeWindowPriv->y = pWin->drawable.y;
 
     pGC = GetScratchGC(pWin->drawable.depth, pScreen);
-
-    fprintf(stderr, "miDbeWindowPosition 007\n");
 
     if (clear) {
         if ((*pDbeScreenPriv->SetupBackgroundPainter) (pWin, pGC)) {
@@ -543,8 +533,6 @@ void miDbeWindowPosition(CallbackListPtr *pcbl, ScreenPtr pScreen, XorgScreenWin
         }
     }
 
-    fprintf(stderr, "miDbeWindowPosition 008\n");
-
     /* Create DBE buffer pixmaps equal to size of resized window. */
     pFrontBuffer = (*pScreen->CreatePixmap) (pScreen, width, height,
                                              pWin->drawable.depth, 0);
@@ -552,7 +540,6 @@ void miDbeWindowPosition(CallbackListPtr *pcbl, ScreenPtr pScreen, XorgScreenWin
     pBackBuffer = (*pScreen->CreatePixmap) (pScreen, width, height,
                                             pWin->drawable.depth, 0);
 
-    fprintf(stderr, "miDbeWindowPosition 009\n");
     if (!pFrontBuffer || !pBackBuffer) {
         /* We failed at creating 1 or 2 of the pixmaps. */
 
@@ -619,8 +606,6 @@ void miDbeWindowPosition(CallbackListPtr *pcbl, ScreenPtr pScreen, XorgScreenWin
 
         FreeScratchGC(pGC);
     }
-
-    fprintf(stderr, "miDbeWindowPosition LEAVE\n");
 }
 
 /******************************************************************************
@@ -636,7 +621,6 @@ void miDbeWindowPosition(CallbackListPtr *pcbl, ScreenPtr pScreen, XorgScreenWin
 Bool
 miDbeInit(ScreenPtr pScreen, DbeScreenPrivPtr pDbeScreenPriv)
 {
-    fprintf(stderr, "midbe: hooking WindowPosition\n");
     dixScreenHookWindowPosition(pScreen, miDbeWindowPosition);
 
     /* Initialize the per-screen DBE function pointers. */

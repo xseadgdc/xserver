@@ -703,7 +703,6 @@ _CallCallbacks(CallbackListPtr *pcbl, void *call_data)
 
     ++(cbl->inCallback);
     for (cbr = cbl->list; cbr != NULL; cbr = cbr->next) {
-        fprintf(stderr, "CallCallbacks: cbr_data=%p call_data=%p\n", cbr->data, call_data);
         (*(cbr->proc)) (pcbl, cbr->data, call_data);
     }
     --(cbl->inCallback);
@@ -832,8 +831,6 @@ DeleteCallback(CallbackListPtr *pcbl, CallbackProcPtr callback, void *data)
 void
 DeleteCallbackManager(void)
 {
-    fprintf(stderr, "DeleteCallbackManager ENTER\n");
-
     int i;
 
     for (i = 0; i < numCallbackListsToCleanup; i++) {
@@ -843,7 +840,6 @@ DeleteCallbackManager(void)
 
     numCallbackListsToCleanup = 0;
     listsToCleanup = NULL;
-    fprintf(stderr, "DeleteCallbackManager FIN\n");
 }
 
 void
