@@ -96,6 +96,7 @@ in this Software without prior written authorization from The Open Group.
 #endif /* XINERAMA */
 
 typedef struct _ShmScrPrivateRec {
+    Bool initialized;
     CloseScreenProcPtr CloseScreen;
     ShmFuncsPtr shmFuncs;
     DestroyPixmapProcPtr destroyPixmap;
@@ -199,10 +200,10 @@ static Bool
 ShmCloseScreen(ScreenPtr pScreen)
 {
     ShmScrPrivateRec *screen_priv = ShmGetScreenPriv(pScreen);
-
-    pScreen->CloseScreen = screen_priv->CloseScreen;
-    dixSetPrivate(&pScreen->devPrivates, shmScrPrivateKey, NULL);
-    free(screen_priv);
+    if (screen_priv->initialized) {
+        pScreen->CloseScreen = screen_priv->CloseScreen;
+        screen_priv->initialized = FALSE;
+    }
     return (*pScreen->CloseScreen) (pScreen);
 }
 
@@ -211,11 +212,10 @@ ShmInitScreenPriv(ScreenPtr pScreen)
 {
     ShmScrPrivateRec *screen_priv = ShmGetScreenPriv(pScreen);
 
-    if (!screen_priv) {
-        screen_priv = calloc(1, sizeof(ShmScrPrivateRec));
+    if (!screen_priv->initialized) {
         screen_priv->CloseScreen = pScreen->CloseScreen;
-        dixSetPrivate(&pScreen->devPrivates, shmScrPrivateKey, screen_priv);
         pScreen->CloseScreen = ShmCloseScreen;
+        screen_priv->initialized = TRUE;
     }
     return screen_priv;
 }
@@ -223,7 +223,7 @@ ShmInitScreenPriv(ScreenPtr pScreen)
 static Bool
 ShmRegisterPrivates(void)
 {
-    if (!dixRegisterPrivateKey(&shmScrPrivateKeyRec, PRIVATE_SCREEN, 0))
+    if (!dixRegisterPrivateKey(&shmScrPrivateKeyRec, PRIVATE_SCREEN, sizeof(ShmScrPrivateRec)))
         return FALSE;
     if (!dixRegisterPrivateKey(&shmPixmapPrivateKeyRec, PRIVATE_PIXMAP, 0))
         return FALSE;
