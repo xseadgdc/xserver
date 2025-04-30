@@ -14,4 +14,6 @@ Bool xf86SbusConfigure(void *busData, sbusDevicePtr sBus);
 void xf86SbusConfigureNewDev(void *busData, sbusDevicePtr sBus, GDevRec* GDev);
 void xf86SbusProbe(void);
 
+void sparcPromAssignNodes(void);
+
 #endif /* _XSERVER_XF86_SBUSBUS_H */
