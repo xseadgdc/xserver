@@ -15,5 +15,6 @@ void xf86SbusConfigureNewDev(void *busData, sbusDevicePtr sBus, GDevRec* GDev);
 void xf86SbusProbe(void);
 
 void sparcPromAssignNodes(void);
+char *sparcPromNode2Pathname(sbusPromNodePtr pnode);
 
 #endif /* _XSERVER_XF86_SBUSBUS_H */
