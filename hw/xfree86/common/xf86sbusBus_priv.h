@@ -17,5 +17,6 @@ void xf86SbusProbe(void);
 void sparcPromAssignNodes(void);
 char *sparcPromNode2Pathname(sbusPromNodePtr pnode);
 int sparcPromPathname2Node(const char *pathName);
+char *sparcDriverName(void);
 
 #endif /* _XSERVER_XF86_SBUSBUS_H */
