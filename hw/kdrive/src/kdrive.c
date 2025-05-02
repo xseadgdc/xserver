@@ -611,7 +611,6 @@ KdSaveScreen(ScreenPtr pScreen, int on)
 static Bool
 KdCreateWindow(WindowPtr pWin)
 {
-#ifndef PHOENIX
     if (!pWin->parent) {
         KdScreenPriv(pWin->drawable.pScreen);
 
@@ -620,7 +619,6 @@ KdCreateWindow(WindowPtr pWin)
             RegionBreak(&pWin->clipList);
         }
     }
-#endif
     return fbCreateWindow(pWin);
 }
 
