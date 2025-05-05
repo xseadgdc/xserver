@@ -73,7 +73,6 @@
 #define fbOverlayGeneration wfbOverlayGeneration
 #define fbOverlayGetScreenPrivateKey wfbOverlayGetScreenPrivateKey
 #define fbOverlaySetupScreen wfbOverlaySetupScreen
-#define fbOverlayUpdateLayerRegion wfbOverlayUpdateLayerRegion
 #define fbOverlayWindowExposures wfbOverlayWindowExposures
 #define fbPadPixmap wfbPadPixmap
 #define fbPictureInit wfbPictureInit
