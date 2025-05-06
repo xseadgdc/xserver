@@ -3243,7 +3243,8 @@ DeviceEventSuppressForWindow(WindowPtr pWin, ClientPtr client, Mask mask,
     }
     RecalculateDeviceDeliverableEvents(pWin);
     if (ShouldFreeInputMasks(pWin, FALSE))
-        FreeResource(inputMasks->inputClients->resource, X11_RESTYPE_NONE);
+        if (inputMasks && inputMasks->inputClients)
+            FreeResource(inputMasks->inputClients->resource, X11_RESTYPE_NONE);
     return Success;
 }
 
