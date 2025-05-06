@@ -246,8 +246,10 @@ OsInit(void)
              */
             if (!(err = fopen(fname, "a+")))
                 err = fopen(devnull, "w");
-            if (err && (fileno(err) != 2)) {
-                dup2(fileno(err), 2);
+            if (err) {
+                if (fileno(err) != 2) {
+                    dup2(fileno(err), 2);
+                }
                 fclose(err);
             }
 #if defined(SVR4) || defined(WIN32) || defined(__CYGWIN__)

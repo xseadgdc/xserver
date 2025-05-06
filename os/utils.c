@@ -1148,7 +1148,6 @@ Popen(const char *command, const char *type)
 void *
 Fopen(const char *file, const char *type)
 {
-    FILE *iop;
     int ruid, euid;
 
     ruid = getuid();
@@ -1157,10 +1156,11 @@ Fopen(const char *file, const char *type)
     if (seteuid(ruid) == -1) {
         return NULL;
     }
-    iop = fopen(file, type);
+    FILE *iop = fopen(file, type);
 
     if (seteuid(euid) == -1) {
         fclose(iop);
+        iop = NULL;
         return NULL;
     }
     return iop;
