@@ -133,6 +133,9 @@ compHandleMarkedWindows(WindowPtr pWin, WindowPtr pLayerWin)
 int
 compRedirectWindow(ClientPtr pClient, WindowPtr pWin, int update)
 {
+    if (!pClient)
+        return BadMatch;
+
     CompWindowPtr cw = GetCompWindow(pWin);
     CompClientWindowPtr ccw;
     CompScreenPtr cs = GetCompScreen(pWin->drawable.pScreen);
@@ -323,7 +326,7 @@ compUnredirectWindow(ClientPtr pClient, WindowPtr pWin, int update)
     CompWindowPtr cw = GetCompWindow(pWin);
     CompClientWindowPtr ccw;
 
-    if (!cw)
+    if (!pClient || !cw)
         return BadValue;
 
     for (ccw = cw->clients; ccw; ccw = ccw->next)
