@@ -641,6 +641,11 @@ xwl_present_queue_vblank(ScreenPtr screen,
         return BadImplementation;
     }
 
+    if (!xwl_present_window) {
+        ErrorF("present: xwl_present_window = NULL\n");
+        return BadImplementation;
+    }
+
     event->vblank.exec_msc = msc;
 
     xorg_list_del(&event->vblank.event_queue);

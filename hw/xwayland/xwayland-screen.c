@@ -306,6 +306,7 @@ xwl_cursor_warped_to(DeviceIntPtr device,
 
     if (!xwl_seat)
         xwl_seat = xwl_screen_get_default_seat(xwl_screen);
+//    assert(xwl_seat);
 
     if (!window)
         window = XYToWindow(sprite, x, y);
@@ -524,6 +525,7 @@ registry_global(void *data, struct wl_registry *registry, uint32_t id,
     else if (strcmp(interface, wp_drm_lease_device_v1_interface.name) == 0) {
         if (xwl_screen->screen->root == NULL) {
             struct xwl_queued_drm_lease_device *queued = calloc(1, sizeof(struct xwl_queued_drm_lease_device));
+            assert(queued);
             queued->id = id;
             xorg_list_append(&queued->link, &xwl_screen->queued_drm_lease_devices);
         } else {
