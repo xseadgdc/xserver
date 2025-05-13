@@ -1,7 +1,10 @@
 #include <dix-config.h>
 
+#include <assert.h>
 #include <stdlib.h>
 #include <stdint.h> /* For INT16_MAX */
+
+#include "os/bug_priv.h"
 
 #include "glamor_priv.h"
 
@@ -192,6 +195,7 @@ glamor_compute_clipped_regions_ext(PixmapPtr pixmap,
         small_box.y2 = block_h;
     }
     else {
+        BUG_RETURN_VAL(!pixmap_priv, NULL);
         glamor_pixmap_private *priv = __glamor_large(pixmap_priv);
 
         clipped_regions = __glamor_compute_clipped_regions(priv->block_w,
@@ -1174,6 +1178,7 @@ glamor_composite_largepixmap_region(CARD8 op,
         /* XXX self-copy... */
         need_free_source_pixmap_priv = source_pixmap_priv;
         source_pixmap_priv = calloc(1, sizeof(*source_pixmap_priv));
+        BUG_RETURN_VAL(!source_pixmap_priv, FALSE);
         *source_pixmap_priv = *need_free_source_pixmap_priv;
         need_free_source_pixmap_priv = source_pixmap_priv;
     }

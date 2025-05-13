@@ -21,6 +21,10 @@
  */
 #include <dix-config.h>
 
+#include <assert.h>
+
+#include "os/bug_priv.h"
+
 #include "glamor_priv.h"
 #include "glamor_transfer.h"
 
@@ -51,6 +55,8 @@ glamor_upload_boxes(DrawablePtr drawable, BoxPtr in_boxes, int in_nbox,
 
     if (glamor_priv->has_unpack_subimage)
         glPixelStorei(GL_UNPACK_ROW_LENGTH, byte_stride / bytes_per_pixel);
+
+    BUG_RETURN(!priv);
 
     glamor_pixmap_loop(priv, box_index) {
         BoxPtr                  box = glamor_pixmap_box_at(priv, box_index);
@@ -154,6 +160,8 @@ glamor_download_boxes(DrawablePtr drawable, BoxPtr in_boxes, int in_nbox,
     glPixelStorei(GL_PACK_ALIGNMENT, 4);
     if (glamor_priv->has_pack_subimage)
         glPixelStorei(GL_PACK_ROW_LENGTH, byte_stride / bytes_per_pixel);
+
+    BUG_RETURN(!priv);
 
     glamor_pixmap_loop(priv, box_index) {
         BoxPtr                  box = glamor_pixmap_box_at(priv, box_index);

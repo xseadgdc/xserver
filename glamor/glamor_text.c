@@ -21,6 +21,8 @@
  */
 #include <dix-config.h>
 
+#include "os/bug_priv.h"
+
 #include "glamor_priv.h"
 #include <dixfontstr.h>
 #include "glamor_transform.h"
@@ -188,6 +190,8 @@ glamor_text(DrawablePtr drawable, GCPtr gc,
     if (nglyph != 0) {
 
         glEnable(GL_SCISSOR_TEST);
+
+        BUG_RETURN_VAL(!pixmap_priv, 0);
 
         glamor_pixmap_loop(pixmap_priv, box_index) {
             BoxPtr box = RegionRects(gc->pCompositeClip);

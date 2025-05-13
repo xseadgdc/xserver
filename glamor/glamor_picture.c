@@ -37,6 +37,7 @@
  */
 #include <dix-config.h>
 
+#include <assert.h>
 #include <stdlib.h>
 
 #include "glamor_priv.h"
@@ -287,6 +288,7 @@ glamor_upload_picture_to_texture(PicturePtr picture)
     const struct glamor_format *f = glamor_format_for_pixmap(pixmap);
 
     assert(glamor_pixmap_is_memory(pixmap));
+    assert(pixmap_priv);
     assert(!pixmap_priv->fbo);
 
     glamor_make_current(glamor_priv);
