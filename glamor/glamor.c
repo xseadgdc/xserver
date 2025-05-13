@@ -915,7 +915,6 @@ static void glamor_close_screen(CallbackListPtr *pcbl, ScreenPtr screen, void *u
 {
     glamor_screen_private *glamor_priv;
     PixmapPtr screen_pixmap;
-    PictureScreenPtr ps = GetPictureScreenIfSet(screen);
 
     glamor_priv = glamor_get_screen_private(screen);
     glamor_sync_close(screen);
@@ -934,11 +933,14 @@ static void glamor_close_screen(CallbackListPtr *pcbl, ScreenPtr screen, void *u
     screen->BitmapToRegion = glamor_priv->saved_procs.bitmap_to_region;
     screen->BlockHandler = glamor_priv->saved_procs.block_handler;
 
-    ps->Composite = glamor_priv->saved_procs.composite;
-    ps->Trapezoids = glamor_priv->saved_procs.trapezoids;
-    ps->Triangles = glamor_priv->saved_procs.triangles;
-    ps->CompositeRects = glamor_priv->saved_procs.composite_rects;
-    ps->Glyphs = glamor_priv->saved_procs.glyphs;
+    PictureScreenPtr ps = GetPictureScreenIfSet(screen);
+    if (ps) {
+        ps->Composite = glamor_priv->saved_procs.composite;
+        ps->Trapezoids = glamor_priv->saved_procs.trapezoids;
+        ps->Triangles = glamor_priv->saved_procs.triangles;
+        ps->CompositeRects = glamor_priv->saved_procs.composite_rects;
+        ps->Glyphs = glamor_priv->saved_procs.glyphs;
+    }
 
     screen_pixmap = screen->GetScreenPixmap(screen);
     glamor_pixmap_destroy_fbo(screen_pixmap);
