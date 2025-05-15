@@ -1116,7 +1116,7 @@ static Bool
 xwl_randr_output_set_property(ScreenPtr pScreen,
                               RROutputPtr output,
                               Atom property,
-                              RRPropertyValuePtr value)
+                              PropertyValuePtr value)
 {
     /* RANDR Emulation property is read-only. */
     if (get_rand_emulation_property() == property)
