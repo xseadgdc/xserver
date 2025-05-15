@@ -158,7 +158,7 @@ xwl_window_set_allow_commits_from_property(struct xwl_window *xwl_window,
     if (prop->propertyName != xwl_window->xwl_screen->allow_commits_prop)
         FatalError("Xwayland internal error: prop mismatch in %s.\n", __func__);
 
-    if (prop->type != XA_CARDINAL || prop->format != 32 || prop->size != 1) {
+    if (prop->value.type != XA_CARDINAL || prop->value.format != 32 || prop->value.size != 1) {
         /* Not properly set, so fall back to safe and glitchy */
         xwl_window_set_allow_commits(xwl_window, TRUE, "WM fault");
 
@@ -170,7 +170,7 @@ xwl_window_set_allow_commits_from_property(struct xwl_window *xwl_window,
         return;
     }
 
-    propdata = prop->data;
+    propdata = prop->value.data;
     xwl_window_set_allow_commits(xwl_window, !!propdata[0], "from property");
 }
 
