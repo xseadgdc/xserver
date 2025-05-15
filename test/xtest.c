@@ -127,7 +127,7 @@ xtest_properties(void)
 {
     int rc;
     char value = 1;
-    XIPropertyValuePtr prop;
+    PropertyValuePtr prop;
     Atom xtest_prop;
 
     xtest_init();
