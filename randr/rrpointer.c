@@ -22,6 +22,7 @@
 #include <dix-config.h>
 
 #include "dix/cursor_priv.h"
+#include "randr/randrstr_priv.h"
 
 #include "randrstr.h"
 #include "inputstr.h"
