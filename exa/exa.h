@@ -790,9 +790,6 @@ extern _X_EXPORT ExaOffscreenArea *exaOffscreenFree(ScreenPtr pScreen,
                                                     ExaOffscreenArea * area);
 
 extern _X_EXPORT void
- ExaOffscreenMarkUsed(PixmapPtr pPixmap);
-
-extern _X_EXPORT void
  exaEnableDisableFBAccess(ScreenPtr pScreen, Bool enable);
 
 extern _X_EXPORT Bool
