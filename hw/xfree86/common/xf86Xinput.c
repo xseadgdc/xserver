@@ -1394,7 +1394,7 @@ xf86PostButtonEventM(DeviceIntPtr device,
                        flags, mask);
 }
 
-void
+static void
 xf86PostKeyEvent(DeviceIntPtr device, unsigned int key_code, int is_down)
 {
 #ifdef XFreeXDGA
