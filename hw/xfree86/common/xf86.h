@@ -52,7 +52,6 @@
 #endif
 
 /* General parameters */
-extern _X_EXPORT Bool xf86ProbeIgnorePrimary;
 extern _X_EXPORT Bool xorgHWAccess;
 
 extern _X_EXPORT DevPrivateKeyRec xf86ScreenKeyRec;
