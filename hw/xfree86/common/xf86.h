@@ -78,8 +78,6 @@ extern _X_EXPORT confDRIRec xf86ConfigDRI;
 
 #define XF86SCRNINFO(p) xf86ScreenToScrn(p)
 
-#define BOOLTOSTRING(b) ((b) ? "TRUE" : "FALSE")
-
 /* Compatibility functions for pre-input-thread drivers */
 static inline _X_DEPRECATED int xf86BlockSIGIO(void) { input_lock(); return 0; }
 static inline _X_DEPRECATED void xf86UnblockSIGIO(int wasset) { input_unlock(); }
