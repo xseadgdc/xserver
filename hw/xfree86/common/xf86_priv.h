@@ -53,6 +53,8 @@ extern Bool xf86Initialising;
 extern int xf86NumScreens;
 extern const char *xf86VisualNames[];
 
+extern ScrnInfoPtr *xf86GPUScreens;      /* List of pointers to ScrnInfoRecs */
+
 /* xf86Cursor.c */
 void xf86LockZoom(ScreenPtr pScreen, int lock);
 void xf86InitViewport(ScrnInfoPtr pScr);
