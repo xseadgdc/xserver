@@ -47,7 +47,6 @@ extern _X_EXPORT xf86InfoRec xf86Info;
 
 extern _X_EXPORT DriverPtr *xf86DriverList;
 
-extern _X_EXPORT int xf86NumGPUScreens;
 extern _X_EXPORT int xf86DRMMasterFd;              /* Command line argument for DRM master file descriptor */
 #ifndef DEFAULT_VERBOSE
 #define DEFAULT_VERBOSE		0
