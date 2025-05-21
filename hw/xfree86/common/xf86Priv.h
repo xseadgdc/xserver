@@ -55,10 +55,6 @@ extern _X_EXPORT int xf86DRMMasterFd;              /* Command line argument for 
 /* xf86Bus.c */
 extern _X_EXPORT void xf86BusProbe(void);
 
-/* xf86Config.c */
-
-extern _X_EXPORT Bool xf86PathIsSafe(const char *path);
-
 /* xf86DefaultModes */
 
 extern _X_EXPORT const DisplayModeRec xf86DefaultModes[];
