@@ -27,6 +27,5 @@ void xf86EnableInputDeviceForVTSwitch(InputInfoPtr pInfo);
 /* xf86Helper.c */
 void xf86DeleteDriver(int drvIndex);
 void xf86DeleteScreen(ScrnInfoPtr pScrn);
-Bool xf86GetFlipPixels(void);
 
 #endif /* _XSERVER_XF86_PRIV_H */

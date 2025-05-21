@@ -1373,12 +1373,6 @@ xf86GetGamma(void)
 }
 
 Bool
-xf86GetFlipPixels(void)
-{
-    return xf86FlipPixels;
-}
-
-Bool
 xf86ServerIsExiting(void)
 {
     return (dispatchException & DE_TERMINATE) == DE_TERMINATE;
