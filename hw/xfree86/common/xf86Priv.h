@@ -46,7 +46,6 @@ extern _X_EXPORT int xf86Depth;
 extern _X_EXPORT xf86InfoRec xf86Info;
 
 extern _X_EXPORT DriverPtr *xf86DriverList;
-extern _X_EXPORT int xf86NumDrivers;
 extern _X_EXPORT Bool xf86Resetting;
 extern Bool xf86Initialising;
 extern _X_EXPORT int xf86NumScreens;
