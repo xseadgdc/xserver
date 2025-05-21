@@ -55,11 +55,6 @@ extern _X_EXPORT int xf86DRMMasterFd;              /* Command line argument for 
 /* xf86Bus.c */
 extern _X_EXPORT void xf86BusProbe(void);
 
-/* xf86Configure.c */
-extern _X_EXPORT void
-DoShowOptions(void)
-    _X_NORETURN;
-
 /* xf86Events.c */
 
 extern _X_EXPORT void
