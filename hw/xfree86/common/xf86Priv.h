@@ -46,7 +46,6 @@ extern _X_EXPORT int xf86Depth;
 extern _X_EXPORT xf86InfoRec xf86Info;
 
 extern _X_EXPORT DriverPtr *xf86DriverList;
-extern _X_EXPORT int xf86Verbose;       /* verbosity level */
 extern _X_EXPORT int xf86LogVerbose;    /* log file verbosity level */
 
 extern _X_EXPORT ScrnInfoPtr *xf86GPUScreens;      /* List of pointers to ScrnInfoRecs */
