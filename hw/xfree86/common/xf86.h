@@ -61,8 +61,6 @@ extern _X_EXPORT DevPrivateKeyRec xf86ScreenKeyRec;
 extern _X_EXPORT ScrnInfoPtr *xf86Screens;      /* List of pointers to ScrnInfoRecs */
 extern _X_EXPORT const unsigned char byte_reversed[256];
 
-extern _X_EXPORT confDRIRec xf86ConfigDRI;
-
 #define XF86SCRNINFO(p) xf86ScreenToScrn(p)
 
 /* Compatibility functions for pre-input-thread drivers */
