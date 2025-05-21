@@ -57,9 +57,6 @@ extern _X_EXPORT void xf86BusProbe(void);
 
 /* xf86Configure.c */
 extern _X_EXPORT void
-DoConfigure(void)
-    _X_NORETURN;
-extern _X_EXPORT void
 DoShowOptions(void)
     _X_NORETURN;
 
