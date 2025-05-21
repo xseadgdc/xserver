@@ -442,34 +442,6 @@ xf86CursorMoveCursor(DeviceIntPtr pDev, ScreenPtr pScreen, int x, int y)
         (*ScreenPriv->spriteFuncs->MoveCursor) (pDev, pScreen, x, y);
 }
 
-void
-xf86ForceHWCursor(ScreenPtr pScreen, Bool on)
-{
-    DeviceIntPtr pDev = inputInfo.pointer;
-    xf86CursorScreenPtr ScreenPriv =
-        (xf86CursorScreenPtr) dixLookupPrivate(&pScreen->devPrivates,
-                                               xf86CursorScreenKey);
-
-    if (on) {
-        if (ScreenPriv->ForceHWCursorCount++ == 0) {
-            if (ScreenPriv->SWCursor && ScreenPriv->CurrentCursor) {
-                ScreenPriv->HWCursorForced = TRUE;
-                xf86CursorSetCursor(pDev, pScreen, ScreenPriv->CurrentCursor,
-                                    ScreenPriv->x, ScreenPriv->y);
-            }
-            else
-                ScreenPriv->HWCursorForced = FALSE;
-        }
-    }
-    else {
-        if (--ScreenPriv->ForceHWCursorCount == 0) {
-            if (ScreenPriv->HWCursorForced && ScreenPriv->CurrentCursor)
-                xf86CursorSetCursor(pDev, pScreen, ScreenPriv->CurrentCursor,
-                                    ScreenPriv->x, ScreenPriv->y);
-        }
-    }
-}
-
 CursorPtr
 xf86CurrentCursor(ScreenPtr pScreen)
 {
