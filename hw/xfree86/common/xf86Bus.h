@@ -82,5 +82,6 @@ Bool xf86BusConfig(void);
 void xf86PostProbe(void);
 void xf86ClearEntityListForScreen(ScrnInfoPtr pScrn);
 void xf86AddDevToEntity(int entityIndex, GDevPtr dev);
+void xf86RemoveDevFromEntity(int entityIndex, GDevPtr dev);
 
 #endif                          /* _XF86_BUS_H */
