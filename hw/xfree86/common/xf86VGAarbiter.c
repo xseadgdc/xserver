@@ -32,6 +32,7 @@
 
 #include "dix/colormap_priv.h"
 
+#include "xf86_priv.h"
 #include "xf86VGAarbiter_priv.h"
 #include "xf86VGAarbiterPriv.h"
 #include "xf86Bus.h"

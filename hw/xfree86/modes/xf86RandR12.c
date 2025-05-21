@@ -29,7 +29,7 @@
 #include "dix/input_priv.h"
 #include "dix/screenint_priv.h"
 
-#include "xf86.h"
+#include "xf86_priv.h"
 #include "os.h"
 #include "globals.h"
 #include "xf86Modes.h"
