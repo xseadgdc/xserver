@@ -55,10 +55,6 @@ extern _X_EXPORT int xf86DRMMasterFd;              /* Command line argument for 
 /* xf86Bus.c */
 extern _X_EXPORT void xf86BusProbe(void);
 
-/* xf86Helper.c */
-extern _X_EXPORT void
-xf86CloseLog(enum ExitCode error);
-
 /* xf86Init.c */
 extern _X_EXPORT Bool
 xf86LoadModules(const char **list, void **optlist);
