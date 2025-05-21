@@ -58,8 +58,6 @@ extern _X_EXPORT void xf86BusProbe(void);
 /* xf86Events.c */
 
 extern _X_EXPORT void
-xf86Wakeup(void *blockData, int err);
-extern _X_EXPORT void
 xf86HandlePMEvents(int fd, void *data);
 extern _X_EXPORT int (*xf86PMGetEventFromOs) (int fd, pmEvent * events,
                                               int num);
