@@ -46,6 +46,7 @@ extern Bool xf86LogFileWasOpened;
 extern serverLayoutRec xf86ConfigLayout;
 
 extern int xf86NumDrivers;
+extern Bool xf86Resetting;
 
 /* xf86Cursor.c */
 void xf86LockZoom(ScreenPtr pScreen, int lock);
