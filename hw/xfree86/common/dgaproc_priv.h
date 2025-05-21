@@ -16,4 +16,6 @@ Bool DGAStealButtonEvent(DeviceIntPtr dev, int Index, int button, int is_down);
 Bool DGAStealMotionEvent(DeviceIntPtr dev, int Index, int dx, int dy);
 Bool DGAStealKeyEvent(DeviceIntPtr dev, int Index, int key_code, int is_down);
 
+Bool DGAReInitModes(ScreenPtr pScreen, DGAModePtr modes, int num);
+
 #endif /* __XSERVER_XFREE86_DGAPROC_H */
