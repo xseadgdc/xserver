@@ -48,12 +48,6 @@ extern _X_EXPORT xf86InfoRec xf86Info;
 extern _X_EXPORT DriverPtr *xf86DriverList;
 
 extern _X_EXPORT int xf86DRMMasterFd;              /* Command line argument for DRM master file descriptor */
-#ifndef DEFAULT_VERBOSE
-#define DEFAULT_VERBOSE		0
-#endif
-#ifndef DEFAULT_LOG_VERBOSE
-#define DEFAULT_LOG_VERBOSE	3
-#endif
 #ifndef DEFAULT_DPI
 #define DEFAULT_DPI		96
 #endif
