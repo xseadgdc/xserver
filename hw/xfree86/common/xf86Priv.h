@@ -55,10 +55,6 @@ extern _X_EXPORT int xf86DRMMasterFd;              /* Command line argument for 
 /* xf86Bus.c */
 extern _X_EXPORT void xf86BusProbe(void);
 
-/* xf86Events.c */
-
-extern _X_EXPORT pmWait (*xf86PMConfirmEventToOs) (int fd, pmEvent event);
-
 /* xf86Helper.c */
 extern _X_EXPORT void
 xf86LogInit(void);
