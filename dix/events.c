@@ -2523,18 +2523,18 @@ DeliverRawEvent(RawDeviceEvent *ev, DeviceIntPtr device)
 */
 
 #ifdef XINERAMA
-static int
+static inline Bool
 XineramaTryClientEventsResult(ClientPtr client,
                               GrabPtr grab, Mask mask, Mask filter)
 {
     if ((client) && (client != serverClient) && (!client->clientGone) &&
         ((filter == CantBeFiltered) || (mask & filter))) {
         if (grab && !SameClient(grab, client))
-            return -1;
+            return FALSE;
         else
-            return 1;
+            return TRUE;
     }
-    return 0;
+    return FALSE;
 }
 #endif /* XINERAMA */
 
@@ -2558,7 +2558,7 @@ Bool MaybeDeliverEventToClient(WindowPtr pWin, xEvent *pEvents,
 #ifdef XINERAMA
         if (!noPanoramiXExtension && pWin->drawable.pScreen->myNum)
             return XineramaTryClientEventsResult(dixClientForWindow(pWin), NullGrab,
-                                                 pWin->eventMask, filter) == 1;
+                                                 pWin->eventMask, filter);
 #endif /* XINERAMA */
         if (XaceHookReceiveAccess(dixClientForWindow(pWin), pWin, pEvents, 1))
             return TRUE;           /* don't send, but pretend we did */
@@ -2572,7 +2572,7 @@ Bool MaybeDeliverEventToClient(WindowPtr pWin, xEvent *pEvents,
 #ifdef XINERAMA
             if (!noPanoramiXExtension && pWin->drawable.pScreen->myNum)
                 return XineramaTryClientEventsResult(dixClientForOtherClients(other), NullGrab,
-                                                     other->mask, filter) == 1;
+                                                     other->mask, filter);
 #endif /* XINERAMA */
             if (XaceHookReceiveAccess(dixClientForOtherClients(other), pWin, pEvents, 1))
                 return TRUE;       /* don't send, but pretend we did */
