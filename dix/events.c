@@ -126,6 +126,7 @@ Equipment Corporation.
 #include "dix/extension_priv.h"
 #include "dix/input_priv.h"
 #include "dix/resource_priv.h"
+#include "dix/reqhandlers_priv.h"
 #include "os/bug_priv.h"
 #include "os/client_priv.h"
 #include "os/fmt.h"
