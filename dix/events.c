@@ -2548,8 +2548,8 @@ XineramaTryClientEventsResult(ClientPtr client,
  * @param dontClient Don't deliver to the dontClient.
  */
 int
-MaybeDeliverEventsToClient(WindowPtr pWin, xEvent *pEvents,
-                           int count, Mask filter, ClientPtr dontClient)
+MaybeDeliverEventToClient(WindowPtr pWin, xEvent *pEvents,
+                           Mask filter, ClientPtr dontClient)
 {
     OtherClients *other;
 
@@ -2561,9 +2561,9 @@ MaybeDeliverEventsToClient(WindowPtr pWin, xEvent *pEvents,
             return XineramaTryClientEventsResult(dixClientForWindow(pWin), NullGrab,
                                                  pWin->eventMask, filter);
 #endif /* XINERAMA */
-        if (XaceHookReceiveAccess(dixClientForWindow(pWin), pWin, pEvents, count))
+        if (XaceHookReceiveAccess(dixClientForWindow(pWin), pWin, pEvents, 1))
             return 1;           /* don't send, but pretend we did */
-        return TryClientEvents(dixClientForWindow(pWin), NULL, pEvents, count,
+        return TryClientEvents(dixClientForWindow(pWin), NULL, pEvents, 1,
                                pWin->eventMask, filter, NullGrab);
     }
     for (other = wOtherClients(pWin); other; other = other->next) {
@@ -2575,10 +2575,9 @@ MaybeDeliverEventsToClient(WindowPtr pWin, xEvent *pEvents,
                 return XineramaTryClientEventsResult(dixClientForOtherClients(other), NullGrab,
                                                      other->mask, filter);
 #endif /* XINERAMA */
-            if (XaceHookReceiveAccess(dixClientForOtherClients(other), pWin, pEvents,
-                         count))
+            if (XaceHookReceiveAccess(dixClientForOtherClients(other), pWin, pEvents, 1))
                 return 1;       /* don't send, but pretend we did */
-            return TryClientEvents(dixClientForOtherClients(other), NULL, pEvents, count,
+            return TryClientEvents(dixClientForOtherClients(other), NULL, pEvents, 1,
                                    other->mask, filter, NullGrab);
         }
     }

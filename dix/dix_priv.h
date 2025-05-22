@@ -338,19 +338,17 @@ Bool dixScreenRaiseCreateResources(ScreenPtr pScreen);
 void SetCriticalEvent(int event);
 
 /**
- * @brief try to deliver events to interested parties.
+ * @brief try to deliver (single) event to interested parties.
  *
  * @param pWindow    target window
- * @param pEvents    array of events to be delivered
- * @param nEvents    number of elements in *pEvents
+ * @param pEvent     array of events to be delivered
  * @param filter     filter mask based on event type
  * @param skipClient Don't deliver to the dontClient.
  * @return 0 when skipped (skipClient), 1 when delivered, 2 when nobody's interested
  */
-int MaybeDeliverEventsToClient(WindowPtr pWindow,
-                               xEvent *pEvents,
-                               int nEvents,
-                               Mask filter,
-                               ClientPtr skipClient);
+int MaybeDeliverEventToClient(WindowPtr pWindow,
+                              xEvent *pEvent,
+                              Mask filter,
+                              ClientPtr skipClient);
 
 #endif /* _XSERVER_DIX_PRIV_H */
