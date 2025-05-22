@@ -331,4 +331,10 @@ void dixScreenRaisePixmapDestroy(PixmapPtr pPixmap);
  */
 Bool dixScreenRaiseCreateResources(ScreenPtr pScreen);
 
+/*
+ * @brief mark event ID as critical
+ * @param event the event to add to the critical events bitmap
+ */
+void SetCriticalEvent(int event);
+
 #endif /* _XSERVER_DIX_PRIV_H */
