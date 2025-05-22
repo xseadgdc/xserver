@@ -267,11 +267,6 @@ FreeAllAtoms(void);
 extern _X_EXPORT void
 InitAtoms(void);
 
-/* main.c */
-
-extern _X_EXPORT void
-SetVendorRelease(int release);
-
 /* events.c */
 
 extern _X_EXPORT void

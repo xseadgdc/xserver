@@ -597,14 +597,6 @@ Dispatch(void)
     ResetOsBuffers();
 }
 
-static int VendorRelease = VENDOR_RELEASE;
-
-void
-SetVendorRelease(int release)
-{
-    VendorRelease = release;
-}
-
 Bool
 CreateConnectionBlock(void)
 {
@@ -622,7 +614,7 @@ CreateConnectionBlock(void)
     /* Leave off the ridBase and ridMask, these must be sent with
        connection */
 
-    setup.release = VendorRelease;
+    setup.release = VENDOR_RELEASE;
     /*
      * per-server image and bitmap parameters are defined in Xmd.h
      */
