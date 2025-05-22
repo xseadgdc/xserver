@@ -344,4 +344,12 @@ static inline int CountBits(const uint8_t * mask, int len)
 
 void AssignTypeAndName(DeviceIntPtr dev, Atom type, const char *name);
 
+/*
+ * @brief get current sprite cursor for input device
+ *
+ * @param pDev pointer to device structure
+ * @return pointer to device cursor
+ */
+CursorPtr InputDevGetSpriteCursor(DeviceIntPtr pDev);
+
 #endif /* _XSERVER_INPUT_PRIV_H */
