@@ -351,4 +351,14 @@ Bool MaybeDeliverEventToClient(WindowPtr pWindow,
                                Mask filter,
                                ClientPtr skipClient);
 
+/*
+ * @brief select window events to listen on
+ *
+ * @param pWindow   window to listen on
+ * @param pClient   the client that's listening on the events
+ * @param mask      mask of events to listen on
+ * @return X error code
+ */
+int EventSelectForWindow(WindowPtr pWindow, ClientPtr pClient, Mask mask);
+
 #endif /* _XSERVER_DIX_PRIV_H */
