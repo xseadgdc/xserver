@@ -33,6 +33,9 @@ extern char dispatchExceptionAtReset;
 extern int terminateDelay;
 extern Bool touchEmulatePointer;
 
+typedef int HWEventQueueType;
+typedef HWEventQueueType *HWEventQueuePtr;
+
 extern HWEventQueuePtr checkForInput[2];
 
  /* -retro mode */
@@ -42,6 +45,13 @@ static inline _X_NOTSAN Bool
 InputCheckPending(void)
 {
     return (*checkForInput[0] != *checkForInput[1]);
+}
+
+static inline void SetInputCheck(
+    HWEventQueuePtr c0, HWEventQueuePtr c1)
+{
+    checkForInput[0] = c0;
+    checkForInput[1] = c1;
 }
 
 void ClearWorkQueue(void);
