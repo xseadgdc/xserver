@@ -572,10 +572,10 @@ int TryClientEvents(ClientPtr pClient,
  * @param count         number of events in xE.
  * @param otherParent   Used for ReparentNotify events.
  */
-enum EventDeliveryState DeliverEvents(WindowPtr pWindow,
-                                      xEventPtr events,
-                                      size_t nEvents,
-                                      WindowPtr otherParent)
+enum EventDeliveryState dixDeliverEvents(WindowPtr pWindow,
+                                         xEventPtr events,
+                                         size_t nEvents,
+                                         WindowPtr otherParent)
     _X_ATTRIBUTE_NONNULL_ARG(1,2);
 
 /**

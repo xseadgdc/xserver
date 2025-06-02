@@ -173,7 +173,7 @@ deliverPropertyNotifyEvent(WindowPtr pWin, int state, PropertyPtr pProp)
     event.u.u.type = PropertyNotify;
 
     CallCallbacks(&PropertyStateCallback, &rec);
-    DeliverEvents(pWin, &event, 1, (WindowPtr) NULL);
+    dixDeliverEvents(pWin, &event, 1, (WindowPtr) NULL);
 }
 
 int
