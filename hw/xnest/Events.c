@@ -215,12 +215,11 @@ xnest_handle_event(xcb_generic_event_t *event)
             WindowPtr pWin = xnestWindowPtr(ev->window);
             if (pWin && ev->width && ev->height) {
                 RegionRec Rgn;
-                BoxRec Box = {
-                    .x1 = pWin->drawable.x + wBorderWidth(pWin) + ev->x,
-                    .y1 = pWin->drawable.y + wBorderWidth(pWin) + ev->y,
-                    .x2 = Box.x1 + ev->width,
-                    .y2 = Box.y1 + ev->height,
-                };
+                BoxRec Box;
+                Box.x1 = pWin->drawable.x + wBorderWidth(pWin) + ev->x;
+                Box.y1 = pWin->drawable.y + wBorderWidth(pWin) + ev->y;
+                Box.x2 = Box.x1 + ev->width;
+                Box.y2 = Box.y1 + ev->height;
                 RegionInit(&Rgn, &Box, 1);
                 miSendExposures(pWin, &Rgn, Box.x1, Box.y1);
             }
