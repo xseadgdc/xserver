@@ -113,6 +113,8 @@ the driver repositories are now moved to github:
 Contact
 -------
 
-* Mailing list: https://www.freelists.org/list/xlibre
-* Telegram channel: https://t.me/x11dev
-* Matrix room: https://matrix.to/#/#xlibre:matrix.org
+|  |  |
+| --- | --- |
+| Mailing list:                     | https://www.freelists.org/list/xlibre |
+| Telegram channel:                 | https://t.me/x11dev |
+| Matrix room (mirror of tg group): | https://matrix.to/#/#xlibre:matrix.org |
