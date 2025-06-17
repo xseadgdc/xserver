@@ -1784,10 +1784,8 @@ static int
 ProcRenderCreateAnimCursor(ClientPtr client)
 {
     REQUEST(xRenderCreateAnimCursorReq);
-    CursorPtr *cursors;
     CARD32 *deltas;
     CursorPtr pCursor;
-    int ncursor;
     xAnimCursorElt *elt;
     int i;
     int ret;
@@ -1796,10 +1794,14 @@ ProcRenderCreateAnimCursor(ClientPtr client)
     LEGAL_NEW_RESOURCE(stuff->cid, client);
     if (client->req_len & 1)
         return BadLength;
-    ncursor =
+
+    int ncursor =
         (client->req_len -
          (bytes_to_int32(sizeof(xRenderCreateAnimCursorReq)))) >> 1;
-    cursors = calloc(ncursor, sizeof(CursorPtr) + sizeof(CARD32));
+    if (ncursor <= 0)
+        return BadValue;
+
+    CursorPtr *cursors = calloc(ncursor, sizeof(CursorPtr) + sizeof(CARD32));
     if (!cursors)
         return BadAlloc;
     deltas = (CARD32 *) (cursors + ncursor);

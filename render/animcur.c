@@ -298,6 +298,9 @@ int
 AnimCursorCreate(CursorPtr *cursors, CARD32 *deltas, int ncursor,
                  CursorPtr *ppCursor, ClientPtr client, XID cid)
 {
+    if (ncursor <= 0)
+        return BadValue;
+
     CursorPtr pCursor;
     int rc = BadAlloc, i;
     AnimCurPtr ac;
