@@ -1,3 +1,5 @@
+![XLibre Logo](./XLibre_Logo.svg)
+
 XLibre Xserver
 ===============
 
