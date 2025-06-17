@@ -1,4 +1,4 @@
-![XLibre Logo](./XLibre_Logo.svg)
+<img src="./XLibre_Logo.svg" alt="XLibre Logo" width="200"/>
 
 XLibre Xserver
 ===============
