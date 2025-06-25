@@ -82,8 +82,17 @@ build_ac_xts() {
         clone_source "$pkgname" "$url" "$ref"
         (
             cd $pkgname
-            CFLAGS=-fcommon ./autogen.sh --prefix=$X11_PREFIX
-            xvfb-run make -j${FDO_CI_CONCURRENT:-4} install
+            CFLAGS='-fcommon'
+            if [ "$X11_OS" = "Darwin" ]; then
+                sed -E -i~ 's|(\[XTS\], \[)|\1xt xmu xaw7 |' configure.ac
+                sed -E -i~ -e 's|(XTextProperty)[[:space:]]+(text_prop_good)|\1 *\2|' -e 's|(style_good),[[:space:]]*&(text_prop_good)|\1,\2|' -e 's|text_prop_good\.|text_prop_good->|' xts5/Xlib14/X{mb,wc}TextListToTextProperty.m
+                CFLAGS="$CFLAGS -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0"
+                if cc -Werror=unknown-warning-option -Wincompatible-function-pointer-types -c -xc -o /dev/null /dev/null 2>/dev/null; then
+                    CFLAGS="$CFLAGS -Wno-error=incompatible-function-pointer-types"
+                fi
+            fi
+            ./autogen.sh --prefix=$X11_PREFIX CFLAGS="$CFLAGS"
+            make -j${FDO_CI_CONCURRENT:-4} install
         )
         touch $X11_PREFIX/$pkgname.DONE
     fi
