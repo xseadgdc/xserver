@@ -1,4 +1,4 @@
-<img src="./XLibre_Logo.svg" alt="XLibre Logo" width="200"/>
+<img src="./XLibre_Logo_Extended.svg" alt="XLibre Logo" width="600"/>
 
 XLibre Xserver
 ===============
