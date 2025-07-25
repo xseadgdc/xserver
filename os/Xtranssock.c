@@ -120,7 +120,6 @@ from the copyright holders.
 #undef close
 #define close closesocket
 #define EADDRINUSE WSAEADDRINUSE
-#define EPROTOTYPE WSAEPROTOTYPE
 #undef EWOULDBLOCK
 #define EWOULDBLOCK WSAEWOULDBLOCK
 #define EINPROGRESS WSAEINPROGRESS
