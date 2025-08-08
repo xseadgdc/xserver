@@ -141,7 +141,7 @@ conf_data.set('HAVE_SYS_SYSMACROS_H', cc.has_header('sys/sysmacros.h') ? '1' : f
 conf_data.set('HAVE_ARC4RANDOM_BUF', cc.has_function('arc4random_buf', dependencies: libbsd_dep) ? '1' : false)
 conf_data.set('HAVE_BACKTRACE', cc.has_function('backtrace') ? '1' : false)
 conf_data.set('HAVE_CBRT', cc.has_function('cbrt') ? '1' : false)
-conf_data.set('HAVE_EPOLL_CREATE1', cc.has_function('epoll_create1') ? '1' : false)
+conf_data.set('HAVE_EPOLL_CREATE1', cc.has_function('epoll_create1',dependencies:epoll_dep, prefix:'#include<sys/epoll.h>') ? '1' : false)
 conf_data.set('HAVE_GETUID', cc.has_function('getuid') ? '1' : false)
 conf_data.set('HAVE_GETEUID', cc.has_function('geteuid') ? '1' : false)
 conf_data.set('HAVE_ISASTREAM', cc.has_function('isastream') ? '1' : false)
@@ -204,6 +204,12 @@ conf_data.set('TCPCONN', '1')
 conf_data.set('UNIXCONN', host_machine.system() != 'windows' ? '1' : false)
 conf_data.set('IPv6', build_ipv6 ? '1' : false)
 
+# potentially tunable - needed also in places that cannot include misc.h
+conf_data.set('MAXCLIENTS', 2048)
+
+# Must be a power of 2 and <= MAXCLIENTS */
+conf_data.set('DIX_LIMITCLIENTS', 256)
+
 # some drivers (eg. xf86-video-intel) still relying on this symbol being set
 conf_data.set('COMPOSITE', '1')
 
@@ -217,6 +223,7 @@ if build_glx
     conf_data.set_quoted('DRI_DRIVER_PATH', dri_dep.get_variable(pkgconfig : 'dridriverdir'))
 endif
 conf_data.set('MITSHM', build_mitshm ? '1' : false)
+conf_data.set('CONFIG_MITSHM', build_mitshm ? '1' : false)
 
 # for backwards compat with drivers, still setting the old PANORAMIX symbol
 conf_data.set('PANORAMIX', build_xinerama ? '1' : false)
@@ -228,7 +235,7 @@ conf_data.set('RES', build_res ? '1' : false)
 conf_data.set('RENDER', '1')
 conf_data.set('SCREENSAVER', build_screensaver ? '1' : false)
 conf_data.set('SHAPE', '1')
-conf_data.set('XACE', build_xace ? '1' : false)
+conf_data.set('XACE', '1')
 conf_data.set('XCMISC', '1')
 conf_data.set('XCSECURITY', build_xsecurity ? '1' : false)
 conf_data.set('CONFIG_NAMESPACE', build_namespace ? '1' : false)
@@ -260,7 +267,6 @@ conf_data.set('HAVE_LIBUNWIND', get_option('libunwind'))
 conf_data.set('HAVE_APM', (build_apm or build_acpi) ? '1' : false)
 conf_data.set('HAVE_ACPI', build_acpi ? '1' : false)
 
-conf_data.set('DDXBEFORERESET', build_xwin ? '1' : false)
 enable_debugging = get_option('buildtype') == 'debug'
 conf_data.set('DEBUG', enable_debugging ? '1' : false)
 
@@ -440,6 +446,7 @@ if build_xorg
             'extension.h',
             'extinit.h',
             'extnsionst.h',
+            'fd_notify.h',
             'fourcc.h',
             'gc.h',
             'gcstruct.h',

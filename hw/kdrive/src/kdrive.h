@@ -280,12 +280,12 @@ void KdRemoveKeyboard(KdKeyboardInfo * ki);
 
 typedef struct _KdOsFuncs {
     int (*Init) (void); /* Only called when the X server is started, when serverGeneration == 1 */
-    void (*Enable) (void);
+    void (*Enable) (void);        /* called when screen is enabled */
+    void (*Disable) (void);       /* called when screen is disabled */
     Bool (*SpecialKey) (KeySym);
-    void (*Disable) (void);
     void (*Fini) (void);
-    void (*pollEvents) (void);
-    void (*Bell) (int, int, int);
+    void (*pollEvents) (void);    /* called when driver shall poll for new events */
+    void (*Bell) (int, int, int); /* if not NULL called instead of the keyboard driver's function */
 } KdOsFuncs;
 
 typedef struct _KdPointerMatrix {
@@ -296,8 +296,18 @@ extern DevPrivateKeyRec kdScreenPrivateKeyRec;
 
 #define kdScreenPrivateKey (&kdScreenPrivateKeyRec)
 
+extern unsigned long kdGeneration;
+extern Bool kdEnabled;
 extern Bool kdEmulateMiddleButton;
 extern Bool kdDisableZaphod;
+extern char *kdSwitchCmd;
+
+/*
+ * pointer to OS/platform specific callbacks from kdrive core back
+ * into the individual Xserver implementations.
+ * Initialized via KdOSInit()
+ */
+extern const KdOsFuncs *kdOsFuncs;
 
 /*
  * pointer to OS/platform specific callbacks from kdrive core back
@@ -331,11 +341,20 @@ int
 void
  KdStoreColors(ColormapPtr pCmap, int ndef, xColorItem * pdefs);
 
+void KdSetColormap(ScreenPtr pScreen);
+
 /* kdrive.c */
 extern miPointerScreenFuncRec kdPointerScreenFuncs;
 
+void KdSuspend(void);
+
+void KdInitScreen(ScreenInfo * pScreenInfo,
+                  KdScreenInfo * screen, int argc, char **argv);
+
 void
  KdDisableScreen(ScreenPtr pScreen);
+
+void KdDisableScreens(void);
 
 Bool
  KdEnableScreen(ScreenPtr pScreen);
@@ -353,8 +372,14 @@ Rotation KdSubRotation(Rotation a, Rotation b);
 void
  KdParseScreen(KdScreenInfo * screen, const char *arg);
 
+KdPointerInfo *KdParsePointer(const char *arg);
+
+KdKeyboardInfo *KdParseKeyboard(const char *arg);
+
 const char *
 KdParseFindNext(const char *cur, const char *delim, char *save, char *last);
+
+void KdParseRgba(char *rgba);
 
 void
  KdUseMsg(void);
@@ -373,6 +398,14 @@ void KdOsInit(const KdOsFuncs * pOsFuncs);
 
 void
  KdOsAddInputDrivers(void);
+
+Bool KdAllocatePrivates(ScreenPtr pScreen);
+
+Bool KdCreateScreenResources(ScreenPtr pScreen);
+
+Bool KdSaveScreen(ScreenPtr pScreen, int on);
+
+Bool KdScreenInit(ScreenPtr pScreen, int argc, char **argv);
 
 void
  KdInitCard(ScreenInfo * pScreenInfo, KdCardInfo * card, int argc, char **argv);
@@ -405,6 +438,12 @@ void
 void
  KdCloseInput(void);
 
+Bool KdRegisterFd(int fd, void (*read) (int fd, void *closure), void *closure);
+
+void KdUnregisterFds(void *closure, Bool do_close);
+
+void KdUnregisterFd(void *closure, int fd, Bool do_close);
+
 void
 KdEnqueueKeyboardEvent(KdKeyboardInfo * ki, unsigned char scan_code,
                        unsigned char is_up);
@@ -421,6 +460,11 @@ KdEnqueueKeyboardEvent(KdKeyboardInfo * ki, unsigned char scan_code,
 void
 KdEnqueuePointerEvent(KdPointerInfo * pi, unsigned long flags, int rx, int ry,
                       int rz);
+
+void _KdEnqueuePointerEvent(KdPointerInfo * pi, int type, int x, int y, int z,
+                            int b, int absrel, Bool force);
+
+void KdSetLed(KdKeyboardInfo * ki, int led, Bool on);
 
 void
  KdSetPointerMatrix(KdPointerMatrix *pointer);
@@ -440,6 +484,8 @@ void
 
 void
  KdEnableInput(void);
+
+void KdRingBell(KdKeyboardInfo * ki, int volume, int pitch, int duration);
 
 /* kshadow.c */
 Bool

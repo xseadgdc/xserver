@@ -59,8 +59,6 @@ SOFTWARE.
 #define SAMETIME 0
 #define LATER 1
 
-#define NullClient ((ClientPtr) 0)
-
 #define REQUEST(type)                                                   \
     type * stuff = (type *)client->requestBuffer;
 
@@ -90,15 +88,6 @@ SOFTWARE.
             (((n) >> 2) >= client->req_len) ||                         \
             ((((uint64_t) sizeof(req) + (n) + 3) >> 2) != (uint64_t) client->req_len)) \
             return(BadLength);                                          \
-    } while (0)
-
-#define WriteReplyToClient(pClient, size, pReply)                       \
-    do {                                                                \
-        if ((pClient)->swapped)                                         \
-            (*ReplySwapVector[((xReq *)(pClient)->requestBuffer)->reqType]) \
-                (pClient, (int)(size), pReply);                         \
-        else                                                            \
-            WriteToClient(pClient, (int)(size), (pReply));              \
     } while (0)
 
 #define WriteSwappedDataToClient(pClient, size, pbuf)                   \

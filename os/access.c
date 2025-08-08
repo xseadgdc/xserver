@@ -84,16 +84,16 @@ SOFTWARE.
 
 #include <stdio.h>
 #include <stdlib.h>
-#define XSERV_t
-#define TRANS_SERVER
-#define TRANS_REOPEN
-#include <X11/Xtrans/Xtrans.h>
+#include "os/Xtrans.h"
 #include <X11/Xauth.h>
 #include <X11/X.h>
 #include <X11/Xproto.h>
 #include "misc.h"
 #include <errno.h>
 #include <sys/types.h>
+
+#include "os/xhostname.h"
+
 #ifndef WIN32
 #include <sys/socket.h>
 #include <sys/ioctl.h>
@@ -406,7 +406,6 @@ DefineSelf(int fd)
     caddr_t addr;
     int family;
     register HOST *host;
-    struct utsname name;
     register struct hostent *hp;
 
     union {
@@ -432,9 +431,10 @@ DefineSelf(int fd)
      * uname() lets me access to the whole string (it smashes release, you
      * see), whereas gethostname() kindly truncates it for me.
      */
-    uname(&name);
+    struct xhostname hn;
+    xhostname(&hn);
 
-    hp = _XGethostbyname(name.nodename, hparams);
+    hp = _XGethostbyname(hn.name, hparams);
     if (hp != NULL) {
         saddr.sa.sa_family = hp->h_addrtype;
         switch (hp->h_addrtype) {

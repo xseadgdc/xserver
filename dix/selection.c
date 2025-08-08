@@ -126,30 +126,26 @@ CallSelectionCallback(Selection * pSel, ClientPtr client,
 void
 DeleteWindowFromAnySelections(WindowPtr pWin)
 {
-    Selection *pSel;
-
-    for (pSel = CurrentSelections; pSel; pSel = pSel->next)
+    for (Selection *pSel = CurrentSelections; pSel; pSel = pSel->next)
         if (pSel->pWin == pWin) {
             CallSelectionCallback(pSel, NULL, SelectionWindowDestroy);
 
             pSel->pWin = (WindowPtr) NULL;
             pSel->window = None;
-            pSel->client = NullClient;
+            pSel->client = NULL;
         }
 }
 
 void
 DeleteClientFromAnySelections(ClientPtr client)
 {
-    Selection *pSel;
-
-    for (pSel = CurrentSelections; pSel; pSel = pSel->next)
+    for (Selection *pSel = CurrentSelections; pSel; pSel = pSel->next)
         if (pSel->client == client) {
             CallSelectionCallback(pSel, NULL, SelectionClientClose);
 
             pSel->pWin = (WindowPtr) NULL;
             pSel->window = None;
-            pSel->client = NullClient;
+            pSel->client = NULL;
         }
 }
 
@@ -235,7 +231,7 @@ ProcSetSelectionOwner(ClientPtr client)
     pSel->lastTimeChanged = time;
     pSel->window = param.owner;
     pSel->pWin = pWin;
-    pSel->client = (pWin ? client : NullClient);
+    pSel->client = (pWin ? client : NULL);
 
     CallSelectionCallback(pSel, client, SelectionSetOwner);
     return Success;

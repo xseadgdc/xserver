@@ -17,10 +17,7 @@
 
 #ifdef WIN32
 #include <X11/Xwinsock.h>
-#define XSERV_t
-#define TRANS_SERVER
-#define TRANS_REOPEN
-#include <X11/Xtrans/Xtrans.h>
+#include "os/Xtrans.h"
 #endif
 
 #include <X11/Xos.h>
@@ -40,6 +37,7 @@
 
 #include "dix/dix_priv.h"
 #include "os/auth.h"
+#include "os/ossock.h"
 
 #include "misc.h"
 #include "osdep.h"
@@ -48,10 +46,7 @@
 #include "input.h"
 #include "dixstruct.h"
 
-#define XSERV_t
-#define TRANS_SERVER
-#define TRANS_REOPEN
-#include <X11/Xtrans/Xtrans.h>
+#include "os/Xtrans.h"
 
 #ifdef XDMCP
 #undef REQUEST
@@ -1418,9 +1413,7 @@ get_addr_by_name(const char *argtype,
 #ifdef XTHREADS_NEEDS_BYNAMEPARAMS
     _Xgethostbynameparams hparams;
 #endif
-#if defined(WIN32) && defined(TCPCONN)
-    _XSERVTransWSAStartup();
-#endif
+    ossock_init();
     if (!(hep = _XGethostbyname(namestr, hparams))) {
         FatalError("Xserver: %s unknown host: %s\n", argtype, namestr);
     }

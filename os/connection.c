@@ -67,11 +67,8 @@ SOFTWARE.
 #endif
 #include <X11/X.h>
 #include <X11/Xproto.h>
-#define XSERV_t
-#define TRANS_SERVER
-#define TRANS_REOPEN
-#include <X11/Xtrans/Xtrans.h>
-#include <X11/Xtrans/Xtransint.h>
+#include "os/Xtrans.h"
+#include "os/Xtransint.h"
 #include <errno.h>
 #include <signal.h>
 #include <stdio.h>
@@ -100,6 +97,7 @@ SOFTWARE.
 #include "os/client_priv.h"
 #include "os/log_priv.h"
 #include "os/osdep.h"
+#include "os/probes_priv.h"
 
 #include "misc.h"               /* for typedef of pointer */
 #include "dixstruct_priv.h"
@@ -117,7 +115,6 @@ SOFTWARE.
 #include <systemd/sd-daemon.h>
 #endif
 
-#include "probes.h"
 #include "xdmcp.h"
 
 #define MAX_CONNECTIONS (1<<16)
@@ -147,7 +144,7 @@ set_poll_clients(void);
 
 static XtransConnInfo *ListenTransConns = NULL;
 static int *ListenTransFds = NULL;
-static int ListenTransCount;
+static uint32_t ListenTransCount = 0;
 
 static void ErrorConnMax(XtransConnInfo /* trans_conn */ );
 
@@ -626,7 +623,7 @@ AllocNewConnection(XtransConnInfo trans_conn, int fd, CARD32 conn_time)
 
     OsCommPtr oc = calloc(1, sizeof(OsCommRec));
     if (!oc)
-        return NullClient;
+        return NULL;
     oc->trans_conn = trans_conn;
     oc->fd = fd;
     oc->input = (ConnectionInputPtr) NULL;
@@ -636,7 +633,7 @@ AllocNewConnection(XtransConnInfo trans_conn, int fd, CARD32 conn_time)
     oc->flags = 0;
     if (!(client = NextAvailableClient((void *) oc))) {
         free(oc);
-        return NullClient;
+        return NULL;
     }
     client->local = ComputeLocalClient(client);
     ospoll_add(server_poll, fd,
@@ -693,7 +690,7 @@ EstablishNewConnections(int curconn, int ready, void *data)
 
     newconn = _XSERVTransGetConnectionNumber(new_trans_conn);
 
-    _XSERVTransSetOption(new_trans_conn, TRANS_NONBLOCKING, 1);
+    _XSERVTransNonBlock(new_trans_conn);
 
     if (trans_conn->flags & TRANS_NOXAUTH)
         new_trans_conn->flags = new_trans_conn->flags | TRANS_NOXAUTH;
@@ -703,8 +700,6 @@ EstablishNewConnections(int curconn, int ready, void *data)
     }
     return;
 }
-
-#define NOROOM "Maximum number of clients reached"
 
 /************
  *   ErrorConnMax
@@ -720,29 +715,28 @@ ConnMaxNotify(int fd, int events, void *data)
     /* try to read the byte-order of the connection */
     (void) _XSERVTransRead(trans_conn, &order, 1);
     if (order == 'l' || order == 'B' || order == 'r' || order == 'R') {
-        xConnSetupPrefix csp;
-        char pad[3] = { 0, 0, 0 };
         int whichbyte = 1;
-        struct iovec iov[3];
 
-        csp.success = xFalse;
-        csp.lengthReason = sizeof(NOROOM) - 1;
-        csp.length = (sizeof(NOROOM) + 2) >> 2;
-        csp.majorVersion = X_PROTOCOL;
-        csp.minorVersion = X_PROTOCOL_REVISION;
+/* 36 bytes (with zero) -- needs to be padded to 4*n */
+#define ERR_TEXT "Maximum number of clients reached\0\0"
+
+        xConnSetupPrefix csp = {
+            .success = xFalse,
+            .lengthReason = sizeof(ERR_TEXT),
+            .length = sizeof(ERR_TEXT) >> 2,
+            .majorVersion = X_PROTOCOL,
+            .minorVersion = X_PROTOCOL_REVISION,
+        };
+
         if (((*(char *) &whichbyte) && (order == 'B' || order == 'R')) ||
             (!(*(char *) &whichbyte) && (order == 'l' || order == 'r'))) {
             swaps(&csp.majorVersion);
             swaps(&csp.minorVersion);
             swaps(&csp.length);
         }
-        iov[0].iov_len = sz_xConnSetupPrefix;
-        iov[0].iov_base = (char *) &csp;
-        iov[1].iov_len = csp.lengthReason;
-        iov[1].iov_base = (void *) NOROOM;
-        iov[2].iov_len = (4 - (csp.lengthReason & 3)) & 3;
-        iov[2].iov_base = pad;
-        (void) _XSERVTransWritev(trans_conn, iov, 3);
+
+        _XSERVTransWrite(trans_conn, (const char*)&csp, sizeof(csp));
+        _XSERVTransWrite(trans_conn, ERR_TEXT, sizeof(ERR_TEXT));
     }
     RemoveNotifyFd(trans_conn->fd);
     _XSERVTransClose(trans_conn);
@@ -790,7 +784,7 @@ CloseDownConnection(ClientPtr client)
         CallCallbacks(&FlushCallback, client);
 
     if (oc->output)
-	FlushClient(client, oc, (char *) NULL, 0);
+	FlushClient(client, oc);
     CloseDownFileDescriptor(oc);
     FreeOsBuffers(oc);
     free(client->osPrivate);
@@ -1061,7 +1055,7 @@ ListenOnOpenFD(int fd, int noxauth)
     ListenTransCount++;
 }
 
-/* based on TRANS(SocketUNIXAccept) (XtransConnInfo ciptr, int *status) */
+/* based on _XSERVTransSocketUNIXAccept (XtransConnInfo ciptr, int *status) */
 Bool
 AddClientOnOpenFD(int fd)
 {
@@ -1074,7 +1068,7 @@ AddClientOnOpenFD(int fd)
     if (ciptr == NULL)
         return FALSE;
 
-    _XSERVTransSetOption(ciptr, TRANS_NONBLOCKING, 1);
+    _XSERVTransNonBlock(ciptr);
     ciptr->flags |= TRANS_NOXAUTH;
 
     connect_time = GetTimeInMillis();

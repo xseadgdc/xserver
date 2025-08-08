@@ -70,7 +70,7 @@ RROutputCreate(ScreenPtr pScreen,
     RROutputPtr output;
     RROutputPtr *outputs;
     rrScrPrivPtr pScrPriv;
-    Atom nonDesktopAtom;
+    Atom DPIAtom;
 
     if (!RRInit())
         return NULL;
@@ -102,13 +102,25 @@ RROutputCreate(ScreenPtr pScreen,
 
     pScrPriv->outputs[pScrPriv->numOutputs++] = output;
 
-    nonDesktopAtom = MakeAtom(RR_PROPERTY_NON_DESKTOP, strlen(RR_PROPERTY_NON_DESKTOP), TRUE);
+    Atom nonDesktopAtom = dixAddAtom(RR_PROPERTY_NON_DESKTOP);
     if (nonDesktopAtom != BAD_RESOURCE) {
         static const INT32 values[2] = { 0, 1 };
         (void) RRConfigureOutputProperty(output, nonDesktopAtom, FALSE, FALSE, FALSE,
                                             2, values);
     }
     RROutputSetNonDesktop(output, FALSE);
+
+    /* Initialize DPI property for all outputs. */
+    DPIAtom = dixAddAtom("DPI");
+    if (DPIAtom != BAD_RESOURCE) {
+        static const INT32 values[2] = { 0, 960 }; // arbitrary range
+        (void) RRConfigureOutputProperty(output, DPIAtom, FALSE, TRUE, FALSE,
+                                         2, values);
+        INT32 value = monitorResolution ? monitorResolution : 96;
+        (void) RRChangeOutputProperty(output, DPIAtom, XA_INTEGER, 32,
+                                      PropModeReplace, 1, &value, FALSE, FALSE);
+    }
+
     RRResourcesChanged(pScreen);
 
     return output;
@@ -310,7 +322,7 @@ Bool
 RROutputSetNonDesktop(RROutputPtr output, Bool nonDesktop)
 {
     const char *nonDesktopStr = RR_PROPERTY_NON_DESKTOP;
-    Atom nonDesktopProp = MakeAtom(nonDesktopStr, strlen(nonDesktopStr), TRUE);
+    Atom nonDesktopProp = dixAddAtom(nonDesktopStr);
     uint32_t value = nonDesktop ? 1 : 0;
 
     if (nonDesktopProp == None || nonDesktopProp == BAD_RESOURCE)

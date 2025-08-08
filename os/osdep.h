@@ -43,19 +43,12 @@ ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 SOFTWARE.
 
 ******************************************************************/
-
-#ifdef HAVE_DIX_CONFIG_H
-#include <dix-config.h>
-#endif
-
 #ifndef _OSDEP_H_
 #define _OSDEP_H_ 1
 
-#include <X11/Xdefs.h>
+#include <dix-config.h>
 
-#if defined(XDMCP) || defined(HASXDMAUTH)
-#include <X11/Xdmcp.h>
-#endif
+#include <X11/Xdefs.h>
 
 #include <limits.h>
 #include <stddef.h>
@@ -102,11 +95,7 @@ typedef struct _osComm {
 #define OS_COMM_GRAB_IMPERVIOUS 1
 #define OS_COMM_IGNORED         2
 
-extern int FlushClient(ClientPtr /*who */ ,
-                       OsCommPtr /*oc */ ,
-                       const void * /*extraBuf */ ,
-                       int      /*extraCount */
-    );
+int FlushClient(ClientPtr who, OsCommPtr oc);
 
 extern void FreeOsBuffers(OsCommPtr     /*oc */
     );
@@ -129,17 +118,14 @@ extern Bool ComputeLocalClient(ClientPtr client);
 
 /* OsTimer functions */
 void TimerInit(void);
-Bool TimerForce(OsTimerPtr timer);
+
+/* must be exported for backwards compatibility with legacy nvidia390,
+ * not for use in maintained drivers
+ */
+_X_EXPORT Bool TimerForce(OsTimerPtr);
 
 #ifdef WIN32
 #include <X11/Xwinsock.h>
-struct utsname {
-    char nodename[512];
-};
-
-static inline void uname(struct utsname *uts) {
-    gethostname(uts->nodename, sizeof(uts->nodename));
-}
 
 const char *Win32TempDir(void);
 
@@ -223,6 +209,10 @@ Ones(unsigned long mask)
 }
 #endif
 
-#define LIMITCLIENTS     256     /* Must be a power of 2 and <= MAXCLIENTS */
+/* static assert for protocol structure sizes */
+#ifndef __size_assert
+#define __size_assert(what, howmuch) \
+  typedef char what##_size_wrong_[( !!(sizeof(what) == howmuch) )*2-1 ]
+#endif
 
 #endif                          /* _OSDEP_H_ */

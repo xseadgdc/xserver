@@ -30,7 +30,7 @@
 #include "os/fmt.h"
 
 #include "os.h"
-#include "xf86Parser.h"
+#include "xf86Parser_priv.h"
 #include "xf86tokens.h"
 #include "Configint.h"
 
@@ -50,24 +50,12 @@ xf86freeOutputClassList(XF86ConfOutputClassPtr ptr)
     XF86ConfOutputClassPtr prev;
 
     while (ptr) {
-        xf86MatchGroup *group, *next;
-        char **list;
-
         TestFree(ptr->identifier);
         TestFree(ptr->comment);
         TestFree(ptr->driver);
         TestFree(ptr->modulepath);
 
-        xorg_list_for_each_entry_safe(group, next, &ptr->match_driver, entry) {
-            for (list = group->values; *list; list++) {
-                free(*list);
-                *list = NULL;
-            }
-            xorg_list_del(&group->entry);
-            free(group);
-            group = NULL;
-        }
-
+        xf86freeMatchGroupList(&ptr->match_driver);
         xf86optionListFree(ptr->option_lst);
 
         prev = ptr;
@@ -78,23 +66,12 @@ xf86freeOutputClassList(XF86ConfOutputClassPtr ptr)
 
 #define CLEANUP xf86freeOutputClassList
 
-#define TOKEN_SEP "|"
-
-static void
-add_group_entry(struct xorg_list *head, char **values)
-{
-    xf86MatchGroup *group = calloc(1, sizeof(xf86MatchGroup));
-    if (group) {
-        group->values = values;
-        xorg_list_add(&group->entry, head);
-    }
-}
-
 XF86ConfOutputClassPtr
 xf86parseOutputClassSection(void)
 {
     int has_ident = FALSE;
     int token;
+    xf86MatchGroup *group;
 
     parsePrologue(XF86ConfOutputClassPtr, XF86ConfOutputClassRec)
 
@@ -141,9 +118,12 @@ xf86parseOutputClassSection(void)
         case MATCH_DRIVER:
             if (xf86getSubToken(&(ptr->comment)) != XF86_TOKEN_STRING)
                 Error(QUOTE_MSG, "MatchDriver");
-            add_group_entry(&ptr->match_driver,
-                            xstrtokenize(xf86_lex_val.str, TOKEN_SEP));
-            free(xf86_lex_val.str);
+            else {
+                group = xf86createMatchGroup(xf86_lex_val.str, MATCH_EXACT, FALSE);
+                if (group)
+                    xorg_list_add(&group->entry, &ptr->match_driver);
+                free(xf86_lex_val.str);
+            }
             break;
         case EOF_TOKEN:
             Error(UNEXPECTED_EOF_MSG);
@@ -163,11 +143,13 @@ xf86parseOutputClassSection(void)
 
     return ptr;
 }
+
 void
 xf86printOutputClassSection(FILE * cf, XF86ConfOutputClassPtr ptr)
 {
     const xf86MatchGroup *group;
-    char *const *cur;
+    const xf86MatchPattern *pattern;
+    Bool not_first;
 
     while (ptr) {
         fprintf(cf, "Section \"OutputClass\"\n");
@@ -180,9 +162,11 @@ xf86printOutputClassSection(FILE * cf, XF86ConfOutputClassPtr ptr)
 
         xorg_list_for_each_entry(group, &ptr->match_driver, entry) {
             fprintf(cf, "\tMatchDriver     \"");
-            for (cur = group->values; *cur; cur++)
-                fprintf(cf, "%s%s", cur == group->values ? "" : TOKEN_SEP,
-                        *cur);
+            not_first = FALSE;
+            xorg_list_for_each_entry(pattern, &group->patterns, entry) {
+                xf86printMatchPattern(cf, pattern, not_first);
+                not_first = TRUE;
+            }
             fprintf(cf, "\"\n");
         }
 

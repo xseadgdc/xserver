@@ -44,6 +44,7 @@ in this Software without prior written authorization from The Open Group.
 #include   "dix/cursor_priv.h"
 #include   "dix/dix_priv.h"
 #include   "dix/input_priv.h"
+#include   "dix/inpututils_priv.h"
 #include   "mi/mi_priv.h"
 #include   "mi/mipointer_priv.h"
 #include   "os/bug_priv.h"
@@ -53,7 +54,6 @@ in this Software without prior written authorization from The Open Group.
 #include   "windowstr.h"
 #include   "pixmapstr.h"
 #include   "inputstr.h"
-#include   "inpututils.h"
 #include   "mipointer.h"
 #include   "scrnintstr.h"
 #include   "exglobals.h"
@@ -239,8 +239,8 @@ mieqEnqueue(DeviceIntPtr pDev, InternalEvent *e)
             else if (miEventQueue.dropped % QUEUE_DROP_BACKTRACE_FREQUENCY == 0 &&
                      miEventQueue.dropped / QUEUE_DROP_BACKTRACE_FREQUENCY <=
                      QUEUE_DROP_BACKTRACE_MAX) {
-                ErrorF("[mi] EQ overflow continuing.  %zu events have been "
-                       "dropped.\n", miEventQueue.dropped);
+                ErrorF("[mi] EQ overflow continuing. %lu events have been "
+                       "dropped.\n", (unsigned long)miEventQueue.dropped);
                 if (miEventQueue.dropped / QUEUE_DROP_BACKTRACE_FREQUENCY ==
                     QUEUE_DROP_BACKTRACE_MAX) {
                     ErrorF("[mi] No further overflow reports will be "

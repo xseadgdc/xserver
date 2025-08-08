@@ -19,6 +19,7 @@
 
 #include "dix/input_priv.h"
 #include "dix/resource_priv.h"
+#include "dix/rpcbuf_priv.h"
 
 #include "include/callback.h"
 #include "include/cursor.h"
@@ -37,6 +38,13 @@
             return BadIDChoice;                 \
         }                                       \
     } while (0)
+
+/* static assert for protocol structure sizes */
+#ifndef __size_assert
+#define __size_assert(what, howmuch) \
+  typedef char what##_size_wrong_[( !!(sizeof(what) == howmuch) )*2-1 ]
+#endif
+#define XTYPE_SIZE_ASSERT(typename) __size_assert(typename,SIZEOF(typename))
 
 /* server setting: maximum size for big requests */
 #define MAX_BIG_REQUEST_SIZE 4194303
@@ -686,7 +694,45 @@ static inline ClientPtr dixLookupXIDOwner(XID xid)
     int clientId = dixClientIdForXID(xid);
     if (clientId < currentMaxClients)
         return clients[clientId];
-    return NullClient;
+    return NULL;
+}
+
+/*
+ * @brief write rpc buffer to client and then clear it
+ *
+ * @param pClient the client to write buffer to
+ * @param rpcbuf  the buffer whose contents will be written
+ * @return the result of WriteToClient() call
+ */
+static inline int WriteRpcbufToClient(ClientPtr pClient,
+                                      x_rpcbuf_t *rpcbuf) {
+    int ret = WriteToClient(pClient, rpcbuf->wpos, rpcbuf->buffer);
+    x_rpcbuf_clear(rpcbuf);
+    return ret;
+}
+
+/*
+ * @brief make atom from null-terminated string
+ *
+ * if atom already existing, return the existing Atom ID
+ *
+ * @param name  the atom name
+ * @return atom ID
+ */
+static inline Atom dixAddAtom(const char *name) {
+    return MakeAtom(name, strlen(name), TRUE);
+}
+
+/*
+ * @brief retrieve atom ID by name
+ *
+ * if the atom doesn't exist yet, 0 / NONE is returned
+ *
+ * @param name  the atom name
+ * @return atom ID
+ */
+static inline Atom dixGetAtomID(const char *name) {
+    return MakeAtom(name, strlen(name), FALSE);
 }
 
 #endif /* _XSERVER_DIX_PRIV_H */
